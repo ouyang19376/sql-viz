@@ -13,11 +13,18 @@ load_dotenv(BASE_DIR / ".env")
 # 方言 JSON 数据目录
 DATA_DIR = BASE_DIR / "app" / "data" / "sql"
 
-# CORS 允许来源（开发阶段前端 Vite 默认端口）
-CORS_ORIGINS = [
+# CORS 允许来源：优先读环境变量 CORS_ORIGINS（逗号分隔，用于生产部署），
+# 未设置时回退到开发阶段前端 Vite 默认端口。
+_default_cors_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+_env_cors_origins = os.environ.get("CORS_ORIGINS", "")
+CORS_ORIGINS = (
+    [o.strip() for o in _env_cors_origins.split(",") if o.strip()]
+    if _env_cors_origins
+    else _default_cors_origins
+)
 
 # ─── LLM 调用配置（F-BK-DT-03） ───────────────────────────
 # 读取使用 os.environ.get；空字符串视作未配置，由 llm_client 在首次调用时校验
