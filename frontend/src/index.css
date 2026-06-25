@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+/* 暗色模式（F-CM-03，P2）：class-based，由 useThemeStore 在 <html> 上切换 .dark */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 响应式断点（F-CM-02）：与 PRD §7.5 对齐
+   XS<576 / SM≥576 / MD≥768 / LG≥992 / XL≥1200 */
+@theme {
+  --breakpoint-sm: 36rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 62rem;
+  --breakpoint-xl: 75rem;
+}
+
+/* 方言主题色全局变量（F-DS-02）：由 Layout 根据当前选中方言动态设置 */
+:root {
+  --dialect-color: #00758f;
+}
+
+/* 变体色工具类：基于 --dialect-color 生成 hover/浅底，避免 JS 算色 */
+.dialect-bg {
+  background-color: var(--dialect-color);
+}
+.dialect-text {
+  color: var(--dialect-color);
+}
+.dialect-border {
+  border-color: var(--dialect-color);
+}
+.dialect-bg-soft {
+  background-color: color-mix(in srgb, var(--dialect-color) 12%, white);
+}
+.dialect-border-soft {
+  border-color: color-mix(in srgb, var(--dialect-color) 40%, white);
+}

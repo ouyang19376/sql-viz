@@ -1,0 +1,387 @@
+{
+  "dialect": {
+    "id": "cypher",
+    "name": "Cypher",
+    "version": "5",
+    "description": "Cypher 是 Neo4j 图数据库的声明式查询语言，使用节点和关系的模式匹配来查询图数据。语法与 SQL 差异较大。",
+    "homepage": "https://neo4j.com/docs/cypher-manual/current/functions/",
+    "color": "#008CC1",
+    "icon": "neo4j",
+    "categories": [
+      { "id": "pattern", "name": "模式匹配", "order": 1 },
+      { "id": "aggregate", "name": "聚合函数", "order": 2 },
+      { "id": "list", "name": "列表函数", "order": 3 },
+      { "id": "string", "name": "字符串函数", "order": 4 },
+      { "id": "math", "name": "数学函数", "order": 5 },
+      { "id": "graph", "name": "图函数", "order": 6 },
+      { "id": "temporal", "name": "时间函数", "order": 7 }
+    ],
+    "functions": [
+      {
+        "id": "match",
+        "name": "MATCH",
+        "category_id": "pattern",
+        "signature": "MATCH (n:Label)-[r:REL]->(m) RETURN ...",
+        "description": "MATCH 是 Cypher 中最核心的子句，用于在图中匹配节点和关系的模式。它类似于 SQL 中的 FROM + WHERE，但基于图模式而非表连接。",
+        "params": [
+          { "name": "pattern", "type": "any", "required": true, "desc": "节点和关系的模式，如 (a:Person)-[:KNOWS]->(b:Person)" }
+        ],
+        "return_type": "Node | Relationship | Path",
+        "example_code": "// 查找所有 Person 节点\nMATCH (p:Person)\nRETURN p.name, p.age\n\n// 查找 Alice 的朋友\nMATCH (a:Person {name: 'Alice'})-[:KNOWS]->(friend:Person)\nRETURN friend.name",
+        "example_description": "图示：圆形节点 (a:Person {name:'Alice'}) 通过有向箭头 -[:KNOWS]-> 指向另一个圆形节点 (friend:Person)。MATCH 会扫描所有 :Person 标签的节点，从 Alice 出发沿 :KNOWS 关系展开，返回所有朋友节点。",
+        "note": "() 表示节点，[] 表示关系，:Label 表示节点标签或关系类型，--> 表示有向关系，--表示无向关系。如果模式匹配不到，结果为空（不会返回 NULL）。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "optional_match",
+        "name": "OPTIONAL MATCH",
+        "category_id": "pattern",
+        "signature": "OPTIONAL MATCH (n)-[r]->(m) RETURN ...",
+        "description": "OPTIONAL MATCH 类似 SQL 的 LEFT JOIN，匹配模式时即使没有匹配也不丢弃前面的结果，缺失部分以 NULL 填充。",
+        "params": [
+          { "name": "pattern", "type": "any", "required": true, "desc": "可选匹配的图模式" }
+        ],
+        "return_type": "Node | Relationship | Path | NULL",
+        "example_code": "// 查找所有人及其朋友（没有朋友的人也返回）\nMATCH (p:Person)\nOPTIONAL MATCH (p)-[:KNOWS]->(friend:Person)\nRETURN p.name, friend.name",
+        "example_description": "图示：所有 :Person 节点 p，向右尝试连接 -[:KNOWS]-> friend；若 p 没有 KNOWS 邻居，friend 列返回 NULL，但 p 仍出现在结果中。",
+        "note": "与 MATCH 的关键差异：MATCH 匹配失败会过滤掉整行；OPTIONAL MATCH 匹配失败会保留主行，未匹配的变量为 NULL。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "create",
+        "name": "CREATE",
+        "category_id": "pattern",
+        "signature": "CREATE (n:Label {prop: value})-[r:REL]->(m:Label)",
+        "description": "在图中创建节点和关系。可以创建单个节点、多个节点，或同时创建节点及其关系。每次执行都会新增数据。",
+        "params": [
+          { "name": "pattern", "type": "any", "required": true, "desc": "要创建的节点或关系模式" }
+        ],
+        "return_type": "Node | Relationship | Path",
+        "example_code": "// 创建一个 Person 节点\nCREATE (p:Person {name: 'Alice', age: 30})\nRETURN p\n\n// 同时创建两个节点和它们之间的关系\nCREATE (a:Person {name: 'Bob'})-[:KNOWS]->(b:Person {name: 'Charlie'})",
+        "example_description": "图示：CREATE 会在图中新增圆形节点 (a:Person {name:'Bob'})，再新增圆形节点 (b:Person {name:'Charlie'})，并在两者之间画一条有向箭头 -[:KNOWS]->。",
+        "note": "CREATE 不去重，重复执行会创建重复节点。如果想要去重，应使用 MERGE。属性用 {} 包裹，键值对之间用逗号分隔。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "merge",
+        "name": "MERGE",
+        "category_id": "pattern",
+        "signature": "MERGE (n:Label {key: value}) ON CREATE SET ... ON MATCH SET ...",
+        "description": "MERGE 是 MATCH 与 CREATE 的组合：如果模式已存在则匹配它，否则创建它。常用于幂等写入与维护图的唯一性。",
+        "params": [
+          { "name": "pattern", "type": "any", "required": true, "desc": "要匹配或创建的模式" },
+          { "name": "ON CREATE SET", "type": "any", "required": false, "desc": "节点新建时执行的 SET 操作" },
+          { "name": "ON MATCH SET", "type": "any", "required": false, "desc": "节点已存在时执行的 SET 操作" }
+        ],
+        "return_type": "Node | Relationship | Path",
+        "example_code": "// 确保 Person 节点存在；新建则记录 createdAt，已存在则更新 lastSeen\nMERGE (p:Person {name: 'Alice'})\n  ON CREATE SET p.createdAt = timestamp()\n  ON MATCH  SET p.lastSeen  = timestamp()\nRETURN p",
+        "example_description": "图示：先在图中查找标签为 :Person 且 name='Alice' 的节点；找到则触发 ON MATCH 分支更新 lastSeen，找不到则新建节点并触发 ON CREATE 分支写入 createdAt。",
+        "note": "ON CREATE SET 仅在节点新建时执行，ON MATCH SET 仅在节点已存在时执行，二者可同时出现也可只用其一。MERGE 的整个模式必须全部存在或全部不存在，部分匹配会触发创建。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "where",
+        "name": "WHERE",
+        "category_id": "pattern",
+        "signature": "MATCH (n) WHERE condition RETURN n",
+        "description": "WHERE 子句对 MATCH/OPTIONAL MATCH/WITH 的结果按布尔条件进行过滤，类似 SQL 的 WHERE。",
+        "params": [
+          { "name": "condition", "type": "boolean", "required": true, "desc": "布尔过滤表达式" }
+        ],
+        "return_type": "boolean",
+        "example_code": "// 查找年龄大于 25 的 Person\nMATCH (p:Person)\nWHERE p.age > 25 AND p.name STARTS WITH 'A'\nRETURN p.name, p.age",
+        "example_description": "图示：先匹配所有 :Person 圆形节点，对每个节点取属性 age 与 name，仅保留满足 age>25 且 name 以 'A' 开头的节点。",
+        "note": "支持 =、<>、<、>、AND/OR/NOT、IN、STARTS WITH、ENDS WITH、CONTAINS 等。WHERE 也可用于关系或路径过滤，例如 WHERE NOT (a)-[:KNOWS]->(b)。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "return",
+        "name": "RETURN",
+        "category_id": "pattern",
+        "signature": "RETURN expr [AS alias] [ORDER BY ...] [SKIP n] [LIMIT n]",
+        "description": "RETURN 是 Cypher 查询的输出子句，指定要返回的节点、关系、路径或属性表达式，类似 SQL 的 SELECT。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要返回的表达式（节点、关系、属性或函数）" },
+          { "name": "AS alias", "type": "string", "required": false, "desc": "结果列的别名" }
+        ],
+        "return_type": "any",
+        "example_code": "// 返回姓名与年龄，按年龄倒序，取前 10 行\nMATCH (p:Person)\nRETURN p.name AS name, p.age AS age\nORDER BY age DESC\nLIMIT 10",
+        "example_description": "图示：MATCH 选中所有 :Person 圆形节点；RETURN 从每个节点提取 name 与 age 属性形成一张二维结果表，再按 age 列倒序展示。",
+        "note": "RETURN DISTINCT 可去重；可与 ORDER BY、SKIP、LIMIT 组合做分页。也可直接 RETURN 节点变量本身（如 RETURN p），客户端会得到节点的全部属性。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "count",
+        "name": "count",
+        "category_id": "aggregate",
+        "signature": "count(expr) | count(*) | count(DISTINCT expr)",
+        "description": "聚合函数，统计非 NULL 值的行数。count(*) 统计所有行（包括 NULL），count(DISTINCT x) 统计 x 的去重值数量。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要计数的表达式或 *" }
+        ],
+        "return_type": "Integer",
+        "example_code": "// 统计 Person 节点数量\nMATCH (p:Person)\nRETURN count(p) AS person_count\n\n// 按城市分组计数\nMATCH (p:Person)\nRETURN p.city AS city, count(*) AS num\nORDER BY num DESC",
+        "example_description": "图示：MATCH 选出所有 :Person 圆形节点，按 city 属性分组形成多个堆，每堆的节点个数即为 count(*) 的值。",
+        "note": "Cypher 没有 GROUP BY，只要 RETURN 中同时出现非聚合表达式和聚合函数，非聚合列会自动作为分组键。count(NULL) 返回 0。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "collect",
+        "name": "collect",
+        "category_id": "aggregate",
+        "signature": "collect(expr)",
+        "description": "聚合函数，将多行的值收集到一个列表（List）中。常用于将一对多关系折叠成数组结构。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要收集的表达式" }
+        ],
+        "return_type": "List<any>",
+        "example_code": "// 把每个人的所有朋友名字收集为一个列表\nMATCH (p:Person)-[:KNOWS]->(friend:Person)\nRETURN p.name AS person, collect(friend.name) AS friends",
+        "example_description": "图示：每个 :Person 节点 p 通过 -[:KNOWS]-> 指向多个 friend 节点；collect 把同一个 p 对应的所有 friend.name 折叠进一个列表，最终结果每个 person 仅一行。",
+        "note": "collect 会自动忽略 NULL 值。结合 OPTIONAL MATCH 时，若没有匹配则返回空列表 []。可配合 [...] 列表推导继续处理。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "size",
+        "name": "size",
+        "category_id": "list",
+        "signature": "size(list) | size(string)",
+        "description": "返回列表的元素个数或字符串的字符数。在 Cypher 5 中也可用于路径长度等。",
+        "params": [
+          { "name": "value", "type": "any", "required": true, "desc": "列表或字符串" }
+        ],
+        "return_type": "Integer",
+        "example_code": "// 列出每个人的朋友数量\nMATCH (p:Person)\nOPTIONAL MATCH (p)-[:KNOWS]->(f)\nRETURN p.name, size(collect(f)) AS friend_count",
+        "example_description": "图示：先把每个 :Person 节点 p 的所有 KNOWS 邻居收集成列表 [f1, f2, ...]，再用 size() 统计该列表长度，得到朋友数量。",
+        "note": "在新版 Cypher 中，对节点的关系计数推荐使用 COUNT { (n)-[]->() } 子查询；size() 用于列表/字符串长度更稳妥。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "nodes",
+        "name": "nodes",
+        "category_id": "list",
+        "signature": "nodes(path)",
+        "description": "返回路径（Path）上的所有节点，按出现顺序组成列表。",
+        "params": [
+          { "name": "path", "type": "any", "required": true, "desc": "路径变量" }
+        ],
+        "return_type": "List<Node>",
+        "example_code": "// 列出 Alice 到 David 最短路径上的所有节点\nMATCH p = shortestPath((a:Person {name:'Alice'})-[*..6]-(d:Person {name:'David'}))\nRETURN nodes(p) AS path_nodes",
+        "example_description": "图示：路径 p 是一串节点-关系-节点交替的链条 a-r1-n1-r2-n2-...-d；nodes(p) 取出 [a, n1, n2, ..., d] 这串圆形节点。",
+        "note": "返回的节点顺序就是路径中出现的顺序。配合 [n IN nodes(p) | n.name] 可提取属性序列。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "relationships",
+        "name": "relationships",
+        "category_id": "list",
+        "signature": "relationships(path)",
+        "description": "返回路径上的所有关系，按出现顺序组成列表。",
+        "params": [
+          { "name": "path", "type": "any", "required": true, "desc": "路径变量" }
+        ],
+        "return_type": "List<Relationship>",
+        "example_code": "// 列出最短路径上经过的关系类型\nMATCH p = shortestPath((a:Person {name:'Alice'})-[*..6]-(d:Person {name:'David'}))\nRETURN [r IN relationships(p) | type(r)] AS rel_types",
+        "example_description": "图示：路径 p = a-r1-n1-r2-n2-r3-d，relationships(p) 取出箭头集合 [r1, r2, r3]，每个箭头都有自己的关系类型。",
+        "note": "返回顺序与路径方向一致。注意路径长度 = nodes 长度 - 1 = relationships 长度。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "range",
+        "name": "range",
+        "category_id": "list",
+        "signature": "range(start, end [, step])",
+        "description": "生成一个整数列表，从 start 到 end（含两端），可选步长 step。",
+        "params": [
+          { "name": "start", "type": "Integer", "required": true, "desc": "起始整数" },
+          { "name": "end", "type": "Integer", "required": true, "desc": "结束整数（包含）" },
+          { "name": "step", "type": "Integer", "required": false, "desc": "步长，默认 1" }
+        ],
+        "return_type": "List<Integer>",
+        "example_code": "// 生成 1..10 的列表\nRETURN range(1, 10) AS nums\n\n// 生成 0,2,4,...,10\nRETURN range(0, 10, 2) AS evens",
+        "example_description": "图示：range(1,10) 产生一行结果 nums = [1,2,3,4,5,6,7,8,9,10]；range(0,10,2) 产生 evens = [0,2,4,6,8,10]。",
+        "note": "range 含两端（闭区间），与 Python 的 range 不同。step 可以为负数实现递减。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "head",
+        "name": "head",
+        "category_id": "list",
+        "signature": "head(list)",
+        "description": "返回列表的第一个元素，列表为空时返回 NULL。",
+        "params": [
+          { "name": "list", "type": "List", "required": true, "desc": "输入列表" }
+        ],
+        "return_type": "any",
+        "example_code": "// 取每个人收藏的第一个标签\nMATCH (p:Person)\nRETURN p.name, head(p.tags) AS first_tag",
+        "example_description": "图示：每个 :Person 节点的 tags 属性是字符串列表 ['tech','music',...]，head() 取出第一个元素 'tech'。",
+        "note": "对空列表返回 NULL 而不会报错。常与 collect 搭配，例如 head(collect(x))。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "last",
+        "name": "last",
+        "category_id": "list",
+        "signature": "last(list)",
+        "description": "返回列表的最后一个元素，列表为空时返回 NULL。",
+        "params": [
+          { "name": "list", "type": "List", "required": true, "desc": "输入列表" }
+        ],
+        "return_type": "any",
+        "example_code": "// 取最短路径上最后一个节点（即终点）\nMATCH p = shortestPath((a:Person {name:'Alice'})-[*..6]-(d:Person {name:'David'}))\nRETURN last(nodes(p)) AS end_node",
+        "example_description": "图示：nodes(p) = [Alice, n1, n2, ..., David]，last() 取出列表末尾的圆形节点 David。",
+        "note": "对空列表返回 NULL。注意：last(nodes(p)) 不一定等于 endNode(p)，因为 endNode 取关系的终点节点，nodes(p) 的最后一个是路径终点。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "type",
+        "name": "type",
+        "category_id": "string",
+        "signature": "type(relationship)",
+        "description": "返回一条关系的类型名称（字符串），例如 'KNOWS'、'ACTED_IN'。",
+        "params": [
+          { "name": "relationship", "type": "Relationship", "required": true, "desc": "关系变量" }
+        ],
+        "return_type": "String",
+        "example_code": "// 列出 Alice 的所有外向关系类型\nMATCH (a:Person {name:'Alice'})-[r]->()\nRETURN DISTINCT type(r) AS rel_type",
+        "example_description": "图示：从节点 Alice 发出的所有箭头 r1、r2、r3 各有一个类型标签，type() 把这些箭头的类型名抽取为字符串，DISTINCT 去重。",
+        "note": "type() 仅对关系有效；对节点要使用 labels()。空关系会返回 NULL。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "labels",
+        "name": "labels",
+        "category_id": "string",
+        "signature": "labels(node)",
+        "description": "返回一个节点的所有标签，结果为字符串列表。",
+        "params": [
+          { "name": "node", "type": "Node", "required": true, "desc": "节点变量" }
+        ],
+        "return_type": "List<String>",
+        "example_code": "// 查看每个匹配节点的标签集合\nMATCH (n)\nWHERE n.name = 'Alice'\nRETURN labels(n) AS node_labels",
+        "example_description": "图示：节点 n 上方挂着多个标签徽章，例如 :Person、:User，labels(n) 把这些徽章名拼成列表 ['Person','User']。",
+        "note": "一个节点可同时拥有多个标签。若需判断是否包含某标签，可用 'Person' IN labels(n)。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "properties",
+        "name": "properties",
+        "category_id": "string",
+        "signature": "properties(node | relationship)",
+        "description": "把节点或关系的所有属性以 Map（键值对）形式返回。",
+        "params": [
+          { "name": "entity", "type": "Node | Relationship", "required": true, "desc": "节点或关系变量" }
+        ],
+        "return_type": "Map",
+        "example_code": "// 查看 Alice 节点的所有属性\nMATCH (a:Person {name:'Alice'})\nRETURN properties(a) AS props",
+        "example_description": "图示：节点 Alice 的所有属性键值（name、age、city...）打包成 Map：{name:'Alice', age:30, city:'Beijing'}。",
+        "note": "对关系同样适用。返回 Map 不包含元数据（如 id、labels），仅包含实际属性。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "to_lower",
+        "name": "toLower",
+        "category_id": "string",
+        "signature": "toLower(string)",
+        "description": "将字符串转为小写。",
+        "params": [
+          { "name": "string", "type": "String", "required": true, "desc": "输入字符串" }
+        ],
+        "return_type": "String",
+        "example_code": "// 不区分大小写匹配名字\nMATCH (p:Person)\nWHERE toLower(p.name) = 'alice'\nRETURN p",
+        "example_description": "图示：从节点取出 name 属性 'Alice' 或 'ALICE'，toLower 统一变为 'alice'，再与查询条件比较。",
+        "note": "对 NULL 返回 NULL。仅基于 Unicode 小写规则，不做语言特定处理。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "to_upper",
+        "name": "toUpper",
+        "category_id": "string",
+        "signature": "toUpper(string)",
+        "description": "将字符串转为大写。",
+        "params": [
+          { "name": "string", "type": "String", "required": true, "desc": "输入字符串" }
+        ],
+        "return_type": "String",
+        "example_code": "// 把所有人名转换为大写返回\nMATCH (p:Person)\nRETURN toUpper(p.name) AS upper_name",
+        "example_description": "图示：节点 Alice 上的 name 属性值 'Alice' 经 toUpper 变换后输出为 'ALICE'。",
+        "note": "对 NULL 返回 NULL。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "shortest_path",
+        "name": "shortestPath",
+        "category_id": "graph",
+        "signature": "shortestPath((start)-[*..maxHops]-(end))",
+        "description": "查找两个节点之间的一条最短路径（按关系数量计）。常用于社交网络分析、路线规划等场景。",
+        "params": [
+          { "name": "pattern", "type": "any", "required": true, "desc": "起点到终点之间的路径模式，可指定关系类型与最大跳数" }
+        ],
+        "return_type": "Path",
+        "example_code": "// 查找 Alice 与 David 之间的最短路径\nMATCH (a:Person {name:'Alice'}), (d:Person {name:'David'})\nMATCH p = shortestPath((a)-[*..6]-(d))\nRETURN p, length(p) AS hops",
+        "example_description": "图示：在图中以 Alice 为起点广度搜索，所有可达节点向四周扩展层级；当首次扩展到 David 时停止，返回这条最短链条 a-...-d。",
+        "note": "shortestPath 只返回一条路径（任选其一）。建议设置最大跳数 [*..6] 以避免在大图中爆炸。需要所有最短路径请使用 allShortestPaths。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "all_shortest_paths",
+        "name": "allShortestPaths",
+        "category_id": "graph",
+        "signature": "allShortestPaths((start)-[*..maxHops]-(end))",
+        "description": "返回两节点间所有具有最短长度的路径（可能多条），用于分析等价路径。",
+        "params": [
+          { "name": "pattern", "type": "any", "required": true, "desc": "起点到终点之间的路径模式" }
+        ],
+        "return_type": "List<Path>",
+        "example_code": "// 列出 Alice 和 David 之间所有等长的最短路径\nMATCH (a:Person {name:'Alice'}), (d:Person {name:'David'})\nMATCH p = allShortestPaths((a)-[*..6]-(d))\nRETURN p",
+        "example_description": "图示：Alice 与 David 之间存在多条同等长度的链条（如 Alice-Bob-David 与 Alice-Carol-David），allShortestPaths 把它们都返回。",
+        "note": "结果路径数量可能较多，建议加 LIMIT。与 shortestPath 一样，最大跳数应显式限制。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "date",
+        "name": "date",
+        "category_id": "temporal",
+        "signature": "date() | date(string) | date({year, month, day})",
+        "description": "返回日期值。无参时返回当前日期，可由字符串或参数 Map 构造。",
+        "params": [
+          { "name": "value", "type": "any", "required": false, "desc": "ISO 字符串或包含 year/month/day 的 Map" }
+        ],
+        "return_type": "Date",
+        "example_code": "// 当前日期\nRETURN date() AS today\n\n// 从字符串解析\nRETURN date('2026-06-18') AS d\n\n// 从 Map 构造\nRETURN date({year: 2026, month: 6, day: 18}) AS d2",
+        "example_description": "图示：调用 date() 在结果表中输出一行 today=2026-06-18；不同形式的构造方法均得到同一类型的 Date 值。",
+        "note": "Date 类型不含时间分量。若需精确到时分秒，请使用 datetime() 或 localdatetime()。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "datetime",
+        "name": "datetime",
+        "category_id": "temporal",
+        "signature": "datetime() | datetime(string) | datetime({year, month, day, hour, minute, second})",
+        "description": "返回带时区的日期时间值。无参时返回当前时刻。",
+        "params": [
+          { "name": "value", "type": "any", "required": false, "desc": "ISO 字符串或参数 Map" }
+        ],
+        "return_type": "DateTime",
+        "example_code": "// 当前时间\nRETURN datetime() AS now\n\n// ISO 字符串解析（带时区）\nRETURN datetime('2026-06-18T10:30:00+08:00') AS dt",
+        "example_description": "图示：datetime() 在结果表中输出一行带时区的时间戳，例如 2026-06-18T02:30:00Z；datetime(string) 演示从 ISO 字符串解析为同类型值。",
+        "note": "支持 ISO 8601 格式。datetime 含时区，localdatetime 不含时区。比较 datetime 时会自动按 UTC 对齐。",
+        "compatible_dialects": []
+      },
+      {
+        "id": "duration",
+        "name": "duration",
+        "category_id": "temporal",
+        "signature": "duration(string) | duration({days, hours, minutes, seconds})",
+        "description": "构造一个时间段（Duration）值，表示两个时间点之间的差或时间间隔。",
+        "params": [
+          { "name": "value", "type": "any", "required": true, "desc": "ISO 8601 时长字符串或参数 Map" }
+        ],
+        "return_type": "Duration",
+        "example_code": "// 1 天 2 小时\nRETURN duration('P1DT2H') AS d\n\n// 用 Map 构造\nRETURN duration({days: 1, hours: 2, minutes: 30}) AS d2\n\n// 与 date 相加\nRETURN date('2026-06-18') + duration('P7D') AS next_week",
+        "example_description": "图示：duration('P1DT2H') 在结果表中显示一段时长 P1DT2H（1天2小时）；与 date 相加后得到 7 天后的日期 2026-06-25。",
+        "note": "duration 可与 date/datetime 做加减。推荐使用 ISO 8601 格式（P[n]Y[n]M[n]DT[n]H[n]M[n]S）。两个 datetime 相减会得到 duration。",
+        "compatible_dialects": []
+      }
+    ]
+  }
+}

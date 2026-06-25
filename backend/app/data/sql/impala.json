@@ -1,0 +1,2248 @@
+{
+  "dialect": {
+    "id": "impala",
+    "name": "Impala",
+    "version": "4.4",
+    "description": "Apache Impala 是用于 Apache Hadoop 的 MPP SQL 查询引擎，以低延迟著称，适合交互式查询。",
+    "homepage": "https://impala.apache.org/docs/build/html/topics/impala_functions.html",
+    "color": "#D2910A",
+    "icon": "impala",
+    "categories": [
+      { "id": "aggregate", "name": "聚合函数", "order": 1 },
+      { "id": "window", "name": "窗口函数", "order": 2 },
+      { "id": "string", "name": "字符串函数", "order": 3 },
+      { "id": "datetime", "name": "日期时间函数", "order": 4 },
+      { "id": "math", "name": "数学函数", "order": 5 },
+      { "id": "conditional", "name": "条件逻辑", "order": 6 },
+      { "id": "conversion", "name": "类型转换", "order": 7 },
+      { "id": "udf", "name": "UDF 函数", "order": 8 }
+    ],
+    "functions": [
+      {
+        "id": "count",
+        "name": "COUNT",
+        "category_id": "aggregate",
+        "signature": "COUNT(expr) | COUNT(DISTINCT expr) | COUNT(*)",
+        "description": "返回行数。COUNT(*) 统计所有行，COUNT(列名) 统计该列非空行数，COUNT(DISTINCT 列名) 统计去重后的行数。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要计数的列、表达式或 *" }
+        ],
+        "return_type": "BIGINT",
+        "example_code": "-- 统计总行数\nSELECT COUNT(*) AS total FROM users;\n\n-- 统计非空城市数\nSELECT COUNT(city) AS has_city FROM users;\n\n-- 统计去重城市数\nSELECT COUNT(DISTINCT city) AS unique_cities FROM users;",
+        "example_description": "分别演示 COUNT(*) 全量计数、COUNT(列名) 非空计数和 COUNT(DISTINCT) 去重计数。",
+        "note": "Impala 的 COUNT(DISTINCT) 是精确值；如需高效近似值请使用 NDV。",
+        "animation": {
+          "type": "aggregate_count",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "sql_hint": "SELECT * FROM users",
+              "highlight_lines": [2],
+              "table": {
+                "caption": "users 表",
+                "columns": ["name", "city", "age"],
+                "rows": [
+                  ["Alice", "Beijing", "25"],
+                  ["Bob", "Shanghai", "30"],
+                  ["Cathy", "Beijing", "28"],
+                  ["David", null, "35"]
+                ]
+              }
+            },
+            {
+              "title": "COUNT(*) 统计所有行",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT COUNT(*) FROM users",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "city", "age"],
+                "rows": [
+                  ["Alice", "Beijing", "25"],
+                  ["Bob", "Shanghai", "30"],
+                  ["Cathy", "Beijing", "28"],
+                  ["David", null, "35"]
+                ]
+              },
+              "aggregate_info": {
+                "function": "COUNT",
+                "target": "*",
+                "result_label": "total",
+                "result_value": "4"
+              },
+              "result_table": {
+                "columns": ["total"],
+                "rows": [["4"]]
+              }
+            },
+            {
+              "title": "COUNT(city) 只统计非空城市",
+              "operation": "filter_rows",
+              "sql_hint": "SELECT COUNT(city) FROM users",
+              "highlight_lines": [5],
+              "source_table": {
+                "columns": ["name", "city", "age"],
+                "rows": [
+                  ["Alice", "Beijing", "25"],
+                  ["Bob", "Shanghai", "30"],
+                  ["Cathy", "Beijing", "28"],
+                  ["David", null, "35"]
+                ]
+              },
+              "kept_indices": [0, 1, 2],
+              "removed_indices": [3],
+              "condition_description": "city IS NOT NULL"
+            },
+            {
+              "title": "最终结果",
+              "operation": "show_result",
+              "highlight_lines": [8],
+              "table": {
+                "columns": ["unique_cities"],
+                "rows": [["2"]]
+              },
+              "highlight_columns": [0]
+            }
+          ]
+        }
+      },
+      {
+        "id": "sum",
+        "name": "SUM",
+        "category_id": "aggregate",
+        "signature": "SUM(expr)",
+        "description": "返回指定列所有数值的总和。仅适用于数值类型列，自动忽略 NULL 值。",
+        "params": [
+          { "name": "expr", "type": "numeric", "required": true, "desc": "要合计的数值列或表达式" }
+        ],
+        "return_type": "BIGINT / DOUBLE",
+        "example_code": "-- 计算所有订单的总金额\nSELECT SUM(amount) AS total_amount FROM orders;\n\n-- 按用户分组求和\nSELECT user_id, SUM(amount) AS total_spent\nFROM orders GROUP BY user_id;",
+        "example_description": "计算订单表中所有订单的总金额。",
+        "animation": {
+          "type": "aggregate_sum",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "sql_hint": "SELECT * FROM orders",
+              "table": {
+                "caption": "orders 表",
+                "columns": ["order_id", "user_id", "amount"],
+                "rows": [
+                  ["1", "101", "150"],
+                  ["2", "102", "200"],
+                  ["3", "101", "350"]
+                ]
+              }
+            },
+            {
+              "title": "合计 amount 列",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT SUM(amount) FROM orders",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["order_id", "user_id", "amount"],
+                "rows": [
+                  ["1", "101", "150"],
+                  ["2", "102", "200"],
+                  ["3", "101", "350"]
+                ]
+              },
+              "aggregate_info": {
+                "function": "SUM",
+                "target": "amount",
+                "result_label": "total_amount",
+                "result_value": "700"
+              },
+              "result_table": {
+                "columns": ["total_amount"],
+                "rows": [["700"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "avg",
+        "name": "AVG",
+        "category_id": "aggregate",
+        "signature": "AVG(expr)",
+        "description": "返回指定列所有数值的平均值。自动忽略 NULL 值。",
+        "params": [
+          { "name": "expr", "type": "numeric", "required": true, "desc": "要计算平均值的数值列" }
+        ],
+        "return_type": "DOUBLE",
+        "example_code": "-- 计算所有订单的平均金额\nSELECT AVG(amount) AS avg_amount FROM orders;\n\n-- 保留两位小数\nSELECT ROUND(AVG(amount), 2) AS avg_amount FROM orders;",
+        "example_description": "计算 orders 表中 amount 列的平均值。",
+        "animation": {
+          "type": "aggregate_avg",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "sql_hint": "SELECT amount FROM orders",
+              "table": {
+                "caption": "orders 表",
+                "columns": ["amount"],
+                "rows": [["150"], ["200"], ["350"], ["100"]]
+              }
+            },
+            {
+              "title": "计算平均值 (150+200+350+100)÷4",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT AVG(amount) FROM orders",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["amount"],
+                "rows": [["150"], ["200"], ["350"], ["100"]]
+              },
+              "aggregate_info": {
+                "function": "AVG",
+                "target": "amount",
+                "result_label": "avg_amount",
+                "result_value": "200"
+              },
+              "result_table": {
+                "columns": ["avg_amount"],
+                "rows": [["200"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "max",
+        "name": "MAX",
+        "category_id": "aggregate",
+        "signature": "MAX(expr)",
+        "description": "返回指定列的最大值。可用于数值、字符串和日期类型，自动忽略 NULL 值。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要取最大值的列或表达式" }
+        ],
+        "return_type": "与 expr 相同",
+        "example_code": "-- 查询最高分\nSELECT MAX(score) AS top_score FROM students;\n\n-- 按班级分组取最高分\nSELECT class, MAX(score) AS top_score\nFROM students GROUP BY class;",
+        "example_description": "在 students 表中找出最高分。",
+        "animation": {
+          "type": "aggregate_max",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "students 表",
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "78"]
+                ]
+              }
+            },
+            {
+              "title": "取 score 列最大值",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT MAX(score) FROM students",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "78"]
+                ]
+              },
+              "aggregate_info": {
+                "function": "MAX",
+                "target": "score",
+                "result_label": "top_score",
+                "result_value": "95"
+              },
+              "result_table": {
+                "columns": ["top_score"],
+                "rows": [["95"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "min",
+        "name": "MIN",
+        "category_id": "aggregate",
+        "signature": "MIN(expr)",
+        "description": "返回指定列的最小值。可用于数值、字符串和日期类型，自动忽略 NULL 值。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要取最小值的列或表达式" }
+        ],
+        "return_type": "与 expr 相同",
+        "example_code": "-- 查询最低分\nSELECT MIN(score) AS low_score FROM students;",
+        "example_description": "在 students 表中找出最低分。",
+        "animation": {
+          "type": "aggregate_min",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "students 表",
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "78"]
+                ]
+              }
+            },
+            {
+              "title": "取 score 列最小值",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT MIN(score) FROM students",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "78"]
+                ]
+              },
+              "aggregate_info": {
+                "function": "MIN",
+                "target": "score",
+                "result_label": "low_score",
+                "result_value": "78"
+              },
+              "result_table": {
+                "columns": ["low_score"],
+                "rows": [["78"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "ndv",
+        "name": "NDV",
+        "category_id": "aggregate",
+        "signature": "NDV(expr)",
+        "description": "返回指定列的去重近似值。Impala 使用 HyperLogLog 算法实现，内存占用小，适合超大表的基数估算。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要估算去重数量的列" }
+        ],
+        "return_type": "BIGINT",
+        "note": "NDV 返回的是近似值（HyperLogLog 估算），不是精确值。精确去重用 COUNT(DISTINCT)，但在大数据量下 NDV 性能更好。",
+        "example_code": "-- 估算 UV（独立访客数）\nSELECT NDV(user_id) AS approx_uv FROM page_views;\n\n-- 估算每个页面的独立访客\nSELECT page_url, NDV(user_id) AS approx_visitors\nFROM page_views GROUP BY page_url;",
+        "example_description": "使用 NDV 快速估算用户 ID 的去重数量（近似值）。",
+        "animation": {
+          "type": "aggregate_ndv",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "sql_hint": "SELECT user_id FROM page_views",
+              "table": {
+                "caption": "page_views 表",
+                "columns": ["page_url", "user_id"],
+                "rows": [
+                  ["/home", "u1"],
+                  ["/home", "u2"],
+                  ["/home", "u1"],
+                  ["/home", "u3"],
+                  ["/home", "u2"]
+                ]
+              }
+            },
+            {
+              "title": "NDV 用 HyperLogLog 估算去重值",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT NDV(user_id) FROM page_views",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["page_url", "user_id"],
+                "rows": [
+                  ["/home", "u1"],
+                  ["/home", "u2"],
+                  ["/home", "u1"],
+                  ["/home", "u3"],
+                  ["/home", "u2"]
+                ]
+              },
+              "aggregate_info": {
+                "function": "NDV",
+                "target": "user_id",
+                "result_label": "approx_uv",
+                "result_value": "3"
+              },
+              "result_table": {
+                "columns": ["approx_uv"],
+                "rows": [["3"]]
+              }
+            },
+            {
+              "title": "最终结果（近似值）",
+              "operation": "show_result",
+              "table": {
+                "columns": ["approx_uv"],
+                "rows": [["3"]]
+              },
+              "highlight_columns": [0]
+            }
+          ]
+        }
+      },
+      {
+        "id": "group_concat",
+        "name": "GROUP_CONCAT",
+        "category_id": "aggregate",
+        "signature": "GROUP_CONCAT(expr [, separator])",
+        "description": "将分组内的多行字符串连接成一个字符串。Impala 的 GROUP_CONCAT 不支持 ORDER BY，分隔符默认为逗号。",
+        "params": [
+          { "name": "expr", "type": "string", "required": true, "desc": "要连接的列或表达式" },
+          { "name": "separator", "type": "string", "required": false, "desc": "分隔符，默认逗号", "default_value": "','" }
+        ],
+        "return_type": "STRING",
+        "note": "Impala 的 GROUP_CONCAT 与 MySQL 同名但不支持 ORDER BY 子句；如需排序请在子查询中预先排序。",
+        "example_code": "-- 将每个城市的用户名列在一起\nSELECT city, GROUP_CONCAT(name) AS users\nFROM users GROUP BY city;\n\n-- 指定分隔符\nSELECT city, GROUP_CONCAT(name, ' | ') AS users\nFROM users GROUP BY city;",
+        "example_description": "将同一城市的用户名使用逗号连接成一行。",
+        "animation": {
+          "type": "aggregate_concat",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "sql_hint": "SELECT city, name FROM users",
+              "table": {
+                "caption": "users 表",
+                "columns": ["city", "name"],
+                "rows": [
+                  ["Beijing", "Alice"],
+                  ["Beijing", "Cathy"],
+                  ["Shanghai", "Bob"]
+                ]
+              }
+            },
+            {
+              "title": "按城市分组，合并用户名",
+              "operation": "group_rows",
+              "sql_hint": "GROUP_CONCAT(name)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["city", "name"],
+                "rows": [
+                  ["Beijing", "Alice"],
+                  ["Beijing", "Cathy"],
+                  ["Shanghai", "Bob"]
+                ]
+              },
+              "group_column": "city",
+              "groups": [
+                {
+                  "key": "Beijing",
+                  "rows": [["Beijing", "Alice"], ["Beijing", "Cathy"]],
+                  "aggregated": ["Beijing", "Alice,Cathy"]
+                },
+                {
+                  "key": "Shanghai",
+                  "rows": [["Shanghai", "Bob"]],
+                  "aggregated": ["Shanghai", "Bob"]
+                }
+              ]
+            },
+            {
+              "title": "最终结果",
+              "operation": "show_result",
+              "table": {
+                "columns": ["city", "users"],
+                "rows": [
+                  ["Beijing", "Alice,Cathy"],
+                  ["Shanghai", "Bob"]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "stddev",
+        "name": "STDDEV",
+        "category_id": "aggregate",
+        "signature": "STDDEV(expr)",
+        "description": "返回数值列的样本标准差，衡量数据相对平均值的离散程度。",
+        "params": [
+          { "name": "expr", "type": "numeric", "required": true, "desc": "要计算标准差的数值列" }
+        ],
+        "return_type": "DOUBLE",
+        "example_code": "-- 计算成绩标准差\nSELECT STDDEV(score) AS score_std FROM students;",
+        "example_description": "计算分数列的标准差，反映成绩波动幅度。",
+        "animation": {
+          "type": "aggregate_stddev",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "students 表",
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "90"],
+                  ["Bob", "80"],
+                  ["Cathy", "85"],
+                  ["David", "95"]
+                ]
+              }
+            },
+            {
+              "title": "计算 score 的标准差",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT STDDEV(score) FROM students",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "90"],
+                  ["Bob", "80"],
+                  ["Cathy", "85"],
+                  ["David", "95"]
+                ]
+              },
+              "aggregate_info": {
+                "function": "STDDEV",
+                "target": "score",
+                "result_label": "score_std",
+                "result_value": "6.45"
+              },
+              "result_table": {
+                "columns": ["score_std"],
+                "rows": [["6.45"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "variance",
+        "name": "VARIANCE",
+        "category_id": "aggregate",
+        "signature": "VARIANCE(expr)",
+        "description": "返回数值列的方差，即标准差的平方，衡量数据的离散程度。",
+        "params": [
+          { "name": "expr", "type": "numeric", "required": true, "desc": "要计算方差的数值列" }
+        ],
+        "return_type": "DOUBLE",
+        "example_code": "-- 计算成绩方差\nSELECT VARIANCE(score) AS score_var FROM students;",
+        "example_description": "计算分数列的方差。",
+        "animation": {
+          "type": "aggregate_variance",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "90"],
+                  ["Bob", "80"],
+                  ["Cathy", "85"],
+                  ["David", "95"]
+                ]
+              }
+            },
+            {
+              "title": "VARIANCE(score)",
+              "operation": "aggregate_values",
+              "sql_hint": "SELECT VARIANCE(score) FROM students",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "90"],
+                  ["Bob", "80"],
+                  ["Cathy", "85"],
+                  ["David", "95"]
+                ]
+              },
+              "aggregate_info": {
+                "function": "VARIANCE",
+                "target": "score",
+                "result_label": "score_var",
+                "result_value": "41.67"
+              },
+              "result_table": {
+                "columns": ["score_var"],
+                "rows": [["41.67"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "row_number",
+        "name": "ROW_NUMBER",
+        "category_id": "window",
+        "signature": "ROW_NUMBER() OVER ([PARTITION BY expr] ORDER BY expr)",
+        "description": "为查询结果中的每一行分配一个唯一的序号。在同一分区内，序号从 1 开始递增。",
+        "params": [
+          { "name": "PARTITION BY expr", "type": "expr", "required": false, "desc": "分区列（可选）" },
+          { "name": "ORDER BY expr", "type": "expr", "required": true, "desc": "排序列，决定序号分配顺序" }
+        ],
+        "return_type": "BIGINT",
+        "example_code": "-- 按分数从高到低排名\nSELECT name, score,\n  ROW_NUMBER() OVER (ORDER BY score DESC) AS rn\nFROM students;",
+        "example_description": "ROW_NUMBER() 按成绩从高到低赋予每行唯一序号。",
+        "note": "ROW_NUMBER() 的序号不会重复，即使排序值相同也会强制分出先后。",
+        "animation": {
+          "type": "window_row_number",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "students 表",
+                "columns": ["name", "class", "score"],
+                "rows": [
+                  ["Alice", "A班", "92"],
+                  ["Bob", "B班", "85"],
+                  ["Cathy", "A班", "95"],
+                  ["David", "B班", "78"]
+                ]
+              }
+            },
+            {
+              "title": "按 score DESC 排序",
+              "operation": "sort_rows",
+              "sql_hint": "ORDER BY score DESC",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "class", "score"],
+                "rows": [
+                  ["Alice", "A班", "92"],
+                  ["Bob", "B班", "85"],
+                  ["Cathy", "A班", "95"],
+                  ["David", "B班", "78"]
+                ]
+              },
+              "order_mapping": [2, 0, 1, 3],
+              "sort_column": "score",
+              "sort_direction": "desc"
+            },
+            {
+              "title": "添加行号",
+              "operation": "add_column",
+              "sql_hint": "ROW_NUMBER() OVER (ORDER BY score DESC)",
+              "highlight_lines": [2],
+              "table": {
+                "columns": ["name", "class", "score"],
+                "rows": [
+                  ["Cathy", "A班", "95"],
+                  ["Alice", "A班", "92"],
+                  ["Bob", "B班", "85"],
+                  ["David", "B班", "78"]
+                ]
+              },
+              "new_column": {
+                "name": "rn",
+                "values": ["1", "2", "3", "4"]
+              },
+              "insert_index": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "rank",
+        "name": "RANK",
+        "category_id": "window",
+        "signature": "RANK() OVER ([PARTITION BY expr] ORDER BY expr)",
+        "description": "返回排名。允许并列，并列后跳过后续序号（如：1, 1, 3）。",
+        "params": [
+          { "name": "PARTITION BY expr", "type": "expr", "required": false, "desc": "分区列（可选）" },
+          { "name": "ORDER BY expr", "type": "expr", "required": true, "desc": "排序列" }
+        ],
+        "return_type": "BIGINT",
+        "example_code": "-- 按分数排名（同分并列）\nSELECT name, score,\n  RANK() OVER (ORDER BY score DESC) AS r\nFROM students;",
+        "example_description": "RANK() 允许并列排名（如两个第一名后直接第三名）。",
+        "note": "RANK 与 DENSE_RANK 的区别：RANK 并列后跳号（1,1,3），DENSE_RANK 不跳号（1,1,2）。",
+        "animation": {
+          "type": "window_rank",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "92"]
+                ]
+              }
+            },
+            {
+              "title": "按分数排序",
+              "operation": "sort_rows",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "92"]
+                ]
+              },
+              "order_mapping": [2, 0, 3, 1],
+              "sort_column": "score",
+              "sort_direction": "desc"
+            },
+            {
+              "title": "RANK 分配排名（92 分并列第2，跳过3）",
+              "operation": "add_column",
+              "highlight_lines": [2],
+              "table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Cathy", "95"],
+                  ["Alice", "92"],
+                  ["David", "92"],
+                  ["Bob", "85"]
+                ]
+              },
+              "new_column": {
+                "name": "r",
+                "values": ["1", "2", "2", "4"]
+              },
+              "insert_index": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "dense_rank",
+        "name": "DENSE_RANK",
+        "category_id": "window",
+        "signature": "DENSE_RANK() OVER ([PARTITION BY expr] ORDER BY expr)",
+        "description": "返回密集排名。允许并列，但并列后不跳过序号（如：1, 1, 2）。",
+        "params": [
+          { "name": "PARTITION BY expr", "type": "expr", "required": false, "desc": "分区列（可选）" },
+          { "name": "ORDER BY expr", "type": "expr", "required": true, "desc": "排序列" }
+        ],
+        "return_type": "BIGINT",
+        "example_code": "-- 按分数密集排名\nSELECT name, score,\n  DENSE_RANK() OVER (ORDER BY score DESC) AS dr\nFROM students;",
+        "example_description": "DENSE_RANK() 并列后下一名延续上一序号。",
+        "animation": {
+          "type": "window_rank",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "92"]
+                ]
+              }
+            },
+            {
+              "title": "按分数排序",
+              "operation": "sort_rows",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Alice", "92"],
+                  ["Bob", "85"],
+                  ["Cathy", "95"],
+                  ["David", "92"]
+                ]
+              },
+              "order_mapping": [2, 0, 3, 1],
+              "sort_column": "score",
+              "sort_direction": "desc"
+            },
+            {
+              "title": "DENSE_RANK 不跳号（1,2,2,3）",
+              "operation": "add_column",
+              "highlight_lines": [2],
+              "table": {
+                "columns": ["name", "score"],
+                "rows": [
+                  ["Cathy", "95"],
+                  ["Alice", "92"],
+                  ["David", "92"],
+                  ["Bob", "85"]
+                ]
+              },
+              "new_column": {
+                "name": "dr",
+                "values": ["1", "2", "2", "3"]
+              },
+              "insert_index": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "lag",
+        "name": "LAG",
+        "category_id": "window",
+        "signature": "LAG(expr [, offset [, default_value]]) OVER (ORDER BY expr)",
+        "description": "返回当前行之前第 N 行的值。常用于计算环比、与前一条记录的差值。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要获取的列或表达式" },
+          { "name": "offset", "type": "int", "required": false, "desc": "向前偏移的行数，默认 1", "default_value": "1" },
+          { "name": "default_value", "type": "any", "required": false, "desc": "无前一行时的默认值", "default_value": "NULL" }
+        ],
+        "return_type": "与 expr 相同",
+        "example_code": "-- 查看每天销售额及前一天销售额\nSELECT sale_date, amount,\n  LAG(amount, 1) OVER (ORDER BY sale_date) AS prev_amount\nFROM daily_sales;",
+        "example_description": "使用 LAG 获取前一天销售额。",
+        "animation": {
+          "type": "window_lag",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "daily_sales 表",
+                "columns": ["sale_date", "amount"],
+                "rows": [
+                  ["2024-01-01", "1000"],
+                  ["2024-01-02", "1500"],
+                  ["2024-01-03", "1200"]
+                ]
+              }
+            },
+            {
+              "title": "LAG 取前一天金额",
+              "operation": "add_column",
+              "sql_hint": "LAG(amount, 1) OVER (ORDER BY sale_date)",
+              "highlight_lines": [3],
+              "table": {
+                "columns": ["sale_date", "amount"],
+                "rows": [
+                  ["2024-01-01", "1000"],
+                  ["2024-01-02", "1500"],
+                  ["2024-01-03", "1200"]
+                ]
+              },
+              "new_column": {
+                "name": "prev_amount",
+                "values": ["NULL", "1000", "1500"]
+              },
+              "insert_index": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "lead",
+        "name": "LEAD",
+        "category_id": "window",
+        "signature": "LEAD(expr [, offset [, default_value]]) OVER (ORDER BY expr)",
+        "description": "返回当前行之后第 N 行的值。与 LAG 相反，常用于看下一期数据。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要获取的列或表达式" },
+          { "name": "offset", "type": "int", "required": false, "desc": "向后偏移的行数，默认 1", "default_value": "1" },
+          { "name": "default_value", "type": "any", "required": false, "desc": "无后续行时的默认值", "default_value": "NULL" }
+        ],
+        "return_type": "与 expr 相同",
+        "example_code": "-- 查看每天销售额及次日销售额\nSELECT sale_date, amount,\n  LEAD(amount, 1) OVER (ORDER BY sale_date) AS next_amount\nFROM daily_sales;",
+        "example_description": "使用 LEAD 获取下一天销售额。",
+        "animation": {
+          "type": "window_lead",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "daily_sales 表",
+                "columns": ["sale_date", "amount"],
+                "rows": [
+                  ["2024-01-01", "1000"],
+                  ["2024-01-02", "1500"],
+                  ["2024-01-03", "1200"]
+                ]
+              }
+            },
+            {
+              "title": "LEAD 取下一天金额",
+              "operation": "add_column",
+              "sql_hint": "LEAD(amount, 1) OVER (ORDER BY sale_date)",
+              "highlight_lines": [3],
+              "table": {
+                "columns": ["sale_date", "amount"],
+                "rows": [
+                  ["2024-01-01", "1000"],
+                  ["2024-01-02", "1500"],
+                  ["2024-01-03", "1200"]
+                ]
+              },
+              "new_column": {
+                "name": "next_amount",
+                "values": ["1500", "1200", "NULL"]
+              },
+              "insert_index": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "upper",
+        "name": "UPPER",
+        "category_id": "string",
+        "signature": "UPPER(str) | UCASE(str)",
+        "description": "将字符串中的所有字符转换为大写。Impala 同时支持 UCASE 别名。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "要转换的字符串" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 将用户名转为大写\nSELECT name, UPPER(name) AS name_upper FROM users;",
+        "example_description": "将 name 列的值逐行转为大写。",
+        "animation": {
+          "type": "string_upper",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "users 表",
+                "columns": ["name"],
+                "rows": [["Alice"], ["Bob"], ["Cathy"]]
+              }
+            },
+            {
+              "title": "对 name 列应用 UPPER",
+              "operation": "transform_values",
+              "sql_hint": "SELECT UPPER(name) FROM users",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name"],
+                "rows": [["Alice"], ["Bob"], ["Cathy"]]
+              },
+              "transform_fn": "UPPER",
+              "transform_description": "转为大写",
+              "target_column": 0,
+              "before_values": ["Alice", "Bob", "Cathy"],
+              "after_values": ["ALICE", "BOB", "CATHY"]
+            },
+            {
+              "title": "最终结果",
+              "operation": "show_result",
+              "table": {
+                "columns": ["name_upper"],
+                "rows": [["ALICE"], ["BOB"], ["CATHY"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "lower",
+        "name": "LOWER",
+        "category_id": "string",
+        "signature": "LOWER(str) | LCASE(str)",
+        "description": "将字符串中的所有字符转换为小写。Impala 同时支持 LCASE 别名。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "要转换的字符串" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 将邮箱转为小写\nSELECT email, LOWER(email) AS normalized FROM users;",
+        "example_description": "将 email 列逐行转为小写以便去重。",
+        "animation": {
+          "type": "string_lower",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["email"],
+                "rows": [["Alice@MAIL.COM"], ["BOB@mail.com"], ["Cathy@Mail.Com"]]
+              }
+            },
+            {
+              "title": "对 email 列应用 LOWER",
+              "operation": "transform_values",
+              "sql_hint": "SELECT LOWER(email) FROM users",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["email"],
+                "rows": [["Alice@MAIL.COM"], ["BOB@mail.com"], ["Cathy@Mail.Com"]]
+              },
+              "transform_fn": "LOWER",
+              "transform_description": "转为小写",
+              "target_column": 0,
+              "before_values": ["Alice@MAIL.COM", "BOB@mail.com", "Cathy@Mail.Com"],
+              "after_values": ["alice@mail.com", "bob@mail.com", "cathy@mail.com"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "concat",
+        "name": "CONCAT",
+        "category_id": "string",
+        "signature": "CONCAT(str1, str2, ...)",
+        "description": "将两个或多个字符串连接为一个字符串。如果任一参数为 NULL，则返回 NULL。",
+        "params": [
+          { "name": "str1", "type": "string", "required": true, "desc": "第一个字符串" },
+          { "name": "str2", "type": "string", "required": true, "desc": "第二个字符串" },
+          { "name": "...", "type": "string", "required": false, "desc": "更多字符串" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 拼接姓和名\nSELECT CONCAT(first_name, ' ', last_name) AS full_name FROM employees;",
+        "example_description": "将 first_name 和 last_name 拼接为完整姓名。",
+        "animation": {
+          "type": "string_concat",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "caption": "employees 表",
+                "columns": ["first_name", "last_name"],
+                "rows": [
+                  ["张", "三"],
+                  ["李", "四"],
+                  ["王", "五"]
+                ]
+              }
+            },
+            {
+              "title": "CONCAT 拼接两列",
+              "operation": "add_column",
+              "sql_hint": "CONCAT(first_name, ' ', last_name)",
+              "highlight_lines": [2],
+              "table": {
+                "columns": ["first_name", "last_name"],
+                "rows": [
+                  ["张", "三"],
+                  ["李", "四"],
+                  ["王", "五"]
+                ]
+              },
+              "new_column": {
+                "name": "full_name",
+                "values": ["张 三", "李 四", "王 五"]
+              },
+              "insert_index": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "substring",
+        "name": "SUBSTR",
+        "category_id": "string",
+        "signature": "SUBSTR(str, pos [, len]) | SUBSTRING(str, pos [, len])",
+        "description": "从字符串中提取子串。位置从 1 开始计数。Impala 同时支持 SUBSTR 和 SUBSTRING。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "pos", "type": "int", "required": true, "desc": "开始位置（从 1 开始，负数从末尾倒数）" },
+          { "name": "len", "type": "int", "required": false, "desc": "提取长度，省略则取到末尾" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 从第 3 位开始取 2 个字符\nSELECT SUBSTR('abcdef', 3, 2) AS result;\n-- 结果: cd",
+        "example_description": "演示 SUBSTR 从指定位置截取子串。",
+        "animation": {
+          "type": "string_substring",
+          "steps": [
+            {
+              "title": "源字符串",
+              "operation": "show_source",
+              "table": {
+                "columns": ["str", "pos", "len"],
+                "rows": [["abcdef", "3", "2"]]
+              }
+            },
+            {
+              "title": "SUBSTR('abcdef', 3, 2) → 'cd'",
+              "operation": "transform_values",
+              "sql_hint": "SELECT SUBSTR('abcdef', 3, 2)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["str", "pos", "len"],
+                "rows": [["abcdef", "3", "2"]]
+              },
+              "transform_fn": "SUBSTR",
+              "transform_description": "从第3位截取2个字符",
+              "target_column": 0,
+              "before_values": ["abcdef"],
+              "after_values": ["cd"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "length",
+        "name": "LENGTH",
+        "category_id": "string",
+        "signature": "LENGTH(str)",
+        "description": "返回字符串的字节长度。对 ASCII 字符等同于字符数；多字节字符（如中文 UTF-8）会返回多个字节。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" }
+        ],
+        "return_type": "INT",
+        "note": "如需字符数（而非字节数）请用 CHAR_LENGTH。",
+        "example_code": "-- 计算每个名字的长度\nSELECT name, LENGTH(name) AS name_len FROM users;",
+        "example_description": "计算 name 列每个值的字节长度。",
+        "animation": {
+          "type": "string_length",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["name"],
+                "rows": [["Alice"], ["Bob"], ["Catherine"]]
+              }
+            },
+            {
+              "title": "LENGTH 计算字节长度",
+              "operation": "transform_values",
+              "sql_hint": "SELECT LENGTH(name) FROM users",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name"],
+                "rows": [["Alice"], ["Bob"], ["Catherine"]]
+              },
+              "transform_fn": "LENGTH",
+              "transform_description": "计算字节数",
+              "target_column": 0,
+              "before_values": ["Alice", "Bob", "Catherine"],
+              "after_values": ["5", "3", "9"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "trim",
+        "name": "TRIM",
+        "category_id": "string",
+        "signature": "TRIM(str)",
+        "description": "去除字符串两端的空格。Impala 也提供 LTRIM、RTRIM 仅去左/右端。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 清除用户输入两端空格\nSELECT TRIM(input) AS clean FROM raw_input;",
+        "example_description": "将带空格的字符串两端空格清除。",
+        "animation": {
+          "type": "string_trim",
+          "steps": [
+            {
+              "title": "源数据（含空格）",
+              "operation": "show_source",
+              "table": {
+                "columns": ["raw"],
+                "rows": [["  Alice  "], ["  Bob"], ["Cathy  "]]
+              }
+            },
+            {
+              "title": "TRIM 清除两端空格",
+              "operation": "transform_values",
+              "sql_hint": "SELECT TRIM(raw) FROM t",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["raw"],
+                "rows": [["  Alice  "], ["  Bob"], ["Cathy  "]]
+              },
+              "transform_fn": "TRIM",
+              "transform_description": "去除两端空格",
+              "target_column": 0,
+              "before_values": ["  Alice  ", "  Bob", "Cathy  "],
+              "after_values": ["Alice", "Bob", "Cathy"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "replace",
+        "name": "REPLACE",
+        "category_id": "string",
+        "signature": "REPLACE(str, from_str, to_str)",
+        "description": "将字符串中所有出现的指定子串替换为新的子串。区分大小写。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "from_str", "type": "string", "required": true, "desc": "要被替换的子串" },
+          { "name": "to_str", "type": "string", "required": true, "desc": "替换后的新子串" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 替换产品类别编码\nSELECT REPLACE(category_code, 'OLD_', 'NEW_') AS new_code FROM products;",
+        "example_description": "将字符串中的 'OLD_' 替换为 'NEW_'。",
+        "animation": {
+          "type": "string_replace",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["product", "category_code"],
+                "rows": [
+                  ["商品A", "OLD_ELEC"],
+                  ["商品B", "OLD_CLOTH"],
+                  ["商品C", "NEW_FOOD"]
+                ]
+              }
+            },
+            {
+              "title": "REPLACE 'OLD_' → 'NEW_'",
+              "operation": "transform_values",
+              "sql_hint": "REPLACE(category_code, 'OLD_', 'NEW_')",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["product", "category_code"],
+                "rows": [
+                  ["商品A", "OLD_ELEC"],
+                  ["商品B", "OLD_CLOTH"],
+                  ["商品C", "NEW_FOOD"]
+                ]
+              },
+              "transform_fn": "REPLACE",
+              "transform_description": "OLD_ → NEW_",
+              "target_column": 1,
+              "before_values": ["OLD_ELEC", "OLD_CLOTH", "NEW_FOOD"],
+              "after_values": ["NEW_ELEC", "NEW_CLOTH", "NEW_FOOD"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "regexp_extract",
+        "name": "REGEXP_EXTRACT",
+        "category_id": "string",
+        "signature": "REGEXP_EXTRACT(subject, pattern [, idx])",
+        "description": "使用正则表达式从字符串中提取匹配的子串。idx 指定返回第几个括号组（1-based），默认 0 返回整个匹配。",
+        "params": [
+          { "name": "subject", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "pattern", "type": "string", "required": true, "desc": "正则表达式" },
+          { "name": "idx", "type": "int", "required": false, "desc": "要返回的分组索引", "default_value": "0" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 提取邮箱中的域名\nSELECT REGEXP_EXTRACT(email, '@(.+)$', 1) AS domain FROM users;",
+        "example_description": "从邮箱地址中提取 @ 符号后的域名部分。",
+        "animation": {
+          "type": "string_regexp_extract",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["email"],
+                "rows": [
+                  ["alice@example.com"],
+                  ["bob@gmail.com"],
+                  ["cathy@yahoo.com"]
+                ]
+              }
+            },
+            {
+              "title": "REGEXP_EXTRACT 提取域名",
+              "operation": "transform_values",
+              "sql_hint": "REGEXP_EXTRACT(email, '@(.+)$', 1)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["email"],
+                "rows": [
+                  ["alice@example.com"],
+                  ["bob@gmail.com"],
+                  ["cathy@yahoo.com"]
+                ]
+              },
+              "transform_fn": "REGEXP_EXTRACT",
+              "transform_description": "用正则提取 @ 后的域名",
+              "target_column": 0,
+              "before_values": ["alice@example.com", "bob@gmail.com", "cathy@yahoo.com"],
+              "after_values": ["example.com", "gmail.com", "yahoo.com"]
+            },
+            {
+              "title": "最终结果",
+              "operation": "show_result",
+              "table": {
+                "columns": ["domain"],
+                "rows": [["example.com"], ["gmail.com"], ["yahoo.com"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "regexp_replace",
+        "name": "REGEXP_REPLACE",
+        "category_id": "string",
+        "signature": "REGEXP_REPLACE(initial_str, pattern, replacement)",
+        "description": "使用正则表达式替换字符串中所有匹配的子串。",
+        "params": [
+          { "name": "initial_str", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "pattern", "type": "string", "required": true, "desc": "正则表达式" },
+          { "name": "replacement", "type": "string", "required": true, "desc": "替换内容" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 把所有数字替换为 #\nSELECT REGEXP_REPLACE(phone, '[0-9]', '#') AS masked FROM users;",
+        "example_description": "把电话号码中的数字字符替换为 #。",
+        "animation": {
+          "type": "string_regexp_replace",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["phone"],
+                "rows": [["13800138001"], ["13900139002"]]
+              }
+            },
+            {
+              "title": "REGEXP_REPLACE 数字 → #",
+              "operation": "transform_values",
+              "sql_hint": "REGEXP_REPLACE(phone, '[0-9]', '#')",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["phone"],
+                "rows": [["13800138001"], ["13900139002"]]
+              },
+              "transform_fn": "REGEXP_REPLACE",
+              "transform_description": "把数字替换为 #",
+              "target_column": 0,
+              "before_values": ["13800138001", "13900139002"],
+              "after_values": ["###########", "###########"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "regexp_like",
+        "name": "REGEXP_LIKE",
+        "category_id": "string",
+        "signature": "REGEXP_LIKE(source, pattern)",
+        "description": "判断字符串是否匹配正则表达式，返回布尔值。常用于 WHERE 子句中筛选行。",
+        "params": [
+          { "name": "source", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "pattern", "type": "string", "required": true, "desc": "正则表达式" }
+        ],
+        "return_type": "BOOLEAN",
+        "example_code": "-- 筛选邮箱以 .com 结尾的用户\nSELECT * FROM users WHERE REGEXP_LIKE(email, '\\.com$');",
+        "example_description": "筛选邮箱后缀为 .com 的用户。",
+        "animation": {
+          "type": "string_regexp_like",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["name", "email"],
+                "rows": [
+                  ["Alice", "alice@example.com"],
+                  ["Bob", "bob@example.org"],
+                  ["Cathy", "cathy@gmail.com"]
+                ]
+              }
+            },
+            {
+              "title": "REGEXP_LIKE 在 WHERE 中过滤",
+              "operation": "filter_rows",
+              "sql_hint": "WHERE REGEXP_LIKE(email, '\\.com$')",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "email"],
+                "rows": [
+                  ["Alice", "alice@example.com"],
+                  ["Bob", "bob@example.org"],
+                  ["Cathy", "cathy@gmail.com"]
+                ]
+              },
+              "kept_indices": [0, 2],
+              "removed_indices": [1],
+              "condition_description": "邮箱后缀为 .com"
+            }
+          ]
+        }
+      },
+      {
+        "id": "instr",
+        "name": "INSTR",
+        "category_id": "string",
+        "signature": "INSTR(str, substr)",
+        "description": "返回 substr 在 str 中第一次出现的位置（从 1 开始）。如未找到则返回 0。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "substr", "type": "string", "required": true, "desc": "要查找的子串" }
+        ],
+        "return_type": "INT",
+        "example_code": "-- 查找 @ 在邮箱中的位置\nSELECT email, INSTR(email, '@') AS at_pos FROM users;",
+        "example_description": "返回邮箱中 @ 字符首次出现的位置。",
+        "animation": {
+          "type": "string_instr",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["email"],
+                "rows": [["alice@example.com"], ["bob@gmail.com"]]
+              }
+            },
+            {
+              "title": "INSTR(email, '@') 求 @ 的位置",
+              "operation": "transform_values",
+              "sql_hint": "INSTR(email, '@')",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["email"],
+                "rows": [["alice@example.com"], ["bob@gmail.com"]]
+              },
+              "transform_fn": "INSTR",
+              "transform_description": "@ 出现的位置",
+              "target_column": 0,
+              "before_values": ["alice@example.com", "bob@gmail.com"],
+              "after_values": ["6", "4"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "split_part",
+        "name": "SPLIT_PART",
+        "category_id": "string",
+        "signature": "SPLIT_PART(str, delimiter, n)",
+        "description": "按分隔符切分字符串，返回第 n 段（从 1 开始）。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "delimiter", "type": "string", "required": true, "desc": "分隔符" },
+          { "name": "n", "type": "int", "required": true, "desc": "段索引（从 1 开始）" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 取邮箱用户名部分\nSELECT SPLIT_PART(email, '@', 1) AS user FROM users;",
+        "example_description": "按 @ 切分邮箱，取第 1 段（用户名）。",
+        "animation": {
+          "type": "string_split_part",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["email"],
+                "rows": [["alice@example.com"], ["bob@gmail.com"]]
+              }
+            },
+            {
+              "title": "SPLIT_PART(email, '@', 1) 取第1段",
+              "operation": "transform_values",
+              "sql_hint": "SPLIT_PART(email, '@', 1)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["email"],
+                "rows": [["alice@example.com"], ["bob@gmail.com"]]
+              },
+              "transform_fn": "SPLIT_PART",
+              "transform_description": "按 @ 切分取第1段",
+              "target_column": 0,
+              "before_values": ["alice@example.com", "bob@gmail.com"],
+              "after_values": ["alice", "bob"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "current_date",
+        "name": "CURRENT_DATE",
+        "category_id": "datetime",
+        "signature": "CURRENT_DATE() | NOW()",
+        "description": "返回当前日期。Impala 使用 NOW() 返回当前时间戳，CURRENT_DATE() 仅返回日期部分。",
+        "params": [],
+        "return_type": "DATE / TIMESTAMP",
+        "example_code": "-- 取今天日期\nSELECT CURRENT_DATE() AS today;\n\n-- 用作过滤\nSELECT * FROM orders WHERE order_date = CURRENT_DATE();",
+        "example_description": "返回今天的日期。",
+        "animation": {
+          "type": "datetime_current",
+          "steps": [
+            {
+              "title": "调用 CURRENT_DATE()",
+              "operation": "transform_values",
+              "sql_hint": "SELECT CURRENT_DATE()",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["expr"],
+                "rows": [["CURRENT_DATE()"]]
+              },
+              "transform_fn": "CURRENT_DATE",
+              "transform_description": "求值为今天日期",
+              "target_column": 0,
+              "before_values": ["CURRENT_DATE()"],
+              "after_values": ["2026-06-18"]
+            },
+            {
+              "title": "结果",
+              "operation": "show_result",
+              "table": {
+                "columns": ["today"],
+                "rows": [["2026-06-18"]]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "datediff",
+        "name": "DATEDIFF",
+        "category_id": "datetime",
+        "signature": "DATEDIFF(end_date, start_date)",
+        "description": "返回两个日期之间的天数差，结果 = end_date - start_date。",
+        "params": [
+          { "name": "end_date", "type": "date", "required": true, "desc": "结束日期" },
+          { "name": "start_date", "type": "date", "required": true, "desc": "开始日期" }
+        ],
+        "return_type": "INT",
+        "example_code": "-- 计算订单送货所需天数\nSELECT DATEDIFF(delivery_date, order_date) AS days FROM orders;",
+        "example_description": "计算两个日期之间的间隔天数。",
+        "animation": {
+          "type": "datetime_datediff",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_id", "order_date", "delivery_date"],
+                "rows": [
+                  ["1", "2024-01-01", "2024-01-05"],
+                  ["2", "2024-06-10", "2024-06-15"]
+                ]
+              }
+            },
+            {
+              "title": "DATEDIFF 计算天数差",
+              "operation": "add_column",
+              "sql_hint": "DATEDIFF(delivery_date, order_date)",
+              "highlight_lines": [2],
+              "table": {
+                "columns": ["order_id", "order_date", "delivery_date"],
+                "rows": [
+                  ["1", "2024-01-01", "2024-01-05"],
+                  ["2", "2024-06-10", "2024-06-15"]
+                ]
+              },
+              "new_column": {
+                "name": "days",
+                "values": ["4", "5"]
+              },
+              "insert_index": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "year",
+        "name": "YEAR",
+        "category_id": "datetime",
+        "signature": "YEAR(date)",
+        "description": "返回日期/时间戳中的年份部分。",
+        "params": [
+          { "name": "date", "type": "date", "required": true, "desc": "日期或时间戳" }
+        ],
+        "return_type": "INT",
+        "example_code": "-- 提取订单年份\nSELECT YEAR(order_date) AS y FROM orders;",
+        "example_description": "提取每行 order_date 中的年份。",
+        "animation": {
+          "type": "datetime_year",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-05"], ["2023-06-15"], ["2025-12-25"]]
+              }
+            },
+            {
+              "title": "YEAR 提取年份",
+              "operation": "transform_values",
+              "sql_hint": "SELECT YEAR(order_date)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-05"], ["2023-06-15"], ["2025-12-25"]]
+              },
+              "transform_fn": "YEAR",
+              "transform_description": "提取年份",
+              "target_column": 0,
+              "before_values": ["2024-01-05", "2023-06-15", "2025-12-25"],
+              "after_values": ["2024", "2023", "2025"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "month",
+        "name": "MONTH",
+        "category_id": "datetime",
+        "signature": "MONTH(date)",
+        "description": "返回日期/时间戳中的月份部分（1~12）。",
+        "params": [
+          { "name": "date", "type": "date", "required": true, "desc": "日期或时间戳" }
+        ],
+        "return_type": "INT",
+        "example_code": "-- 提取订单月份\nSELECT MONTH(order_date) AS m FROM orders;",
+        "example_description": "提取每行 order_date 中的月份。",
+        "animation": {
+          "type": "datetime_month",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-05"], ["2024-06-15"], ["2024-12-25"]]
+              }
+            },
+            {
+              "title": "MONTH 提取月份",
+              "operation": "transform_values",
+              "sql_hint": "SELECT MONTH(order_date)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-05"], ["2024-06-15"], ["2024-12-25"]]
+              },
+              "transform_fn": "MONTH",
+              "transform_description": "提取月份",
+              "target_column": 0,
+              "before_values": ["2024-01-05", "2024-06-15", "2024-12-25"],
+              "after_values": ["1", "6", "12"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "day",
+        "name": "DAY",
+        "category_id": "datetime",
+        "signature": "DAY(date) | DAYOFMONTH(date)",
+        "description": "返回日期/时间戳中的日（1~31）。",
+        "params": [
+          { "name": "date", "type": "date", "required": true, "desc": "日期或时间戳" }
+        ],
+        "return_type": "INT",
+        "example_code": "-- 提取订单日\nSELECT DAY(order_date) AS d FROM orders;",
+        "example_description": "提取每行 order_date 中的日。",
+        "animation": {
+          "type": "datetime_day",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-05"], ["2024-06-15"], ["2024-12-25"]]
+              }
+            },
+            {
+              "title": "DAY 提取日",
+              "operation": "transform_values",
+              "sql_hint": "SELECT DAY(order_date)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-05"], ["2024-06-15"], ["2024-12-25"]]
+              },
+              "transform_fn": "DAY",
+              "transform_description": "提取日",
+              "target_column": 0,
+              "before_values": ["2024-01-05", "2024-06-15", "2024-12-25"],
+              "after_values": ["5", "15", "25"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "dayofweek",
+        "name": "DAYOFWEEK",
+        "category_id": "datetime",
+        "signature": "DAYOFWEEK(date)",
+        "description": "返回日期对应的星期数。Impala 中：1=周日、2=周一、…、7=周六。",
+        "params": [
+          { "name": "date", "type": "date", "required": true, "desc": "日期或时间戳" }
+        ],
+        "return_type": "INT",
+        "note": "Impala 的 DAYOFWEEK 与 ISO 标准不同（ISO 中周一=1）。",
+        "example_code": "-- 取每个订单日是星期几\nSELECT DAYOFWEEK(order_date) AS dow FROM orders;",
+        "example_description": "提取每行日期对应的星期数。",
+        "animation": {
+          "type": "datetime_dow",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-01"], ["2024-01-02"], ["2024-01-07"]]
+              }
+            },
+            {
+              "title": "DAYOFWEEK 提取（1=周日）",
+              "operation": "transform_values",
+              "sql_hint": "DAYOFWEEK(order_date)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-01"], ["2024-01-02"], ["2024-01-07"]]
+              },
+              "transform_fn": "DAYOFWEEK",
+              "transform_description": "求星期数",
+              "target_column": 0,
+              "before_values": ["2024-01-01", "2024-01-02", "2024-01-07"],
+              "after_values": ["2", "3", "1"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "last_day",
+        "name": "LAST_DAY",
+        "category_id": "datetime",
+        "signature": "LAST_DAY(date)",
+        "description": "返回指定日期所在月的最后一天。",
+        "params": [
+          { "name": "date", "type": "date", "required": true, "desc": "日期或时间戳" }
+        ],
+        "return_type": "TIMESTAMP",
+        "example_code": "-- 取月末日期\nSELECT LAST_DAY(order_date) AS month_end FROM orders;",
+        "example_description": "返回每行所在月的最后一天。",
+        "animation": {
+          "type": "datetime_last_day",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-15"], ["2024-02-10"], ["2024-12-05"]]
+              }
+            },
+            {
+              "title": "LAST_DAY 求月末",
+              "operation": "transform_values",
+              "sql_hint": "LAST_DAY(order_date)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-15"], ["2024-02-10"], ["2024-12-05"]]
+              },
+              "transform_fn": "LAST_DAY",
+              "transform_description": "返回所在月最后一天",
+              "target_column": 0,
+              "before_values": ["2024-01-15", "2024-02-10", "2024-12-05"],
+              "after_values": ["2024-01-31", "2024-02-29", "2024-12-31"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "months_between",
+        "name": "MONTHS_BETWEEN",
+        "category_id": "datetime",
+        "signature": "MONTHS_BETWEEN(end_date, start_date)",
+        "description": "返回两个日期相差的月数（小数表示日内差异）。",
+        "params": [
+          { "name": "end_date", "type": "date", "required": true, "desc": "结束日期" },
+          { "name": "start_date", "type": "date", "required": true, "desc": "开始日期" }
+        ],
+        "return_type": "DOUBLE",
+        "example_code": "-- 计算合同已签订月数\nSELECT MONTHS_BETWEEN(CURRENT_DATE(), sign_date) AS months FROM contracts;",
+        "example_description": "计算两个日期间隔的月数。",
+        "animation": {
+          "type": "datetime_months_between",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["start_date", "end_date"],
+                "rows": [
+                  ["2024-01-01", "2024-04-01"],
+                  ["2024-02-15", "2024-08-15"]
+                ]
+              }
+            },
+            {
+              "title": "MONTHS_BETWEEN 计算月差",
+              "operation": "add_column",
+              "sql_hint": "MONTHS_BETWEEN(end_date, start_date)",
+              "highlight_lines": [2],
+              "table": {
+                "columns": ["start_date", "end_date"],
+                "rows": [
+                  ["2024-01-01", "2024-04-01"],
+                  ["2024-02-15", "2024-08-15"]
+                ]
+              },
+              "new_column": {
+                "name": "months",
+                "values": ["3", "6"]
+              },
+              "insert_index": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "trunc",
+        "name": "TRUNC",
+        "category_id": "datetime",
+        "signature": "TRUNC(date, unit)",
+        "description": "将日期截断到指定单位（如月初、年初）。常用单位：'YEAR'/'YYYY'、'MONTH'/'MM'、'DAY'/'DD'。",
+        "params": [
+          { "name": "date", "type": "date", "required": true, "desc": "日期或时间戳" },
+          { "name": "unit", "type": "string", "required": true, "desc": "截断单位，如 'MM'、'YYYY'" }
+        ],
+        "return_type": "TIMESTAMP",
+        "example_code": "-- 截断到月初\nSELECT TRUNC(order_date, 'MM') AS month_start FROM orders;",
+        "example_description": "把日期截断到月份的第一天。",
+        "animation": {
+          "type": "datetime_trunc",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-15"], ["2024-06-22"], ["2024-12-09"]]
+              }
+            },
+            {
+              "title": "TRUNC 到月初",
+              "operation": "transform_values",
+              "sql_hint": "TRUNC(order_date, 'MM')",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["order_date"],
+                "rows": [["2024-01-15"], ["2024-06-22"], ["2024-12-09"]]
+              },
+              "transform_fn": "TRUNC",
+              "transform_description": "截断到月初",
+              "target_column": 0,
+              "before_values": ["2024-01-15", "2024-06-22", "2024-12-09"],
+              "after_values": ["2024-01-01", "2024-06-01", "2024-12-01"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "round",
+        "name": "ROUND",
+        "category_id": "math",
+        "signature": "ROUND(num [, decimals])",
+        "description": "将数值四舍五入到指定的小数位数。省略 decimals 则取整。",
+        "params": [
+          { "name": "num", "type": "numeric", "required": true, "desc": "要四舍五入的数值" },
+          { "name": "decimals", "type": "int", "required": false, "desc": "保留的小数位数，默认 0", "default_value": "0" }
+        ],
+        "return_type": "DOUBLE",
+        "example_code": "-- 取整\nSELECT ROUND(12.7) AS r;\n\n-- 保留两位小数\nSELECT ROUND(3.14159, 2) AS r;",
+        "example_description": "将分数列四舍五入到整数。",
+        "animation": {
+          "type": "math_round",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["student", "score"],
+                "rows": [
+                  ["Alice", "88.75"],
+                  ["Bob", "92.3"],
+                  ["Cathy", "77.5"]
+                ]
+              }
+            },
+            {
+              "title": "ROUND 四舍五入到整数",
+              "operation": "transform_values",
+              "sql_hint": "SELECT ROUND(score)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["score"],
+                "rows": [["88.75"], ["92.3"], ["77.5"]]
+              },
+              "transform_fn": "ROUND",
+              "transform_description": "四舍五入到整数",
+              "target_column": 0,
+              "before_values": ["88.75", "92.3", "77.5"],
+              "after_values": ["89", "92", "78"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "floor",
+        "name": "FLOOR",
+        "category_id": "math",
+        "signature": "FLOOR(num)",
+        "description": "返回不大于参数的最大整数（向下取整）。",
+        "params": [
+          { "name": "num", "type": "numeric", "required": true, "desc": "数值" }
+        ],
+        "return_type": "BIGINT",
+        "example_code": "-- 向下取整\nSELECT FLOOR(price) AS f FROM products;",
+        "example_description": "对每行 price 列向下取整。",
+        "animation": {
+          "type": "math_floor",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["price"],
+                "rows": [["12.7"], ["3.14"], ["-1.5"]]
+              }
+            },
+            {
+              "title": "FLOOR 向下取整",
+              "operation": "transform_values",
+              "sql_hint": "SELECT FLOOR(price)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["price"],
+                "rows": [["12.7"], ["3.14"], ["-1.5"]]
+              },
+              "transform_fn": "FLOOR",
+              "transform_description": "向下取整",
+              "target_column": 0,
+              "before_values": ["12.7", "3.14", "-1.5"],
+              "after_values": ["12", "3", "-2"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "abs",
+        "name": "ABS",
+        "category_id": "math",
+        "signature": "ABS(num)",
+        "description": "返回数值的绝对值。",
+        "params": [
+          { "name": "num", "type": "numeric", "required": true, "desc": "数值" }
+        ],
+        "return_type": "与 num 相同",
+        "example_code": "-- 计算余额绝对值\nSELECT ABS(balance) AS a FROM accounts;",
+        "example_description": "对每行 balance 取绝对值。",
+        "animation": {
+          "type": "math_abs",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["balance"],
+                "rows": [["-150"], ["200"], ["-35"]]
+              }
+            },
+            {
+              "title": "ABS 取绝对值",
+              "operation": "transform_values",
+              "sql_hint": "SELECT ABS(balance)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["balance"],
+                "rows": [["-150"], ["200"], ["-35"]]
+              },
+              "transform_fn": "ABS",
+              "transform_description": "取绝对值",
+              "target_column": 0,
+              "before_values": ["-150", "200", "-35"],
+              "after_values": ["150", "200", "35"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "decode",
+        "name": "DECODE",
+        "category_id": "conditional",
+        "signature": "DECODE(expr, val1, res1 [, val2, res2 ...] [, default])",
+        "description": "Oracle 风格条件函数。将 expr 与 val1, val2... 依次比较，相等则返回对应的 res；都不匹配返回 default（可选）。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要比较的表达式" },
+          { "name": "val/res 对", "type": "any", "required": true, "desc": "成对的匹配值与返回结果" },
+          { "name": "default", "type": "any", "required": false, "desc": "都不匹配时的默认值" }
+        ],
+        "return_type": "与 res 类型一致",
+        "note": "DECODE 等价于多分支的 CASE WHEN，但语法更简洁。",
+        "example_code": "-- 把状态码转为中文描述\nSELECT order_id,\n  DECODE(status, 1, '待付款', 2, '已付款', 3, '已发货', '未知')\n  AS status_text\nFROM orders;",
+        "example_description": "把数字状态码翻译为中文描述。",
+        "animation": {
+          "type": "conditional_decode",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["order_id", "status"],
+                "rows": [
+                  ["1", "1"],
+                  ["2", "2"],
+                  ["3", "3"],
+                  ["4", "9"]
+                ]
+              }
+            },
+            {
+              "title": "DECODE 翻译状态码",
+              "operation": "transform_values",
+              "sql_hint": "DECODE(status, 1, '待付款', 2, '已付款', 3, '已发货', '未知')",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["status"],
+                "rows": [["1"], ["2"], ["3"], ["9"]]
+              },
+              "transform_fn": "DECODE",
+              "transform_description": "状态码 → 中文描述",
+              "target_column": 0,
+              "before_values": ["1", "2", "3", "9"],
+              "after_values": ["待付款", "已付款", "已发货", "未知"]
+            },
+            {
+              "title": "最终结果",
+              "operation": "show_result",
+              "table": {
+                "columns": ["order_id", "status_text"],
+                "rows": [
+                  ["1", "待付款"],
+                  ["2", "已付款"],
+                  ["3", "已发货"],
+                  ["4", "未知"]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "nullvalue",
+        "name": "NULLVALUE",
+        "category_id": "conditional",
+        "signature": "NULLVALUE(expr)",
+        "description": "若 expr 为 NULL 返回 true，否则返回 false。等价于 expr IS NULL。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要检测的表达式" }
+        ],
+        "return_type": "BOOLEAN",
+        "example_code": "-- 找出 phone 为 NULL 的用户\nSELECT * FROM users WHERE NULLVALUE(phone);",
+        "example_description": "筛选 phone 为 NULL 的行。",
+        "animation": {
+          "type": "conditional_nullvalue",
+          "steps": [
+            {
+              "title": "源数据",
+              "operation": "show_source",
+              "table": {
+                "columns": ["name", "phone"],
+                "rows": [
+                  ["Alice", "13800138001"],
+                  ["Bob", null],
+                  ["Cathy", "13900139002"]
+                ]
+              }
+            },
+            {
+              "title": "NULLVALUE(phone) 过滤",
+              "operation": "filter_rows",
+              "sql_hint": "WHERE NULLVALUE(phone)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "phone"],
+                "rows": [
+                  ["Alice", "13800138001"],
+                  ["Bob", null],
+                  ["Cathy", "13900139002"]
+                ]
+              },
+              "kept_indices": [1],
+              "removed_indices": [0, 2],
+              "condition_description": "phone IS NULL"
+            }
+          ]
+        }
+      },
+      {
+        "id": "coalesce",
+        "name": "COALESCE",
+        "category_id": "conditional",
+        "signature": "COALESCE(val1, val2, ...)",
+        "description": "返回参数列表中第一个非 NULL 的值。常用于为可能为 NULL 的列提供默认值。",
+        "params": [
+          { "name": "val1", "type": "any", "required": true, "desc": "第一个值" },
+          { "name": "val2", "type": "any", "required": true, "desc": "第二个值" },
+          { "name": "...", "type": "any", "required": false, "desc": "更多备选值" }
+        ],
+        "return_type": "与参数类型一致",
+        "example_code": "-- 为没有电话号码的用户显示'暂无'\nSELECT name, COALESCE(phone, '暂无') AS contact FROM users;",
+        "example_description": "将 phone 列中的 NULL 值替换为'暂无'。",
+        "animation": {
+          "type": "conditional_coalesce",
+          "steps": [
+            {
+              "title": "源数据（phone 列含 NULL）",
+              "operation": "show_source",
+              "table": {
+                "columns": ["name", "phone"],
+                "rows": [
+                  ["Alice", "13800138001"],
+                  ["Bob", null],
+                  ["Cathy", "13900139002"]
+                ]
+              },
+              "highlight_rows": [1]
+            },
+            {
+              "title": "COALESCE(phone, '暂无') 替换 NULL",
+              "operation": "transform_values",
+              "sql_hint": "COALESCE(phone, '暂无')",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["name", "phone"],
+                "rows": [
+                  ["Alice", "13800138001"],
+                  ["Bob", null],
+                  ["Cathy", "13900139002"]
+                ]
+              },
+              "transform_fn": "COALESCE",
+              "transform_description": "NULL → '暂无'",
+              "target_column": 1,
+              "before_values": ["13800138001", null, "13900139002"],
+              "after_values": ["13800138001", "暂无", "13900139002"]
+            },
+            {
+              "title": "最终结果",
+              "operation": "show_result",
+              "table": {
+                "columns": ["name", "contact"],
+                "rows": [
+                  ["Alice", "13800138001"],
+                  ["Bob", "暂无"],
+                  ["Cathy", "13900139002"]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "cast",
+        "name": "CAST",
+        "category_id": "conversion",
+        "signature": "CAST(expr AS type)",
+        "description": "将一种数据类型的值转换为另一种类型。Impala 支持 INT、BIGINT、DOUBLE、STRING、TIMESTAMP、DECIMAL 等。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要转换的值" },
+          { "name": "type", "type": "type_name", "required": true, "desc": "目标类型，如 INT、STRING、TIMESTAMP" }
+        ],
+        "return_type": "指定的 type",
+        "example_code": "-- 字符串转整数\nSELECT CAST('123' AS INT) AS num;\n\n-- 字符串转时间戳\nSELECT CAST('2024-01-15' AS TIMESTAMP) AS dt;",
+        "example_description": "将字符串日期转换为 TIMESTAMP 后即可用于日期函数。",
+        "animation": {
+          "type": "conversion_cast",
+          "steps": [
+            {
+              "title": "源数据（日期存为字符串）",
+              "operation": "show_source",
+              "table": {
+                "columns": ["event_name", "event_date_str"],
+                "rows": [
+                  ["新年", "2024-01-01"],
+                  ["春节", "2024-02-10"],
+                  ["国庆", "2024-10-01"]
+                ]
+              }
+            },
+            {
+              "title": "CAST 转为 TIMESTAMP",
+              "operation": "transform_values",
+              "sql_hint": "CAST(event_date_str AS TIMESTAMP)",
+              "highlight_lines": [2],
+              "source_table": {
+                "columns": ["event_date_str"],
+                "rows": [["2024-01-01"], ["2024-02-10"], ["2024-10-01"]]
+              },
+              "transform_fn": "CAST",
+              "transform_description": "字符串 → TIMESTAMP",
+              "target_column": 0,
+              "before_values": ["2024-01-01", "2024-02-10", "2024-10-01"],
+              "after_values": ["2024-01-01 00:00:00", "2024-02-10 00:00:00", "2024-10-01 00:00:00"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "strright",
+        "name": "STRRIGHT",
+        "category_id": "string",
+        "signature": "STRRIGHT(str, n)",
+        "description": "返回字符串的最右 n 个字符。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "n", "type": "int", "required": true, "desc": "字符数" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 取邮箱后缀\nSELECT STRRIGHT(email, 4) AS suffix FROM users;\n-- 例如 'alice@example.com' → '.com'",
+        "example_description": "返回字符串末尾 n 个字符。"
+      },
+      {
+        "id": "strleft",
+        "name": "STRLEFT",
+        "category_id": "string",
+        "signature": "STRLEFT(str, n)",
+        "description": "返回字符串的最左 n 个字符。",
+        "params": [
+          { "name": "str", "type": "string", "required": true, "desc": "源字符串" },
+          { "name": "n", "type": "int", "required": true, "desc": "字符数" }
+        ],
+        "return_type": "STRING",
+        "example_code": "-- 取手机号前 3 位\nSELECT STRLEFT(phone, 3) AS prefix FROM users;",
+        "example_description": "返回字符串开头 n 个字符。"
+      },
+      {
+        "id": "pmod",
+        "name": "PMOD",
+        "category_id": "math",
+        "signature": "PMOD(a, b)",
+        "description": "返回 a 对 b 的正取模，结果始终为非负数（即使 a 为负）。",
+        "params": [
+          { "name": "a", "type": "numeric", "required": true, "desc": "被除数" },
+          { "name": "b", "type": "numeric", "required": true, "desc": "除数" }
+        ],
+        "return_type": "INT / DOUBLE",
+        "example_code": "-- 哈希分桶\nSELECT PMOD(user_id, 16) AS bucket FROM users;",
+        "example_description": "PMOD 与 % 不同：%(-7, 3) = -1，PMOD(-7, 3) = 2。"
+      },
+      {
+        "id": "fnv_hash",
+        "name": "FNV_HASH",
+        "category_id": "math",
+        "signature": "FNV_HASH(expr)",
+        "description": "返回参数的 64 位 FNV-1a 哈希值。可用于分桶或抽样。",
+        "params": [
+          { "name": "expr", "type": "any", "required": true, "desc": "要哈希的值" }
+        ],
+        "return_type": "BIGINT",
+        "example_code": "-- 抽样 1% 用户\nSELECT * FROM users WHERE PMOD(FNV_HASH(user_id), 100) = 0;",
+        "example_description": "对 user_id 求 FNV 哈希用于分桶/抽样。"
+      },
+      {
+        "id": "version",
+        "name": "VERSION",
+        "category_id": "udf",
+        "signature": "VERSION()",
+        "description": "返回当前 Impala 服务的版本字符串。",
+        "params": [],
+        "return_type": "STRING",
+        "example_code": "SELECT VERSION();\n-- 结果: impalad version 4.4.0 ...",
+        "example_description": "查询 Impala 服务端版本。"
+      }
+    ]
+  }
+}

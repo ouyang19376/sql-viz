@@ -1,0 +1,5 @@
+# 本地密钥与缓存，永不入仓库
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
