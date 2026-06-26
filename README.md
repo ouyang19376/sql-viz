@@ -122,9 +122,12 @@ pnpm dev
 
 ---
 
-## 📚 文档
+## 📚 示例
 
-详细的产品需求、技术方案与设计文档见 [`docs/`](./docs/)，包含 PRD、技术方案（tech-plan）、动画引擎设计、SQL 数据格式规范等。
+<img width="1133" height="823" alt="6083021bb9ef3e8bf29cc005911128fd" src="https://github.com/user-attachments/assets/4fef70da-b2de-4a1c-8cb1-0cee8ea0fe5d" />
+<img width="1134" height="900" alt="cc939dab8cff140dac1b08d94c73990e" src="https://github.com/user-attachments/assets/3364d1e4-fea0-4b09-9210-610f39c9fb78" />
+<img width="1246" height="842" alt="81bd42d9e1c0c1a4d305b6a36823c292" src="https://github.com/user-attachments/assets/a96396f2-d7d3-4e5b-96ef-8703358f203c" />
+<img width="738" height="568" alt="fd0a4b99dbffc79bd518df16acaf78fa" src="https://github.com/user-attachments/assets/42833586-b5f6-4bdc-ae40-916925c470c5" />
 
 ---
 
