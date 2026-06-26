@@ -1,6 +1,8 @@
 fastapi>=0.115,<0.116
 uvicorn[standard]>=0.30
 pydantic>=2.0
+# FastAPI 文件上传 / Form 解析依赖（BI 数据集上传 UploadFile）
+python-multipart>=0.0.9
 
 # LLM 调用（F-BK-DT-03 / F-LM-*）
 openai>=1.30
