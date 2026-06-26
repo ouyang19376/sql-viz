@@ -9,7 +9,7 @@ interface RecentEntry {
 
 interface RecentStore {
   recents: RecentEntry[]
-  /** 记录一次浏览：去重后置顶，保留最近 10 条 */
+  /** 记录一次浏览：去重后置顶，保留最近 MAX_RECENTS 条 */
   add: (functionId: string, dialectId: string) => void
 }
 

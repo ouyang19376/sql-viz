@@ -39,6 +39,8 @@ export class AnimationController {
   speed = 1
   private frameId: number | null = null
   private stepStartTime = 0
+  /** 暂停时已播放的步内时长（ms），用于「从当前进度继续」(PRD §7.6) */
+  private pausedElapsed = 0
   private rafBound: (ts: number) => void
 
   onStepChange?: (stepIndex: number) => void
@@ -63,8 +65,12 @@ export class AnimationController {
     if (this.state === AnimState.FINISHED) {
       this.reset()
     }
+    // 从暂停态继续时保留步内已播进度（PRD §7.6「从当前进度继续」）；
+    // 其余情形（IDLE / 首次播放）从步首开始。
+    const resumeOffset =
+      this.state === AnimState.PAUSED ? this.pausedElapsed : 0
     this.state = AnimState.PLAYING
-    this.stepStartTime = performance.now()
+    this.stepStartTime = performance.now() - resumeOffset
     if (this.frameId == null) {
       this.frameId = requestAnimationFrame(this.rafBound)
     }
@@ -72,6 +78,7 @@ export class AnimationController {
 
   pause(): void {
     if (this.state !== AnimState.PLAYING) return
+    this.pausedElapsed = performance.now() - this.stepStartTime
     this.state = AnimState.PAUSED
     this.cancelFrame()
   }
@@ -79,6 +86,7 @@ export class AnimationController {
   reset(): void {
     this.cancelFrame()
     this.currentStep = 0
+    this.pausedElapsed = 0
     this.state = AnimState.IDLE
     this.engine.clear()
     if (this.steps.length > 0) {
@@ -91,6 +99,7 @@ export class AnimationController {
   goToStep(index: number): void {
     this.cancelFrame()
     this.currentStep = Math.max(0, Math.min(index, this.steps.length - 1))
+    this.pausedElapsed = 0
     this.state = AnimState.PAUSED
     this.engine.clear()
     this.renderCurrentStep(1)

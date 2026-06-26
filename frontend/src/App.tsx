@@ -10,6 +10,8 @@ import FunctionDetailPage from '@/pages/FunctionDetailPage'
 // xlsx 库 ~400KB（gzip ~100KB），路由级懒加载，首屏不拖累（plan §6.4）
 const DataTestPage = lazy(() => import('@/pages/DataTestPage'))
 const LineagePage = lazy(() => import('@/pages/LineagePage'))
+// ECharts 体积大，/bi 路由级懒加载（plan §1.2）
+const BiReportPage = lazy(() => import('@/pages/BiReportPage'))
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Skeleton lines={6} />}>
             <LineagePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'bi',
+        element: (
+          <Suspense fallback={<Skeleton lines={6} />}>
+            <BiReportPage />
           </Suspense>
         ),
       },

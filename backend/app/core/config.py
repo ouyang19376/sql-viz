@@ -13,6 +13,11 @@ load_dotenv(BASE_DIR / ".env")
 # 方言 JSON 数据目录
 DATA_DIR = BASE_DIR / "app" / "data" / "sql"
 
+# ─── BI 报表落盘配置（PRD-bi §5.4） ───────────────────────
+# 数据集落本地磁盘；首次访问自动创建。gitignore 已忽略该目录。
+BI_DATA_DIR = BASE_DIR / "app" / "data" / "bi_datasets"
+BI_MAX_UPLOAD_MB = int(os.environ.get("BI_MAX_UPLOAD_MB", "10"))
+
 # CORS 允许来源：优先读环境变量 CORS_ORIGINS（逗号分隔，用于生产部署），
 # 未设置时回退到开发阶段前端 Vite 默认端口。
 _default_cors_origins = [

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router'
-import { Database, GitBranch, Menu, Sparkles, X } from 'lucide-react'
+import { BarChart3, Database, GitBranch, Menu, Sparkles, X } from 'lucide-react'
 import DialectDropdown from './DialectDropdown'
 import SearchBox from './SearchBox'
 import SearchModal from './SearchModal'
@@ -29,6 +29,13 @@ const MODULES = [
     to: '/lineage',
     icon: GitBranch,
     match: (p: string) => p === '/lineage',
+  },
+  {
+    key: 'bi',
+    label: 'BI 报表',
+    to: '/bi',
+    icon: BarChart3,
+    match: (p: string) => p === '/bi',
   },
 ] as const
 

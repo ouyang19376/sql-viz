@@ -1,4 +1,4 @@
-import { Database, GitBranch, Sparkles } from 'lucide-react'
+import { BarChart3, Database, GitBranch, Sparkles } from 'lucide-react'
 import FeatureCard from './FeatureCard'
 
 /** 首页（F-HM-01 / F-HM-02 / F-HM-03）：功能入口大卡片 */
@@ -8,7 +8,7 @@ export default function HomePage() {
       <h1 className="mb-2 text-2xl font-bold text-gray-900">欢迎使用</h1>
       <p className="mb-8 text-gray-500">选择一个工具开始你的工作</p>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <FeatureCard
           icon={Database}
           title="SQL 函数可视化学习"
@@ -29,6 +29,13 @@ export default function HomePage() {
           description="粘贴或上传 SQL / HQL 脚本，生成表级血缘图谱、依赖清单与治理导出。"
           to="/lineage"
           accent="#0D9488"
+        />
+        <FeatureCard
+          icon={BarChart3}
+          title="BI 报表工具"
+          description="上传 Excel / CSV，自助建模生成大屏图表，支持上下钻、卡片联动与图片 / 数据 / 配置导出。"
+          to="/bi"
+          accent="#EA580C"
         />
       </div>
     </div>
