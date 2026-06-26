@@ -133,4 +133,4 @@ pnpm dev
 
 ## 📄 许可证
 
-[MIT](./LICENSE) © 2026 \<YOUR NAME\>
+[MIT](./LICENSE) © 2026 \ouyang19376
