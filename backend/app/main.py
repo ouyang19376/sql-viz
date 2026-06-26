@@ -43,3 +43,16 @@ app.include_router(search_router)
 app.include_router(datatest_router)
 app.include_router(lineage_router)
 app.include_router(bi_router)
+
+
+if __name__ == "__main__":
+    # 直接以 `python -m app.main` 启动时，从环境变量 PORT 自取端口（默认 10000，
+    # 对齐 Render 默认）。避免依赖启动命令里 `--port $PORT` 的 shell 展开——
+    # 当 $PORT 未展开/为空时 uvicorn 会因 "--port requires an argument" 退出。
+    import os
+
+    import uvicorn
+
+    port = int(os.environ.get("PORT", "10000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
