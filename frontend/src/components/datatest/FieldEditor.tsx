@@ -33,8 +33,8 @@ export default function FieldEditor({ fields, onChange, disabled }: Props) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px]">
-          <thead className="bg-gray-50 text-xs font-medium uppercase text-gray-500 dark:bg-gray-800/50 dark:text-gray-400">
+        <table className="block w-full md:table md:min-w-[640px]">
+          <thead className="hidden bg-gray-50 text-xs font-medium uppercase text-gray-500 dark:bg-gray-800/50 dark:text-gray-400 md:table-header-group">
             <tr>
               <th className="p-2 text-left">字段名 *</th>
               <th className="p-2 text-left">类型</th>
@@ -43,7 +43,7 @@ export default function FieldEditor({ fields, onChange, disabled }: Props) {
               <th className="p-2 text-right" aria-label="操作" />
             </tr>
           </thead>
-          <tbody>
+          <tbody className="block md:table-row-group">
             {fields.length === 0 ? (
               <tr>
                 <td colSpan={5} className="p-6 text-center text-sm text-gray-400">

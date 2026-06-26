@@ -68,13 +68,13 @@ export class CanvasEngine {
     this.applyTransform()
   }
 
-  /** 设置 ctx 变换以适配 dpr，绘制使用逻辑像素坐标 */
+  /** 设置 ctx 变换以适配 dpr，绘制使用逻辑像素坐标。
+   *  注意：不写 canvas.style.width/height —— canvas 由 CSS 的 w-full h-full 跟随容器，
+   *  否则 inline px 会反向撑大祖先（grid item min-width:auto）→ ResizeObserver 反馈循环（画布不断变大）。 */
   applyTransform(): void {
     const { dpr } = this.config
     this.canvas.width = Math.round(this.config.width * dpr)
     this.canvas.height = Math.round(this.config.height * dpr)
-    this.canvas.style.width = `${this.config.width}px`
-    this.canvas.style.height = `${this.config.height}px`
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
   }
 

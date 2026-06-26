@@ -137,12 +137,19 @@ export default function DependencyTable({ result }: Props) {
         </div>
       ) : (
         <div className="max-h-[520px] overflow-auto rounded-xl border border-gray-200 dark:border-gray-800">
-          <table className="min-w-[980px] w-full text-left text-sm">
+          <table className="w-full text-left text-sm md:min-w-[980px]">
             <thead className="sticky top-0 z-10 bg-gray-50 text-xs font-medium text-gray-500 dark:bg-gray-900 dark:text-gray-400">
               <tr>
-                {['序号', '目标表', '目标类型', '源表', '源类型', '依赖类型', '语句', '行号', '说明', '置信度'].map((header) => (
-                  <th key={header} className="px-3 py-2">{header}</th>
-                ))}
+                <th className="px-3 py-2">序号</th>
+                <th className="px-3 py-2">目标表</th>
+                <th className="hidden px-3 py-2 md:table-cell">目标类型</th>
+                <th className="px-3 py-2">源表</th>
+                <th className="hidden px-3 py-2 md:table-cell">源类型</th>
+                <th className="px-3 py-2">依赖类型</th>
+                <th className="px-3 py-2">语句</th>
+                <th className="hidden px-3 py-2 md:table-cell">行号</th>
+                <th className="hidden px-3 py-2 md:table-cell">说明</th>
+                <th className="hidden px-3 py-2 md:table-cell">置信度</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -150,14 +157,14 @@ export default function DependencyTable({ result }: Props) {
                 <tr key={row.index} className="text-gray-700 dark:text-gray-200">
                   <td className="px-3 py-2 text-gray-400">{row.index}</td>
                   <td className="px-3 py-2 font-medium text-gray-900 dark:text-gray-100">{row.targetTable}</td>
-                  <td className="px-3 py-2">{row.targetType}</td>
+                  <td className="hidden px-3 py-2 md:table-cell">{row.targetType}</td>
                   <td className="px-3 py-2 font-medium text-gray-900 dark:text-gray-100">{row.sourceTable}</td>
-                  <td className="px-3 py-2">{row.sourceType}</td>
+                  <td className="hidden px-3 py-2 md:table-cell">{row.sourceType}</td>
                   <td className="px-3 py-2">{row.dependencyKind}</td>
                   <td className="px-3 py-2">{row.statementIndex ?? '--'}</td>
-                  <td className="px-3 py-2">{row.lineRange}</td>
-                  <td className="px-3 py-2">{row.description ?? '--'}</td>
-                  <td className="px-3 py-2">{typeof row.confidence === 'number' ? row.confidence.toFixed(2) : '--'}</td>
+                  <td className="hidden px-3 py-2 md:table-cell">{row.lineRange}</td>
+                  <td className="hidden px-3 py-2 md:table-cell">{row.description ?? '--'}</td>
+                  <td className="hidden px-3 py-2 md:table-cell">{typeof row.confidence === 'number' ? row.confidence.toFixed(2) : '--'}</td>
                 </tr>
               ))}
             </tbody>

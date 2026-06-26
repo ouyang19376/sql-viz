@@ -151,8 +151,8 @@ export default function DialectPage() {
         </section>
       )}
 
-      {/* 主体：左侧分类导航 + 右侧函数列表 */}
-      <div className="mt-6 flex gap-8">
+      {/* 主体：左侧分类导航 + 右侧函数列表（移动端纵向堆叠） */}
+      <div className="mt-6 flex flex-col gap-4 md:flex-row md:gap-8">
         <CategorySidebar categories={categories} counts={counts} />
         <div className="min-w-0 flex-1">
           {functions.length === 0 ? (

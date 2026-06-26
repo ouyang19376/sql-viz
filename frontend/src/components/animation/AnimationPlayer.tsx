@@ -6,11 +6,9 @@ import {
   useAnimationController,
   usePlayerActions,
 } from '@/hooks/useAnimationController'
-import { getResultTable } from '@/engine/renderers'
 import CanvasStage from './CanvasStage'
 import StepIndicator from './StepIndicator'
 import PlaybackControls from './PlaybackControls'
-import TableView from '@/components/shared/TableView'
 import EmptyState from '@/components/shared/EmptyState'
 
 interface Props {
@@ -32,9 +30,9 @@ export interface AnimationPlayerHandle {
 }
 
 /**
- * 动画播放器容器（F-AN-01 ~ F-AN-04, F-AN-15）：
+ * 动画播放器容器（F-AN-01 ~ F-AN-04）：
  * 组合 StepIndicator + CanvasStage + PlaybackControls；
- * XS 断点（<576px）降级为静态 TableView。
+ * 移动端同样使用 Canvas 播放（不再降级为静态表）。
  */
 export default forwardRef<AnimationPlayerHandle, Props>(function AnimationPlayer(
   {
@@ -122,12 +120,6 @@ export default forwardRef<AnimationPlayerHandle, Props>(function AnimationPlayer
     )
   }
 
-  // 当前步骤降级表
-  const currentStepData = steps[handle.currentStep]
-  const degradeTable = currentStepData
-    ? getResultTable(currentStepData)
-    : null
-
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
       <StepIndicator
@@ -137,14 +129,9 @@ export default forwardRef<AnimationPlayerHandle, Props>(function AnimationPlayer
         onStepClick={onGoToStep}
       />
 
-      {/* Canvas（sm+ 显示） */}
-      <div ref={containerRef} className="hidden h-[320px] sm:block">
+      {/* Canvas：移动端同样显示，使其尺寸非零 → engine 初始化 → 可播放 */}
+      <div ref={containerRef} className="h-[320px]">
         <CanvasStage ref={canvasRef} className="h-full border border-gray-200 bg-white dark:border-gray-800" />
-      </div>
-
-      {/* 响应式降级（XS 显示静态表格，F-AN-15） */}
-      <div className="sm:hidden">
-        <TableView table={degradeTable} />
       </div>
 
       <PlaybackControls

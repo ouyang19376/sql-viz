@@ -34,9 +34,9 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
   }
 
   return (
-    <tr className="border-b border-gray-100 last:border-b-0 dark:border-gray-800">
+    <tr className="block border-b border-gray-100 last:border-b-0 dark:border-gray-800 md:table-row">
       {/* 字段名 */}
-      <td className="p-2">
+      <td className="block p-2 md:table-cell">
         <input
           type="text"
           value={field.name}
@@ -55,7 +55,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
       </td>
 
       {/* 类型 */}
-      <td className="p-2">
+      <td className="block p-2 md:table-cell">
         <select
           value={field.type}
           onChange={(e) => {
@@ -79,7 +79,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
       </td>
 
       {/* 描述 */}
-      <td className="p-2">
+      <td className="block p-2 md:table-cell">
         <input
           type="text"
           value={field.description ?? ''}
@@ -96,7 +96,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
       </td>
 
       {/* 枚举值 */}
-      <td className="p-2">
+      <td className="block p-2 md:table-cell">
         <input
           type="text"
           value={enumEditValue}
@@ -115,7 +115,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
       </td>
 
       {/* 删除 */}
-      <td className="p-2 text-right">
+      <td className="block p-2 text-right md:table-cell">
         <button
           type="button"
           onClick={onRemove}
