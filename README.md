@@ -1,6 +1,6 @@
-# SQL Viz — SQL 可视化学习 · 测试数据生成 · 血缘分析平台
+# SQL Viz — SQL 可视化学习 · 测试数据生成 · 血缘分析 · BI 报表平台
 
-> 一个面向 SQL 学习者与数据开发者的多功能工具平台：用 Canvas 动画「看见」SQL 函数的执行过程，用 LLM 一键生成测试数据集，并对 SQL/HQL 脚本做表级血缘分析。
+> 一个面向 SQL 学习者与数据开发者的多功能工具平台：用 Canvas 动画「看见」SQL 函数的执行过程，用 LLM 一键生成测试数据集，对 SQL/HQL 脚本做表级血缘分析，并上传 Excel/CSV 自助生成可视化大屏报表。
 
 前后端分离架构：**React 19 + Vite 7 + TypeScript**（前端）/ **FastAPI + Python**（后端）。
 
@@ -13,6 +13,7 @@
 | **SQL 函数可视化学习** | 覆盖 MySQL / PostgreSQL / Hive / Impala / SparkSQL / FlinkSQL / Cypher 7 种方言；按分类浏览函数，查看签名/参数/示例，并通过 Canvas 动画逐步骤演示 `WHERE` / `JOIN` / `GROUP BY` 等数据变换；支持 SQL 代码与动画联动高亮、全局搜索、收藏与最近查看。 |
 | **测试数据集工具** | 用自然语言描述或自定义字段两种模式，调用 LLM 生成结构化测试数据，支持 xlsx / json / csv 一键导出；可上传 xlsx/csv 解析表头快速建表。 |
 | **SQL 血缘分析** | 粘贴或上传 SQL/HQL 脚本，解析表级依赖，生成血缘图谱、依赖清单，并支持导出 Cypher / Excel / JSON、推送 Neo4j。 |
+| **BI 报表工具** | 上传 xlsx/csv（支持 Excel 多级表头）由后端 pandas 解析落盘；前端维度/指标建模后生成 ECharts 大屏：柱状/折线/饼图/散点图/组合图/**中国地图**（省级↔城市级下钻联动）七种图表 + 四套配色；支持点击下钻、面包屑上钻、总览卡片与明细联动、表头与大屏排序；可导出 PNG / 数据 / 仪表盘配置。城市级地图经后端代理拉取 DataV 边界并磁盘缓存，规避浏览器跨域 403。 |
 
 支持亮色 / 暗色主题切换、响应式布局、键盘快捷键（`Ctrl/Cmd+K` 搜索等）。
 
@@ -20,8 +21,8 @@
 
 ## 🧰 技术栈
 
-**前端**：React 19 · Vite 7 · TypeScript 5 · React Router 7 · Zustand 5 · TanStack Query 5 · Tailwind CSS 4 · 原生 Canvas 2D · Shiki · @xyflow/react · Lucide · Sonner · xlsx
-**后端**：FastAPI · Uvicorn · Pydantic 2 · OpenAI SDK（兼容 DeepSeek 等）· sqlglot · neo4j · pytest
+**前端**：React 19 · Vite 7 · TypeScript 5 · React Router 7 · Zustand 5 · TanStack Query 5 · Tailwind CSS 4 · 原生 Canvas 2D · ECharts 6（+ echarts-for-react）· Shiki · @xyflow/react · Lucide · Sonner · xlsx
+**后端**：FastAPI · Uvicorn · Pydantic 2 · OpenAI SDK（兼容 DeepSeek 等）· sqlglot · neo4j · pandas / openpyxl / pyarrow（BI 报表数据处理）· httpx · pytest
 **包管理**：前端 pnpm，后端 pip + requirements.txt
 
 ---
@@ -32,9 +33,10 @@
 LLM_PROJ_BD/
 ├── frontend/              # React + Vite 前端
 │   ├── src/
-│   │   ├── pages/         # 页面：HomePage / SqlIndexPage / DialectPage / FunctionDetailPage / DataTestPage / LineagePage
-│   │   ├── components/    # global / animation / code / datatest / lineage / shared
+│   │   ├── pages/         # 页面：HomePage / SqlIndexPage / DialectPage / FunctionDetailPage / DataTestPage / LineagePage / BiReportPage
+│   │   ├── components/    # global / animation / code / datatest / lineage / bi / shared
 │   │   ├── engine/        # Canvas 动画引擎（CanvasEngine / AnimationController / renderers）
+│   │   ├── lib/bi/        # chinaMap：地图省级归一化 + 城市级 GeoJSON 懒加载
 │   │   ├── stores/        # Zustand 全局状态
 │   │   ├── api/           # 请求封装 + TanStack Query hooks
 │   │   ├── hooks/ lib/ types/
@@ -44,10 +46,10 @@ LLM_PROJ_BD/
 ├── backend/              # FastAPI 后端
 │   ├── app/
 │   │   ├── main.py       # 入口：CORS + 路由注册
-│   │   ├── routers/      # dialects / functions / search / datatest / lineage
-│   │   ├── services/     # 业务逻辑
+│   │   ├── routers/      # dialects / functions / search / datatest / lineage / bi
+│   │   ├── services/     # 业务逻辑（bi_service / bi_parser / bi_geo 等）
 │   │   ├── core/         # 配置 / 加载器 / 响应封装 / 缓存
-│   │   └── data/sql/     # 7 个方言 JSON 数据文件
+│   │   └── data/         # sql（7 方言 JSON）/ bi_datasets（落盘）/ geo_cache（城市地图缓存，gitignore）
 │   ├── tests/            # pytest 测试
 │   ├── requirements.txt
 │   └── .env.example      # 环境变量模板（复制为 .env 后填写）
@@ -99,6 +101,8 @@ pnpm dev
 | `OPENAI_BASE_URL` | LLM 接口地址（如使用 DeepSeek：`https://api.deepseek.com`） |
 | `LLM_MODEL` | 模型名 |
 | `NEO4J_*` | 可选，血缘结果推送 Neo4j 时使用 |
+| `CORS_ORIGINS` | 可选，生产部署的允许来源（逗号分隔，未设则用本地开发地址） |
+| `BI_MAX_UPLOAD_MB` | 可选，BI 报表上传文件大小上限（默认 10MB） |
 
 > ⚠️ **切勿把真实的 `.env` 提交到仓库**。根目录 `.gitignore` 已忽略 `.env`，仅 `.env.example` 入库。
 
