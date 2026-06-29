@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import BI_MAX_UPLOAD_MB
 from app.core.response import fail, ok
-from app.services import bi_service
+from app.services import bi_geo, bi_service
 from app.services.bi_models import AggregateRequest, PreviewRequest
 from app.services.bi_parser import BiParseError, parse
 
@@ -102,3 +102,18 @@ def aggregate_dataset(dataset_id: str, req: AggregateRequest):
         logger.exception("bi aggregate failed: %s", dataset_id)
         return JSONResponse(status_code=500, content=fail(-2, "聚合失败"))
     return ok({"columns": columns, "rows": rows})
+
+
+@router.get("/geo/city/{adcode}")
+def get_city_geo(adcode: str):
+    """城市级地图 GeoJSON 代理（F-VZ-07 降级）：前端直连 DataV 被 403，由后端转发 + 磁盘缓存。
+    成功透传原始 GeoJSON（供前端 echarts.registerMap）；adcode 非法 → 422；下载失败 → 502。
+    """
+    if not bi_geo.is_valid_adcode(adcode):
+        return JSONResponse(status_code=422, content=fail(-1, "adcode 非法"))
+    try:
+        geo = bi_geo.load_city_geo(adcode)
+    except Exception:  # noqa: BLE001 — DataV 不可达 / 非 JSON 兜底，避免 500 泄漏栈
+        logger.exception("bi city geo fetch failed: %s", adcode)
+        return JSONResponse(status_code=502, content=fail(-2, "城市地图下载失败"))
+    return JSONResponse(content=geo)

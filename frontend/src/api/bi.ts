@@ -9,7 +9,8 @@ import type {
   PreviewResponse,
 } from '@/types/bi'
 
-const BASE_URL = import.meta.env.VITE_API_BASE ?? '/api'
+/** BI API 基址：优先环境变量，默认 /api（与后端 prefix 对齐）。供 chinaMap 等非 hook 调用复用。 */
+export const BASE_URL = import.meta.env.VITE_API_BASE ?? '/api'
 
 /** BI 模块 TanStack Query key。 */
 export const biKeys = {

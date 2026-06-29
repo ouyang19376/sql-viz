@@ -43,3 +43,5 @@ docs/
 # ───────────────────────── BI 报表数据集落盘 ─────────────────────────
 # 个人本地数据，不入库（PRD-bi §5.4）
 backend/app/data/bi_datasets/
+# 城市级地图 GeoJSON 代理缓存（F-VZ-07 降级，按需在线下载）
+backend/app/data/geo_cache/

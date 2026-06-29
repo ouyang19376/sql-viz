@@ -1,5 +1,6 @@
 import * as echarts from 'echarts'
 import chinaGeo from '@/data/china-provinces.json'
+import { BASE_URL } from '@/api/bi'
 
 // 省级全称后缀，长在前以避免「自治区」误截「壮族自治区」。
 const NAME_SUFFIXES = [
@@ -101,8 +102,9 @@ function ensureAdcodeMap(): void {
 const loadedCities = new Set<string>()
 const inflight = new Map<string, Promise<string>>()
 
-/** 异步懒加载某省城市地图（在线，DataV）：
- *  fetch adcode 对应边界 → 归一化城市名 → 注册 china:{provinceKey}。
+/** 异步懒加载某省城市地图：
+ *  经后端代理拉取 adcode 对应边界（前端直连 DataV 被 403，见后端 bi_geo）
+ *  → 归一化城市名 → 注册 china:{provinceKey}。
  *  内存缓存（二次秒开）+ in-flight 去重（快速下钻不重复请求）。
  *  失败抛错，由 ChartCard 捕获显示「城市地图加载失败」。 */
 export function ensureCityMap(provinceKey: string): Promise<string> {
@@ -115,9 +117,7 @@ export function ensureCityMap(provinceKey: string): Promise<string> {
   const adcode = provinceAdcode.get(provinceKey)
   const p = (async () => {
     if (!adcode) throw new Error(`未知省份：${provinceKey}`)
-    const resp = await fetch(
-      `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`,
-    )
+    const resp = await fetch(`${BASE_URL}/bi/geo/city/${adcode}`)
     if (!resp.ok) throw new Error(`城市地图下载失败：${adcode}`)
     const geo = (await resp.json()) as GeoJSONLike
     geo.features = (geo.features ?? []).map((f) => ({
