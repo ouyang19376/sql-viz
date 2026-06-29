@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { usePreview } from '@/api/bi'
-import type { FilterClause } from '@/types/bi'
+import type { FilterClause, SortClause } from '@/types/bi'
 import DataTable from '@/components/bi/DataTable'
 import Pagination from './Pagination'
 
@@ -16,20 +16,28 @@ interface Props {
 const PAGE_SIZE = 50
 
 /** F-VZ-05：卡片↔明细联动跳转。展示当前下钻选择下的原始明细行。
- *  复用 usePreview（带当前 filters）+ DataTable + Pagination。 */
+ *  复用 usePreview（带当前 filters + sort）+ DataTable + Pagination。 */
 export default function DetailDrawer({ open, onClose, datasetId, filters }: Props) {
   const [page, setPage] = useState(1)
+  const [sort, setSort] = useState<SortClause | null>(null)
   const filtersKey = JSON.stringify(filters)
 
-  // 打开 / 筛选变化时回到第一页
+  // 打开 / 筛选变化时回到第一页并清空排序
   useEffect(() => {
     setPage(1)
+    setSort(null)
   }, [open, filtersKey])
+
+  const handleSort = (s: SortClause | null) => {
+    setSort(s)
+    setPage(1)
+  }
 
   const { data, isLoading, isError, refetch } = usePreview(open ? datasetId : null, {
     page,
     pageSize: PAGE_SIZE,
     filters,
+    sort,
   })
 
   if (!open) return null
@@ -75,7 +83,13 @@ export default function DetailDrawer({ open, onClose, datasetId, filters }: Prop
             </div>
           ) : (
             <>
-              <DataTable columns={columns} rows={data?.rows ?? []} loading={isLoading} />
+              <DataTable
+                columns={columns}
+                rows={data?.rows ?? []}
+                loading={isLoading}
+                sort={sort}
+                onSortChange={handleSort}
+              />
               <Pagination page={page} pageSize={PAGE_SIZE} total={total} onChange={setPage} />
             </>
           )}

@@ -29,6 +29,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="SQL Viz API", version="1.0.0", lifespan=lifespan)
 
+# 启动时打印生效的 CORS 白名单，便于在 Render 日志里核对环境变量是否被正确解析。
+logging.getLogger(__name__).info("CORS allowed origins: %s", CORS_ORIGINS)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,

@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 from app.core.config import BI_DATA_DIR
-from app.services.bi_models import ColumnSchema, DatasetMeta, FilterClause, MetricSpec
+from app.services.bi_models import ColumnSchema, DatasetMeta, FilterClause, MetricSpec, SortClause
 
 # pyarrow 可用则 parquet，否则 pickle（格式探测集中此处）
 try:
@@ -111,14 +111,23 @@ def delete_dataset(dataset_id: str) -> bool:
 
 # ─── 明细预览（F-PV-01/02/03，API-BI-04） ─────────────────────────
 def preview(
-    dataset_id: str, page: int, page_size: int, filters: list[FilterClause]
+    dataset_id: str,
+    page: int,
+    page_size: int,
+    filters: list[FilterClause],
+    sort: SortClause | None = None,
 ) -> tuple[list[str], list[list], int]:
-    """读全量 → 应用筛选 → 切片分页，返回 (列名, 行, 筛选后总行数)。
+    """读全量 → 应用筛选 → 排序 → 切片分页，返回 (列名, 行, 筛选后总行数)。
 
     仅对当前页切片做 JSON 化转换，避免全量转换开销（PRD 难点 6）。
+    排序在切片前对全量生效，翻页时顺序保持一致。
     """
     df = read_df(dataset_id)
     df = apply_filters(df, filters)
+    if sort and sort.field in df.columns:
+        df = df.sort_values(
+            sort.field, ascending=sort.order == "asc", na_position="last"
+        )
     total = int(df.shape[0])
     start = (page - 1) * page_size
     page_df = df.iloc[start : start + page_size]
@@ -163,11 +172,12 @@ def aggregate(
     group_by: list[str],
     metrics: list[MetricSpec],
     filters: list[FilterClause],
+    sort: SortClause | None = None,
 ) -> tuple[list[str], list[list]]:
-    """读全量 → 应用筛选 → groupBy().agg(metrics)，返回 (列名, 行)。
+    """读全量 → 应用筛选 → groupBy().agg(metrics) → 排序，返回 (列名, 行)。
 
-    列顺序 = group_by + 各 metric.alias。groupBy 为空时返回单行总览值。
-    未知 groupBy 列跳过（兜底稳健，PRD 难点 9）。
+    列顺序 = group_by + 各 metric.alias。groupBy 为空时返回单行总览值（忽略排序）。
+    未知 groupBy 列跳过（兜底稳健，PRD 难点 9）。排序字段不在结果列时跳过。
     """
     df = read_df(dataset_id)
     df = apply_filters(df, filters)
@@ -187,6 +197,11 @@ def aggregate(
     agg_df = pd.concat(series_list, axis=1)
     agg_df.columns = [m.alias for m in metrics]
     agg_df = agg_df.reset_index()
+    # 排序（按维度名或指标别名），影响图表呈现顺序（如柱状按值降序）
+    if sort and sort.field in agg_df.columns:
+        agg_df = agg_df.sort_values(
+            sort.field, ascending=sort.order == "asc", na_position="last"
+        )
     return columns, _df_to_rows(agg_df)
 
 

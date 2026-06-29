@@ -42,11 +42,21 @@ export interface FilterClause {
   value: string | number | string[]
 }
 
+/** 排序方向。 */
+export type SortOrder = 'asc' | 'desc'
+
+/** 单列排序（明细预览 + 大屏聚合共用）：字段 + 方向；null 表示不排序。 */
+export interface SortClause {
+  field: string
+  order: SortOrder
+}
+
 /** 明细预览请求（API-BI-04）。 */
 export interface PreviewRequest {
   page: number
   pageSize: number
   filters: FilterClause[]
+  sort?: SortClause | null
 }
 
 /** 明细预览响应（API-BI-04）。 */
@@ -73,8 +83,8 @@ export const AGG_LABELS: Record<AggFunc, string> = {
   min: '最小',
 }
 
-/** 图表类型（F-MD-04）。 */
-export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'table'
+/** 图表类型（F-MD-04）。combo=柱+折线组合图，map=中国省级地图。 */
+export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'combo' | 'map' | 'table'
 
 /** 图表类型中文标签。 */
 export const CHART_LABELS: Record<ChartType, string> = {
@@ -82,7 +92,23 @@ export const CHART_LABELS: Record<ChartType, string> = {
   line: '折线图',
   pie: '饼图',
   scatter: '散点图',
+  combo: '组合图',
+  map: '地图',
   table: '表格',
+}
+
+/** 图表配色方案（F-MD 颜色配置）：建模态选择，随 DashboardModel 导出/导入。 */
+export type ColorPalette = 'default' | 'warm' | 'cool' | 'contrast'
+
+/** 各配色方案：
+ *  - colors：离散系列色（bar/line/pie/scatter/combo 按系列分色，无顺序含义）。
+ *  - gradient：顺序渐变色阶（浅→深，3 色锚点，ECharts 在其间插值），
+ *    用于地图 visualMap，体现指标值低→高的阶梯渐进。 */
+export const COLOR_PALETTES: Record<ColorPalette, { label: string; colors: string[]; gradient: string[] }> = {
+  default: { label: '默认', colors: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4'], gradient: ['#eaf1fb', '#5470c6', '#2a3f8f'] },
+  warm: { label: '暖色', colors: ['#ee6666', '#fc8452', '#fac858', '#d48265', '#e37c4f', '#c05050', '#dd6b66', '#bda233'], gradient: ['#fff1e3', '#f5a05a', '#a83232'] },
+  cool: { label: '冷色', colors: ['#5470c6', '#73c0de', '#3ba272', '#91cc75', '#5ab1ef', '#2ec7c9', '#3a7dc7', '#58c4e3'], gradient: ['#e0f5f3', '#2ec7c9', '#165e5c'] },
+  contrast: { label: '高对比', colors: ['#5470c6', '#ee6666', '#91cc75', '#fac858', '#73c0de', '#fc8452', '#9a60b4', '#3ba272'], gradient: ['#efe6fb', '#9a60b4', '#3b1a5c'] },
 }
 
 /** 指标定义（F-MD-02）：字段 + 聚合 + 展示别名。 */
@@ -101,6 +127,7 @@ export interface DashboardModel {
   metrics: MetricDef[]
   drillPath: string[]
   chartType: ChartType
+  palette: ColorPalette
   filters: FilterClause[]
 }
 
@@ -112,6 +139,7 @@ export interface AggregateRequest {
   groupBy: string[]
   metrics: { field: string; agg: AggFunc; alias: string }[]
   filters: FilterClause[]
+  sort?: SortClause | null
 }
 
 /** 聚合响应（API-BI-05）：列名 + 行（列顺序 = groupBy + 各别名）。 */

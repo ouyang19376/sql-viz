@@ -26,7 +26,8 @@ _default_cors_origins = [
 ]
 _env_cors_origins = os.environ.get("CORS_ORIGINS", "")
 CORS_ORIGINS = (
-    [o.strip() for o in _env_cors_origins.split(",") if o.strip()]
+    # 逐项去空白并剥离误带的引号（粘贴到 Render 时偶发包裹 " 或 '），避免来源比对失败
+    [o.strip().strip('"').strip("'") for o in _env_cors_origins.split(",") if o.strip()]
     if _env_cors_origins
     else _default_cors_origins
 )

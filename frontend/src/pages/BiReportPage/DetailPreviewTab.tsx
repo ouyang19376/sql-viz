@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useBiStore } from '@/stores/useBiStore'
 import { usePreview } from '@/api/bi'
-import type { FilterClause } from '@/types/bi'
+import type { FilterClause, SortClause } from '@/types/bi'
 import EmptyState from '@/components/shared/EmptyState'
 import DataTable from '@/components/bi/DataTable'
 import FilterBar from './FilterBar'
@@ -10,21 +10,26 @@ import Pagination from './Pagination'
 const PAGE_SIZE = 50
 
 /** Tab1 明细预览（F-PV-01/02/03）：共 N 行 + 筛选条 + 表格 + 分页。
- *  筛选与分页为本 Tab 局部态；切数据集时重置。筛选作用于后端查询。 */
+ *  筛选 / 分页 / 排序为本 Tab 局部态；切数据集时重置。筛选与排序作用于后端查询。 */
 export default function DetailPreviewTab() {
   const activeDataset = useBiStore((s) => s.activeDataset)
   const datasetId = activeDataset?.id ?? null
 
   const [page, setPage] = useState(1)
   const [filters, setFilters] = useState<FilterClause[]>([])
+  const [sort, setSort] = useState<SortClause | null>(null)
 
-  // 切换数据集时重置筛选与分页
+  // 切换数据集时重置筛选 / 分页 / 排序
   useEffect(() => {
     setPage(1)
     setFilters([])
+    setSort(null)
   }, [datasetId])
 
-  const req = useMemo(() => ({ page, pageSize: PAGE_SIZE, filters }), [page, filters])
+  const req = useMemo(
+    () => ({ page, pageSize: PAGE_SIZE, filters, sort }),
+    [page, filters, sort],
+  )
   const { data, isLoading, isError, refetch } = usePreview(datasetId, req)
 
   if (!activeDataset) {
@@ -39,6 +44,10 @@ export default function DetailPreviewTab() {
   }
   const removeFilter = (index: number) => {
     setFilters((prev) => prev.filter((_, i) => i !== index))
+    setPage(1)
+  }
+  const handleSort = (s: SortClause | null) => {
+    setSort(s)
     setPage(1)
   }
 
@@ -73,7 +82,13 @@ export default function DetailPreviewTab() {
         </div>
       ) : (
         <>
-          <DataTable columns={columns} rows={data?.rows ?? []} loading={isLoading} />
+          <DataTable
+            columns={columns}
+            rows={data?.rows ?? []}
+            loading={isLoading}
+            sort={sort}
+            onSortChange={handleSort}
+          />
           <Pagination page={page} pageSize={PAGE_SIZE} total={total} onChange={setPage} />
         </>
       )}

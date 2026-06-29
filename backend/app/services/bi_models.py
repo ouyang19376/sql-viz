@@ -51,6 +51,15 @@ class FilterClause(BaseModel):
     value: Union[str, float, list[str]]
 
 
+class SortClause(BaseModel):
+    """单列排序（明细预览 + 大屏聚合共用）：字段 + 方向。无效字段由服务层跳过。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    field: str
+    order: Literal["asc", "desc"]
+
+
 class PreviewRequest(BaseModel):
     """明细预览请求（API-BI-04）：后端分页 + 筛选。"""
 
@@ -59,6 +68,7 @@ class PreviewRequest(BaseModel):
     page: int = Field(default=1, ge=1)
     pageSize: int = Field(default=50, ge=1, le=200)
     filters: list[FilterClause] = Field(default_factory=list, max_length=20)
+    sort: SortClause | None = None
 
 
 class MetricSpec(BaseModel):
@@ -82,3 +92,4 @@ class AggregateRequest(BaseModel):
     groupBy: list[str] = Field(default_factory=list, max_length=8)
     metrics: list[MetricSpec] = Field(min_length=1, max_length=20)
     filters: list[FilterClause] = Field(default_factory=list, max_length=20)
+    sort: SortClause | None = None

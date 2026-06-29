@@ -4,6 +4,7 @@ import FieldRolePanel from './FieldRolePanel'
 import MetricEditor from './MetricEditor'
 import DrillPathEditor from './DrillPathEditor'
 import ChartTypeSelector from './ChartTypeSelector'
+import ColorPaletteSelector from './ColorPaletteSelector'
 
 /** Tab2 建模配置（F-MD-01/02/03/04）：字段角色 + 指标 + 下钻层级 + 图表类型。
  *  纯前端态写入 useBiStore.model，切 Tab 不丢失。 */
@@ -16,6 +17,7 @@ export default function ModelBuilderTab() {
   const removeMetric = useBiStore((s) => s.removeMetric)
   const setDrillPath = useBiStore((s) => s.setDrillPath)
   const setChartType = useBiStore((s) => s.setChartType)
+  const setPalette = useBiStore((s) => s.setPalette)
 
   if (!activeDataset || !model) {
     return (
@@ -40,6 +42,7 @@ export default function ModelBuilderTab() {
       />
       <DrillPathEditor dimensions={dimensions} drillPath={model.drillPath} onChange={setDrillPath} />
       <ChartTypeSelector value={model.chartType} onChange={setChartType} />
+      <ColorPaletteSelector value={model.palette} onChange={setPalette} />
     </div>
   )
 }

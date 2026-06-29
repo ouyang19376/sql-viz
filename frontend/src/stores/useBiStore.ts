@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type {
   BiTab,
   ChartType,
+  ColorPalette,
   DashboardModel,
   DatasetMeta,
   DrillLevel,
@@ -45,6 +46,8 @@ interface BiStore {
   setDrillPath: (fields: string[]) => void
   /** F-MD-04：设置图表类型。 */
   setChartType: (chartType: ChartType) => void
+  /** F-MD 颜色配置：设置图表配色方案。 */
+  setPalette: (palette: ColorPalette) => void
 
   /** F-EX-04：导入配置 JSON（覆盖当前建模态，并校正列角色以与导入一致）。 */
   importModel: (model: DashboardModel) => void
@@ -57,7 +60,7 @@ interface BiStore {
 
 /** 选中数据集时的默认空建模态。 */
 function defaultModel(datasetId: string): DashboardModel {
-  return { datasetId, dimensions: [], metrics: [], drillPath: [], chartType: 'bar', filters: [] }
+  return { datasetId, dimensions: [], metrics: [], drillPath: [], chartType: 'bar', palette: 'default', filters: [] }
 }
 
 export const useBiStore = create<BiStore>((set) => ({
@@ -138,6 +141,9 @@ export const useBiStore = create<BiStore>((set) => ({
   setChartType: (chartType) =>
     set((state) => (state.model ? { model: { ...state.model, chartType } } : {})),
 
+  setPalette: (palette) =>
+    set((state) => (state.model ? { model: { ...state.model, palette } } : {})),
+
   importModel: (model) =>
     set((state) => {
       const ds = state.activeDataset
@@ -155,7 +161,7 @@ export const useBiStore = create<BiStore>((set) => ({
       // datasetId 强制绑定到当前活跃集，避免导入来源 id 残留
       return {
         activeDataset: { ...ds, columns },
-        model: { ...model, datasetId: ds.id },
+        model: { ...model, datasetId: ds.id, palette: model.palette ?? 'default' },
         drillStack: [],
       }
     }),

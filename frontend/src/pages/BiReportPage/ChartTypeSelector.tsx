@@ -1,4 +1,4 @@
-import { BarChart3, LineChart, PieChart, ScatterChart, Table } from 'lucide-react'
+import { BarChart3, Combine, LineChart, Map, PieChart, ScatterChart, Table } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ChartType } from '@/types/bi'
 import { CHART_LABELS } from '@/types/bi'
@@ -13,10 +13,12 @@ const OPTIONS: { value: ChartType; icon: LucideIcon }[] = [
   { value: 'line', icon: LineChart },
   { value: 'pie', icon: PieChart },
   { value: 'scatter', icon: ScatterChart },
+  { value: 'combo', icon: Combine },
+  { value: 'map', icon: Map },
   { value: 'table', icon: Table },
 ]
 
-/** F-MD-04：图表类型选择 —— bar / line / pie / scatter / table 五选一。 */
+/** F-MD-04：图表类型选择 —— bar / line / pie / scatter / combo / map / table 七选一。 */
 export default function ChartTypeSelector({ value, onChange }: Props) {
   return (
     <section>

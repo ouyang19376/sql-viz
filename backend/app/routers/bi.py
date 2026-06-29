@@ -73,7 +73,7 @@ def preview_dataset(dataset_id: str, req: PreviewRequest):
         return JSONResponse(status_code=404, content=fail(-1, "数据集不存在"))
     try:
         columns, rows, total = bi_service.preview(
-            dataset_id, req.page, req.pageSize, req.filters
+            dataset_id, req.page, req.pageSize, req.filters, req.sort
         )
     except Exception:  # noqa: BLE001 — pandas 读取/筛选异常兜底，避免 500 泄漏栈
         logger.exception("bi preview failed: %s", dataset_id)
@@ -96,7 +96,7 @@ def aggregate_dataset(dataset_id: str, req: AggregateRequest):
         return JSONResponse(status_code=404, content=fail(-1, "数据集不存在"))
     try:
         columns, rows = bi_service.aggregate(
-            dataset_id, req.groupBy, req.metrics, req.filters
+            dataset_id, req.groupBy, req.metrics, req.filters, req.sort
         )
     except Exception:  # noqa: BLE001 — pandas 聚合异常兜底，避免 500 泄漏栈
         logger.exception("bi aggregate failed: %s", dataset_id)
