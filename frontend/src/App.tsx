@@ -12,6 +12,8 @@ const DataTestPage = lazy(() => import('@/pages/DataTestPage'))
 const LineagePage = lazy(() => import('@/pages/LineagePage'))
 // ECharts 体积大，/bi 路由级懒加载（plan §1.2）
 const BiReportPage = lazy(() => import('@/pages/BiReportPage'))
+// 数据探查（PRD-dataprofile）：4 Tab 单页，lazy 懒加载
+const DataProfilePage = lazy(() => import('@/pages/dataprofile'))
 
 const router = createBrowserRouter([
   {
@@ -46,6 +48,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Skeleton lines={6} />}>
             <BiReportPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'dataprofile',
+        element: (
+          <Suspense fallback={<Skeleton lines={6} />}>
+            <DataProfilePage />
           </Suspense>
         ),
       },

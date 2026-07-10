@@ -8,20 +8,22 @@ interface Props {
   description: string
   to: string
   accent: string
+  /** 布局类（F-HM-03：flex 宽度，使第二行居中） */
+  className?: string
 }
 
 /** 功能入口大卡片（F-HM-01 / F-HM-02 / F-HM-03）：
  *  - 白底 + 圆角 16px + 浅阴影
  *  - hover：阴影抬升 + 主色描边
  *  - 整卡可点击跳转 */
-export default function FeatureCard({ icon: Icon, title, description, to, accent }: Props) {
+export default function FeatureCard({ icon: Icon, title, description, to, accent, className }: Props) {
   const style = { '--accent': accent } as CSSProperties
 
   return (
     <Link
       to={to}
       style={style}
-      className="group block rounded-2xl border-2 border-transparent bg-white p-8 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-lg"
+      className={`group block h-full rounded-2xl border-2 border-transparent bg-white p-8 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-lg ${className ?? ''}`}
     >
       <div
         className="flex h-14 w-14 items-center justify-center rounded-xl"

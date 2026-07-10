@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router'
-import { BarChart3, Database, GitBranch, Menu, Sparkles, X } from 'lucide-react'
+import { BarChart3, Database, GitBranch, Menu, ScanSearch, Sparkles, X } from 'lucide-react'
 import DialectDropdown from './DialectDropdown'
 import SearchBox from './SearchBox'
 import SearchModal from './SearchModal'
@@ -36,6 +36,13 @@ const MODULES = [
     to: '/bi',
     icon: BarChart3,
     match: (p: string) => p === '/bi',
+  },
+  {
+    key: 'dataprofile',
+    label: '数据探查',
+    to: '/dataprofile',
+    icon: ScanSearch,
+    match: (p: string) => p === '/dataprofile',
   },
 ] as const
 
