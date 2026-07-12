@@ -72,3 +72,25 @@ PROFILE_RULES_FILE = PROFILE_RULES_DIR / "rules.json"
 # 探查脚本生成（PRD-dataprofile F-PG-08/09，§8.4）
 PROFILE_GENERATE_EXPLAIN_RETRIES = int(os.environ.get("PROFILE_GENERATE_EXPLAIN_RETRIES", "2"))
 PROFILE_GENERATE_TOPN = int(os.environ.get("PROFILE_GENERATE_TOPN", "10"))  # topn_frequency 默认 N
+
+# ─── RAG for NL2SQL（PRD-rag-sql §1.4） ─────────────────
+# 向量库 Zilliz / Milvus Cloud（外部托管，懒初始化）
+MILVUS_URI = os.environ.get("MILVUS_URI", "")
+MILVUS_TOKEN = os.environ.get("MILVUS_TOKEN", "")
+MILVUS_COLLECTION_TABLE = os.environ.get("MILVUS_COLLECTION_TABLE", "table_meta")
+MILVUS_COLLECTION_KB = os.environ.get("MILVUS_COLLECTION_KB", "kb_docs")
+# 火山引擎 doubao 文本 embedding（OpenAI 兼容协议）
+EMBEDDING_API_KEY = os.environ.get("EMBEDDING_API_KEY", "")
+EMBEDDING_BASE_URL = os.environ.get("EMBEDDING_BASE_URL", "")
+EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "doubao-embedding-text")
+# 模力方舟 bge-reranker（检索 AS 模块用；CK 不依赖）
+RERANK_API_KEY = os.environ.get("RERANK_API_KEY", "")
+RERANK_BASE_URL = os.environ.get("RERANK_BASE_URL", "")
+RERANK_MODEL = os.environ.get("RERANK_MODEL", "bge-reranker-v2-m3")
+# 资源护栏（PRD-rag-sql §8.4 / §8.5）
+RAG_CHUNK_MAX_CHARS = int(os.environ.get("RAG_CHUNK_MAX_CHARS", "20000"))
+RAG_DOC_MAX_BYTES = int(os.environ.get("RAG_DOC_MAX_BYTES", "1048576"))
+RAG_ASK_MAX_CHARS = int(os.environ.get("RAG_ASK_MAX_CHARS", "2000"))
+RAG_RETRIEVE_TOPK = int(os.environ.get("RAG_RETRIEVE_TOPK", "8"))
+RAG_RERANK_TOPN = int(os.environ.get("RAG_RERANK_TOPN", "5"))
+RAG_HISTORY_MAX_TURNS = int(os.environ.get("RAG_HISTORY_MAX_TURNS", "6"))

@@ -6,12 +6,14 @@ interface Props {
   actionLabel?: string
   actionTo?: string
   onAction?: () => void
+  /** 外层容器追加类（如 min-h 撑高与邻近输入框对齐）；默认空 */
+  className?: string
 }
 
 /** 空状态 / 错误占位 */
-export default function EmptyState({ title, description, actionLabel, actionTo, onAction }: Props) {
+export default function EmptyState({ title, description, actionLabel, actionTo, onAction, className }: Props) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 py-16 text-center dark:border-gray-700">
+    <div className={`flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 py-16 text-center dark:border-gray-700${className ? ' ' + className : ''}`}>
       <p className="text-lg font-medium text-gray-700 dark:text-gray-200">{title}</p>
       {description && <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{description}</p>}
       {actionLabel && actionTo && (

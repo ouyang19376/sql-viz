@@ -1,10 +1,10 @@
-import { BarChart3, Database, GitBranch, ScanSearch, Sparkles } from 'lucide-react'
+import { BarChart3, Database, GitBranch, MessageSquareCode, ScanSearch, Sparkles } from 'lucide-react'
 import FeatureCard from './FeatureCard'
 
 /** 每张卡片在 flex 布局下的宽度：
  *  - 移动端单列满宽
  *  - md：两列（50% 减去 gap-6 的一半 0.75rem）
- *  - lg：三列（33.33% 减去 gap-6 一份 1rem），5 卡 = 3+2，第二行由 justify-center 居中 */
+ *  - lg：三列（33.33% 减去 gap-6 一份 1rem），6 卡 = 3+3，两行均满 */
 const cardWidth = 'w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333333%_-_1rem)]'
 
 /** 首页（F-HM-01 / F-HM-02 / F-HM-03）：功能入口大卡片 */
@@ -54,6 +54,14 @@ export default function HomePage() {
           description="连接 MySQL / Hive / PostgreSQL 数据源，只读查询预览，一键生成数据质量探查脚本。"
           to="/dataprofile"
           accent="#2563EB"
+        />
+        <FeatureCard
+          className={cardWidth}
+          icon={MessageSquareCode}
+          title="RAG 自然语言转 SQL"
+          description="上传建表语句与规范文档构建知识库，自然语言提问即可生成对齐业务模型的 SQL。"
+          to="/rag-sql"
+          accent="#16A34A"
         />
       </div>
     </div>

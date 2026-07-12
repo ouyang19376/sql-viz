@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router'
-import { BarChart3, Database, GitBranch, Menu, ScanSearch, Sparkles, X } from 'lucide-react'
+import { BarChart3, Database, GitBranch, Menu, MessageSquareCode, ScanSearch, Sparkles, X } from 'lucide-react'
 import DialectDropdown from './DialectDropdown'
 import SearchBox from './SearchBox'
 import SearchModal from './SearchModal'
@@ -43,6 +43,13 @@ const MODULES = [
     to: '/dataprofile',
     icon: ScanSearch,
     match: (p: string) => p === '/dataprofile',
+  },
+  {
+    key: 'rag-sql',
+    label: 'RAG 转 SQL',
+    to: '/rag-sql',
+    icon: MessageSquareCode,
+    match: (p: string) => p === '/rag-sql',
   },
 ] as const
 

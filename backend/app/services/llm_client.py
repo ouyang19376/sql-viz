@@ -5,7 +5,7 @@ singleton + 懒初始化：导入本模块不触发 API key 校验（便于测�
 """
 from __future__ import annotations
 
-from typing import Optional
+from typing import Generator, Optional
 from time import perf_counter
 
 from openai import OpenAI
@@ -97,6 +97,72 @@ def chat_json(system_prompt: str, user_message: str) -> str:
         latency_ms=(perf_counter() - started_at) * 1000,
     )
     return content
+
+
+def stream_chat(system_prompt: str, user_message: str) -> Generator[str, None, None]:
+    """流式 chat 调用（F-AS-15）：逐 token yield 内容 delta。
+
+    不强制 json_object（流式输出裸 SQL/文本）；stream_options={"include_usage": True}
+    使末块携带 usage 以便记账（否则 chunk.usage 恒为 None）。
+    抛 LLMClientError 包装上游错误；成功结束记一次 usage（早断流不记，可接受）。
+    """
+    client = _get_client()
+    estimated_prompt_tokens = estimate_tokens(system_prompt, user_message)
+    started_at = perf_counter()
+    try:
+        stream = client.chat.completions.create(
+            model=LLM_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message},
+            ],
+            stream=True,
+            stream_options={"include_usage": True},
+            max_tokens=LLM_MAX_TOKENS,
+            temperature=0.7,
+        )
+    except Exception as exc:
+        record_llm_usage(
+            success=False,
+            prompt_tokens=estimated_prompt_tokens,
+            latency_ms=(perf_counter() - started_at) * 1000,
+            failure_type=type(exc).__name__,
+        )
+        raise LLMClientError(f"LLM 流式调用失败：{type(exc).__name__}: {exc}") from exc
+
+    usage = None
+    completion_chars = 0
+    try:
+        for chunk in stream:
+            if getattr(chunk, "usage", None):
+                usage = chunk.usage
+            if chunk.choices:
+                delta = chunk.choices[0].delta.content
+                if delta:
+                    completion_chars += len(delta)
+                    yield delta
+    except Exception as exc:
+        record_llm_usage(
+            success=False,
+            prompt_tokens=estimated_prompt_tokens,
+            completion_tokens=estimate_tokens("x" * completion_chars),
+            latency_ms=(perf_counter() - started_at) * 1000,
+            failure_type=type(exc).__name__,
+        )
+        raise LLMClientError(f"LLM 流式调用失败：{type(exc).__name__}: {exc}") from exc
+    else:
+        prompt_tokens = getattr(usage, "prompt_tokens", None) or estimated_prompt_tokens
+        completion_tokens = getattr(usage, "completion_tokens", None) or estimate_tokens(
+            "x" * completion_chars
+        )
+        total_tokens = getattr(usage, "total_tokens", None)
+        record_llm_usage(
+            success=True,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            total_tokens=total_tokens,
+            latency_ms=(perf_counter() - started_at) * 1000,
+        )
 
 
 def reset_client_for_test() -> None:

@@ -8,6 +8,10 @@ interface Props {
   onRun?: () => void
   readOnly?: boolean
   placeholder?: string
+  /** 内层容器最大高度 class（默认 max-h-96=384px；DDL 编辑等长文本场景传更大值） */
+  maxHeightClass?: string
+  /** 内层容器最小高度 class（默认 min-h-[8rem]=128px） */
+  minHeightClass?: string
 }
 
 type LineTokens = ThemedToken[]
@@ -17,7 +21,15 @@ type LineTokens = ThemedToken[]
  * - Ctrl/Cmd+Enter 运行；Tab 插两空格；textarea 与高亮层滚动同步。
  * - 对齐：gutter 固定 w-12(3rem) + 代码 pl-3(0.75rem) = 3.75rem，textarea paddingLeft 同值。
  */
-export default function CodeEditor({ value, onChange, onRun, readOnly, placeholder }: Props) {
+export default function CodeEditor({
+  value,
+  onChange,
+  onRun,
+  readOnly,
+  placeholder,
+  maxHeightClass = 'max-h-96',
+  minHeightClass = 'min-h-[8rem]',
+}: Props) {
   const taRef = useRef<HTMLTextAreaElement>(null)
   const preRef = useRef<HTMLPreElement>(null)
   const [tokens, setTokens] = useState<LineTokens[] | null>(null)
@@ -49,6 +61,12 @@ export default function CodeEditor({ value, onChange, onRun, readOnly, placehold
     }
   }
 
+  // 粘贴/输入导致 textarea 自动滚动后，高亮层(<pre>)仅靠 onScroll 同步会漏掉这类滚动，
+  // 表现为光标落在某行而可见高亮停在另一行（光标与代码行错乱）。值变更后强制同步一次。
+  useEffect(() => {
+    syncScroll()
+  }, [value])
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (onRun && (e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       e.preventDefault()
@@ -70,7 +88,7 @@ export default function CodeEditor({ value, onChange, onRun, readOnly, placehold
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-900 font-mono text-sm leading-relaxed">
-      <div className="relative max-h-96 min-h-[8rem] overflow-hidden">
+      <div className={`relative ${maxHeightClass} ${minHeightClass} overflow-hidden`}>
         {/* 高亮层（背景，不接收事件） */}
         <pre
           ref={preRef}

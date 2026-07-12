@@ -14,6 +14,8 @@ const LineagePage = lazy(() => import('@/pages/LineagePage'))
 const BiReportPage = lazy(() => import('@/pages/BiReportPage'))
 // 数据探查（PRD-dataprofile）：4 Tab 单页，lazy 懒加载
 const DataProfilePage = lazy(() => import('@/pages/dataprofile'))
+// RAG for NL2SQL（PRD-rag-sql）：3 Tab 单页，lazy 懒加载（含 CodeEditor）
+const RagSqlPage = lazy(() => import('@/pages/rag-sql'))
 
 const router = createBrowserRouter([
   {
@@ -56,6 +58,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Skeleton lines={6} />}>
             <DataProfilePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'rag-sql',
+        element: (
+          <Suspense fallback={<Skeleton lines={6} />}>
+            <RagSqlPage />
           </Suspense>
         ),
       },

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { AlertTriangle } from 'lucide-react'
 
 interface Props {
@@ -21,6 +22,17 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }: Props) {
+  // Esc 关闭弹窗（PRD-rag-sql §7.4；与 ChunkPreviewDrawer 同款 keydown 写法，
+  // 等同点遮罩/「取消」按钮，对既有 BI/dataprofile 调用方无副作用）。
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, onCancel])
+
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
