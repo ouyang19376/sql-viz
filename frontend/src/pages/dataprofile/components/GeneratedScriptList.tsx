@@ -30,7 +30,7 @@ export default function GeneratedScriptList({
           <button
             type="button"
             onClick={onImportAll}
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs font-medium text-ink-2 hover:bg-surface-2"
           >
             <Upload className="h-3.5 w-3.5" />
             全量导入代码区
@@ -38,7 +38,7 @@ export default function GeneratedScriptList({
           <button
             type="button"
             onClick={onDownload}
-            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs font-medium text-ink-2 hover:bg-surface-2"
           >
             <Download className="h-3.5 w-3.5" />
             下载 .sql
@@ -50,14 +50,14 @@ export default function GeneratedScriptList({
         {segments.map((seg, i) => (
           <li key={`ok-${i}`} className="rounded-lg border border-green-200 bg-green-50/40 p-3 dark:border-green-800 dark:bg-green-900/10">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-sm font-medium text-gray-800 dark:text-gray-100">
+              <div className="flex items-center gap-1.5 text-sm font-medium text-ink">
                 <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                 {seg.title}
               </div>
               <button
                 type="button"
                 onClick={() => onImportSegment(seg)}
-                className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="inline-flex items-center gap-1 rounded-md border border-line px-2 py-1 text-xs text-ink-2 hover:bg-surface-2"
               >
                 <Upload className="h-3.5 w-3.5" />
                 导入
@@ -76,7 +76,7 @@ export default function GeneratedScriptList({
           <ul className="space-y-2">
             {partialFailures.map((seg, i) => (
               <li key={`fail-${i}`} className="rounded-lg border border-red-200 bg-red-50/40 p-3 dark:border-red-800 dark:bg-red-900/10">
-                <div className="flex items-center gap-1.5 text-sm font-medium text-gray-800 dark:text-gray-100">
+                <div className="flex items-center gap-1.5 text-sm font-medium text-ink">
                   <XCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
                   {seg.title}
                 </div>

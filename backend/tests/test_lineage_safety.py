@@ -98,10 +98,10 @@ class TestLineageOutputFallbackSafety:
 
 class TestLineageLLMErrors:
     def test_timeout_returns_504(self, monkeypatch):
-        from app.services.llm_client import LLMClientError
+        from app.services.llm_client import LLMTimeoutError
 
         def boom(*a, **kw):
-            raise LLMClientError("Request timed out")
+            raise LLMTimeoutError("Request timed out")
 
         monkeypatch.setattr(lineage_service, "chat_json", boom)
         with TestClient(app) as client:

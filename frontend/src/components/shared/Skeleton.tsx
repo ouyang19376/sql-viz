@@ -10,7 +10,7 @@ export default function Skeleton({ lines = 3, className = '' }: Props) {
       {Array.from({ length: lines }).map((_, i) => (
         <div
           key={i}
-          className="h-24 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"
+          className="h-24 animate-pulse rounded-xl bg-surface-2"
         />
       ))}
     </div>

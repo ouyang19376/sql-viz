@@ -49,9 +49,9 @@ export default function RuleLibraryPanel() {
   return (
     <div className="space-y-6">
       {/* F-RL-01/02：内置指标目录（只读，按分类分组） */}
-      <section className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
-        <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-100">内置指标目录</h2>
-        <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+      <section className="rounded-xl border border-line bg-surface p-4">
+        <h2 className="text-sm font-semibold text-ink">内置指标目录</h2>
+        <p className="mt-0.5 text-xs text-mute">
           10 个常见质量指标，按分类分组，只读。模板渲染在「脚本生成」中选用。
         </p>
         {metricsQ.isLoading ? (
@@ -61,7 +61,7 @@ export default function RuleLibraryPanel() {
             {(Object.keys(groups) as MetricCategory[]).map((cat) => (
               <div
                 key={cat}
-                className="rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+                className="rounded-lg border border-line p-3"
               >
                 <div className="mb-2 text-xs font-medium text-blue-600 dark:text-blue-400">
                   {METRIC_CATEGORY_LABELS[cat]}
@@ -69,10 +69,10 @@ export default function RuleLibraryPanel() {
                 <ul className="space-y-1.5">
                   {groups[cat].map((m) => (
                     <li key={m.id} className="flex items-start gap-2 text-xs">
-                      <span className="font-mono text-gray-700 dark:text-gray-200">{m.id}</span>
-                      <span className="text-gray-500 dark:text-gray-400">{m.name}</span>
+                      <span className="font-mono text-ink-2">{m.id}</span>
+                      <span className="text-mute">{m.name}</span>
                       {m.needsColumn && (
-                        <span className="rounded bg-gray-100 px-1 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                        <span className="rounded bg-surface-2 px-1 text-mute">
                           需列
                         </span>
                       )}
@@ -91,11 +91,11 @@ export default function RuleLibraryPanel() {
       </section>
 
       {/* F-RL-03~08：自定义规则 CRUD */}
-      <section className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+      <section className="rounded-xl border border-line bg-surface p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-100">自定义规则</h2>
-            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+            <h2 className="text-sm font-semibold text-ink">自定义规则</h2>
+            <p className="mt-0.5 text-xs text-mute">
               保存跨会话共享；示例 SQL 须含 {`{table}`} 占位符且为只读 SELECT。
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function RuleLibraryPanel() {
               <button
                 type="button"
                 onClick={() => setForm({ mode: 'create' })}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white hover:bg-accent-strong"
               >
                 <Plus className="h-3.5 w-3.5" />
                 新建规则
@@ -167,10 +167,10 @@ function CustomRuleItem({ rule, onEdit }: { rule: CustomRule; onEdit: () => void
   }
 
   return (
-    <li className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+    <li className="flex items-start gap-3 rounded-lg border border-line p-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-medium text-gray-800 dark:text-gray-100">
+          <span className="truncate text-sm font-medium text-ink">
             {rule.name}
           </span>
           <DialectBadge
@@ -178,17 +178,17 @@ function CustomRuleItem({ rule, onEdit }: { rule: CustomRule; onEdit: () => void
             color={PROFILE_DIALECTS[rule.dialect].color}
           />
           {rule.needsColumn && (
-            <span className="rounded bg-gray-100 px-1 text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+            <span className="rounded bg-surface-2 px-1 text-xs text-mute">
               需列
             </span>
           )}
         </div>
         {rule.description && (
-          <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-0.5 truncate text-xs text-mute">
             {rule.description}
           </p>
         )}
-        <pre className="mt-1 overflow-x-auto rounded bg-gray-50 p-2 font-mono text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+        <pre className="mt-1 overflow-x-auto rounded bg-surface-2 p-2 font-mono text-xs text-ink-2">
           {rule.exampleSql}
         </pre>
       </div>
@@ -197,7 +197,7 @@ function CustomRuleItem({ rule, onEdit }: { rule: CustomRule; onEdit: () => void
           type="button"
           onClick={onEdit}
           title="编辑"
-          className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="inline-flex items-center gap-1 rounded-md border border-line px-2 py-1 text-xs text-ink-2 hover:bg-surface-2"
         >
           <Pencil className="h-3.5 w-3.5" />
         </button>
@@ -281,14 +281,14 @@ function CustomRuleForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="规则名称"
-            className="w-full rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            className="w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
           />
         </Field>
         <Field label="方言">
           <select
             value={dialect}
             onChange={(e) => setDialect(e.target.value as ProfileDialect)}
-            className="w-full rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            className="w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
           >
             {DIALECTS.map((d) => (
               <option key={d} value={d}>
@@ -304,7 +304,7 @@ function CustomRuleForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="规则用途说明（喂给 LLM）"
-          className="w-full rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+          className="w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
         />
       </Field>
 
@@ -314,7 +314,7 @@ function CustomRuleForm({
           onChange={(e) => setExampleSql(e.target.value)}
           rows={4}
           spellCheck={false}
-          className="w-full rounded-md border border-gray-300 bg-white px-2.5 py-1.5 font-mono text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+          className="w-full rounded-md border border-line bg-surface px-2.5 py-1.5 font-mono text-sm text-ink"
         />
         {!hasTablePlaceholder && exampleSql.trim() && (
           <p className="mt-1 text-xs text-red-600">示例 SQL 必须包含 {`{table}`} 占位符</p>
@@ -325,7 +325,7 @@ function CustomRuleForm({
         <button
           type="button"
           onClick={onDone}
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="rounded-md border border-line px-3 py-1.5 text-sm text-ink-2 hover:bg-surface-2"
         >
           取消
         </button>
@@ -333,10 +333,10 @@ function CustomRuleForm({
           type="button"
           onClick={submit}
           disabled={!canSubmit || pending}
-          className="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40"
+          className="rounded-md bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-accent-strong disabled:opacity-40"
         >
           {pending ? '保存中…' : editing ? '保存' : '创建'}
-          {!pending && <kbd className="ml-1.5 rounded bg-blue-500/40 px-1 text-xs">Ctrl+S</kbd>}
+          {!pending && <kbd className="ml-1.5 rounded bg-accent/40 px-1 text-xs">Ctrl+S</kbd>}
         </button>
       </div>
     </div>
@@ -354,9 +354,9 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+      <label className="mb-1 block text-xs font-medium text-ink-2">
         {label}
-        {hint && <span className="ml-1 font-normal text-gray-400">{hint}</span>}
+        {hint && <span className="ml-1 font-normal text-mute">{hint}</span>}
       </label>
       {children}
     </div>
@@ -388,7 +388,7 @@ function RuleExportButton() {
       type="button"
       onClick={handle}
       disabled={loading}
-      className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+      className="inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs font-medium text-ink-2 hover:bg-surface-2 disabled:opacity-40"
     >
       <Download className="h-3.5 w-3.5" />
       导出
@@ -435,7 +435,7 @@ function RuleImportButton() {
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={loading}
-        className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+        className="inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs font-medium text-ink-2 hover:bg-surface-2 disabled:opacity-40"
       >
         <Upload className="h-3.5 w-3.5" />
         导入

@@ -26,8 +26,8 @@ export default function FunctionList({ categories, functions, dialectId }: Props
         return (
           <section key={cat.id} id={`category-${cat.id}`} className="scroll-mt-20">
             <div className="mb-3 flex items-baseline gap-2">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{cat.name}</h2>
-              <span className="text-sm text-gray-400">{items.length}</span>
+              <h2 className="font-display text-lg font-semibold text-ink">{cat.name}</h2>
+              <span className="text-sm text-mute">{items.length}</span>
             </div>
             <div className="space-y-2">
               {items.map((fn) => (

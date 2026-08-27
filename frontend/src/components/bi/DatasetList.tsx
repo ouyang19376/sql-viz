@@ -32,8 +32,8 @@ export default function DatasetList({
               className={
                 'flex items-start gap-2 rounded-lg border px-2.5 py-2 transition-colors ' +
                 (active
-                  ? 'border-indigo-300 bg-indigo-50/60 dark:border-indigo-500/50 dark:bg-indigo-500/10'
-                  : 'border-gray-200 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/50')
+                  ? 'border-accent bg-accent-soft'
+                  : 'border-line hover:bg-surface-2')
               }
             >
               <input
@@ -41,18 +41,18 @@ export default function DatasetList({
                 checked={checkedIds.has(ds.id)}
                 onChange={() => onToggleCheck(ds.id)}
                 aria-label={`勾选 ${ds.name}`}
-                className="mt-1 h-3.5 w-3.5 shrink-0 cursor-pointer accent-indigo-600"
+                className="mt-1 h-3.5 w-3.5 shrink-0 cursor-pointer accent-accent"
               />
               <button
                 type="button"
                 onClick={() => onSelect(ds)}
                 className="min-w-0 flex-1 text-left"
               >
-                <span className="flex items-center gap-1.5 text-sm font-medium text-gray-800 dark:text-gray-100">
-                  <FileSpreadsheet className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+                <span className="flex items-center gap-1.5 text-sm font-medium text-ink">
+                  <FileSpreadsheet className="h-3.5 w-3.5 shrink-0 text-mute" />
                   <span className="truncate">{ds.name}</span>
                 </span>
-                <span className="mt-0.5 block text-xs text-gray-400 dark:text-gray-500">
+                <span className="mt-0.5 block text-xs text-mute">
                   {ds.rowCount} 行 · {shortTime(ds.createdAt)}
                 </span>
               </button>

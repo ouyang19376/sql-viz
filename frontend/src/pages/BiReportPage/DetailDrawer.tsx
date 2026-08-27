@@ -48,11 +48,11 @@ export default function DetailDrawer({ open, onClose, datasetId, filters }: Prop
   return (
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <aside className="absolute inset-y-0 right-0 flex w-full max-w-2xl flex-col bg-white shadow-xl dark:bg-gray-900">
-        <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-gray-800">
+      <aside className="absolute inset-y-0 right-0 flex w-full max-w-2xl flex-col bg-surface shadow-xl">
+        <div className="flex items-center justify-between border-b border-line px-5 py-3">
           <div className="min-w-0">
-            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">查看明细</h3>
-            <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
+            <h3 className="text-base font-semibold text-ink">查看明细</h3>
+            <p className="mt-0.5 truncate text-xs text-mute">
               {filters.length === 0
                 ? '全部数据'
                 : filters.map((f) => `${f.field}=${String(f.value)}`).join(' · ')}
@@ -63,7 +63,7 @@ export default function DetailDrawer({ open, onClose, datasetId, filters }: Prop
             type="button"
             onClick={onClose}
             aria-label="关闭"
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-mute hover:bg-surface-2"
           >
             <X className="h-5 w-5" />
           </button>
@@ -71,12 +71,12 @@ export default function DetailDrawer({ open, onClose, datasetId, filters }: Prop
 
         <div className="flex-1 space-y-3 overflow-auto p-5">
           {isError ? (
-            <div className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-400 dark:border-gray-700">
+            <div className="rounded-lg border border-dashed border-line p-8 text-center text-sm text-mute">
               明细加载失败
               <button
                 type="button"
                 onClick={() => refetch()}
-                className="mt-2 block w-full text-xs text-indigo-600 hover:underline"
+                className="mt-2 block w-full text-xs text-accent hover:underline"
               >
                 重试
               </button>

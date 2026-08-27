@@ -23,8 +23,8 @@ export default function DdlInput({ value, onChange, onGenerate, pending }: Props
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">DDL 建表语句</label>
-        <span className={`text-xs ${over ? 'font-medium text-red-600' : 'text-gray-400'}`}>
+        <label className="text-sm font-medium text-ink-2">DDL 建表语句</label>
+        <span className={`text-xs ${over ? 'font-medium text-red-600' : 'text-mute'}`}>
           {value.length} / {MAX_CHARS}
         </span>
       </div>
@@ -42,7 +42,7 @@ export default function DdlInput({ value, onChange, onGenerate, pending }: Props
           type="button"
           onClick={onGenerate}
           disabled={blocked}
-          className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
           生成文本块
@@ -51,7 +51,7 @@ export default function DdlInput({ value, onChange, onGenerate, pending }: Props
           type="button"
           onClick={() => onChange('')}
           disabled={pending || empty}
-          className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+          className="inline-flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-sm text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Eraser className="h-4 w-4" />
           清空

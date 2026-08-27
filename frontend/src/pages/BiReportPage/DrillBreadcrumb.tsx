@@ -19,8 +19,8 @@ export default function DrillBreadcrumb({ stack, currentField, onJump }: Props) 
         className={
           'rounded px-1.5 py-0.5 transition-colors ' +
           (stack.length === 0
-            ? 'font-medium text-gray-700 dark:text-gray-200'
-            : 'text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10')
+            ? 'font-medium text-ink-2'
+            : 'text-accent hover:bg-accent-soft')
         }
       >
         全部
@@ -29,7 +29,7 @@ export default function DrillBreadcrumb({ stack, currentField, onJump }: Props) 
         const isLast = i === stack.length - 1
         return (
           <span key={`${lvl.field}-${i}`} className="flex items-center gap-1">
-            <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+            <ChevronRight className="h-3.5 w-3.5 text-mute" />
             <button
               type="button"
               onClick={() => onJump(i + 1)}
@@ -37,8 +37,8 @@ export default function DrillBreadcrumb({ stack, currentField, onJump }: Props) 
               className={
                 'rounded px-1.5 py-0.5 transition-colors ' +
                 (isLast
-                  ? 'cursor-default font-medium text-gray-700 dark:text-gray-200'
-                  : 'text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10')
+                  ? 'cursor-default font-medium text-ink-2'
+                  : 'text-accent hover:bg-accent-soft')
               }
             >
               {lvl.field}: {lvl.value}
@@ -47,7 +47,7 @@ export default function DrillBreadcrumb({ stack, currentField, onJump }: Props) 
         )
       })}
       {currentField && (
-        <span className="flex items-center gap-1 text-gray-400 dark:text-gray-500">
+        <span className="flex items-center gap-1 text-mute">
           <ChevronRight className="h-3.5 w-3.5" />
           <span className="px-1.5 py-0.5">{currentField}</span>
         </span>

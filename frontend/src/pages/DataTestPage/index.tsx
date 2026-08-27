@@ -13,6 +13,7 @@ import NaturalLanguagePanel from '@/components/datatest/NaturalLanguagePanel'
 import SchemaBuilderPanel from '@/components/datatest/SchemaBuilderPanel'
 import ResultPreview from '@/components/datatest/ResultPreview'
 import RefusalAlert from '@/components/datatest/RefusalAlert'
+import PageHeader from '@/components/shared/PageHeader'
 
 /** 测试数据集工具主页（DT 模块 F-DT-01 ~ F-DT-11）。 */
 export default function DataTestPage() {
@@ -120,13 +121,10 @@ export default function DataTestPage() {
 
   return (
     <div className="mx-auto max-w-[960px]">
-      {/* PageHeader */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">测试数据集工具</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          用 LLM 一键生成结构化测试数据，支持 xlsx / json / csv 三格式导出
-        </p>
-      </div>
+      <PageHeader
+        title="测试数据集工具"
+        subtitle="用 LLM 一键生成结构化测试数据，支持 xlsx / json / csv 三格式导出"
+      />
 
       {/* 主面板卡片 */}
       <div className="relative rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -152,7 +150,7 @@ export default function DataTestPage() {
         {loadingHint && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm dark:bg-gray-900/70">
             <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-gray-700 shadow-md dark:bg-gray-800 dark:text-gray-200">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-indigo-500" />
+              <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
               {loadingHint}
             </div>
           </div>

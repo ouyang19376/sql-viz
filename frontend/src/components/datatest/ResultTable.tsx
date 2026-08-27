@@ -11,18 +11,18 @@ export default function ResultTable({ result }: Props) {
   const previewRows = rows.slice(0, DT_LIMITS.PREVIEW_ROWS)
 
   const renderCell = (v: unknown) => {
-    if (v === null || v === undefined) return <span className="text-gray-300 dark:text-gray-600">null</span>
+    if (v === null || v === undefined) return <span className="text-mute">null</span>
     if (typeof v === 'boolean') return v ? 'true' : 'false'
     return String(v)
   }
 
   return (
-    <div className="max-h-[480px] overflow-auto rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+    <div className="max-h-[480px] overflow-auto rounded-lg border border-line bg-surface">
       <table className="w-full text-sm">
-        <thead className="sticky top-0 z-10 bg-gray-50 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+        <thead className="sticky top-0 z-10 bg-surface-2 text-xs font-medium text-ink-2">
           <tr>
             {columns.map((c, i) => (
-              <th key={i} className="border-b border-gray-200 p-2 text-left whitespace-nowrap dark:border-gray-700">
+              <th key={i} className="border-b border-line p-2 text-left whitespace-nowrap">
                 {c}
               </th>
             ))}
@@ -30,9 +30,9 @@ export default function ResultTable({ result }: Props) {
         </thead>
         <tbody>
           {previewRows.map((row, i) => (
-            <tr key={i} className="even:bg-gray-50/50 dark:even:bg-gray-800/30">
+            <tr key={i} className="even:bg-surface-2/50">
               {columns.map((_, ci) => (
-                <td key={ci} className="border-b border-gray-100 p-2 align-top whitespace-nowrap dark:border-gray-800 dark:text-gray-200">
+                <td key={ci} className="border-b border-line p-2 align-top whitespace-nowrap text-ink">
                   {renderCell(row[ci])}
                 </td>
               ))}

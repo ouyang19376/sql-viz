@@ -8,7 +8,7 @@ from app.core.response import fail, ok
 from app.services.lineage_models import LineageAnalyzeRequest, LineageNeo4jPushRequest
 from app.services.lineage_neo4j_service import Neo4jNotConfiguredError, Neo4jPushError, push_lineage_to_neo4j
 from app.services.lineage_service import analyze_lineage
-from app.services.llm_client import LLMClientError
+from app.services.llm_client import LLMClientError, LLMTimeoutError
 from app.services.llm_usage import get_llm_usage_stats
 
 logger = logging.getLogger(__name__)
@@ -21,15 +21,14 @@ def analyze_endpoint(req: LineageAnalyzeRequest):
     """API-LN-01：分析 SQL 表级血缘。"""
     try:
         result = analyze_lineage(req)
+    except LLMTimeoutError as exc:
+        logger.warning("lineage llm timeout: %s", exc)
+        return JSONResponse(
+            status_code=504,
+            content=fail(-1, "分析超时，请缩短脚本后重试"),
+        )
     except LLMClientError as exc:
-        msg = str(exc)
-        if "Timeout" in msg or "timeout" in msg or "timed out" in msg:
-            logger.warning("lineage llm timeout: %s", msg)
-            return JSONResponse(
-                status_code=504,
-                content=fail(-1, "分析超时，请缩短脚本后重试"),
-            )
-        logger.warning("lineage llm upstream error: %s", msg)
+        logger.warning("lineage llm upstream error: %s", exc)
         return JSONResponse(
             status_code=500,
             content=fail(-2, "血缘分析服务暂不可用"),

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router'
-import { BarChart3, Database, GitBranch, Menu, MessageSquareCode, ScanSearch, Sparkles, X } from 'lucide-react'
+import { BarChart3, BookOpen, Database, GitBranch, Menu, MessageSquareCode, ScanSearch, Sparkles, X } from 'lucide-react'
 import DialectDropdown from './DialectDropdown'
 import SearchBox from './SearchBox'
 import SearchModal from './SearchModal'
@@ -51,6 +51,13 @@ const MODULES = [
     icon: MessageSquareCode,
     match: (p: string) => p === '/rag-sql',
   },
+  {
+    key: 'kbqa',
+    label: '知识库问答',
+    to: '/kbqa',
+    icon: BookOpen,
+    match: (p: string) => p === '/kbqa',
+  },
 ] as const
 
 /** 全局顶部导航栏：
@@ -76,15 +83,15 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-gray-900/80">
+      <header className="sticky top-0 z-50 border-b border-line bg-paper/80 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-2 px-4 sm:gap-4 sm:px-6 lg:px-8">
           {/* Logo = 返回首页 */}
           <Link
             to="/"
             title="返回首页"
-            className="flex items-center gap-2 text-lg font-semibold dark:text-gray-100"
+            className="flex items-center gap-2 font-display text-lg font-semibold text-ink"
           >
-            <Database className="h-5 w-5 dialect-text" />
+            <Database className="h-5 w-5 text-accent" />
             <span className="hidden sm:inline">SQL Viz</span>
           </Link>
 
@@ -94,12 +101,12 @@ export default function Navbar() {
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="菜单"
             aria-expanded={menuOpen}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-100 md:hidden dark:text-gray-300 dark:hover:bg-gray-800"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-ink-2 transition-colors hover:bg-surface-2 md:hidden"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
-          {/* ModuleNav（>=768px）：当前模块高亮 */}
+          {/* ModuleNav（>=768px）：当前模块高亮（琥珀荧光条） */}
           <nav className="hidden items-center gap-1 md:flex" aria-label="模块导航">
             {MODULES.map((m) => {
               const active = m.match(pathname)
@@ -112,8 +119,8 @@ export default function Navbar() {
                   className={
                     'inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-sm font-medium transition-colors ' +
                     (active
-                      ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300'
-                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200')
+                      ? 'bg-accent text-white'
+                      : 'text-mute hover:bg-surface-2 hover:text-ink')
                   }
                 >
                   <Icon className="h-4 w-4" />
@@ -146,7 +153,7 @@ export default function Navbar() {
               aria-hidden
             />
             <nav
-              className="absolute inset-x-0 top-14 z-50 border-b border-gray-200 bg-white px-4 py-2 shadow-lg md:hidden dark:border-gray-800 dark:bg-gray-900"
+              className="absolute inset-x-0 top-14 z-50 border-b border-line bg-paper px-4 py-2 shadow-lg md:hidden"
               aria-label="模块菜单"
             >
               {MODULES.map((m) => {
@@ -161,8 +168,8 @@ export default function Navbar() {
                     className={
                       'flex h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors ' +
                       (active
-                        ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300'
-                        : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800')
+                        ? 'bg-accent text-white'
+                        : 'text-ink-2 hover:bg-surface-2')
                     }
                   >
                     <Icon className="h-4 w-4" />

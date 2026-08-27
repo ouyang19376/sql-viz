@@ -27,7 +27,7 @@ export default function DataSourcePicker({ value, onChange, connectedOnly }: Pro
       value={value ?? ''}
       onChange={(e) => onChange(e.target.value)}
       disabled={isLoading || sources.length === 0}
-      className="max-w-xs truncate rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+      className="max-w-xs truncate rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink"
     >
       {sources.length === 0 && (
         <option value="">{isLoading ? '加载中…' : '尚未连接数据源'}</option>

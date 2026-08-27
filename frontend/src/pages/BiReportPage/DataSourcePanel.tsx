@@ -52,7 +52,7 @@ export default function DataSourcePanel() {
   return (
     <div className="flex h-full flex-col">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <span className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+        <span className="flex items-center gap-2 text-sm font-semibold text-ink-2">
           <Database className="h-4 w-4" />
           数据源
         </span>
@@ -74,18 +74,18 @@ export default function DataSourcePanel() {
         {isLoading ? (
           <Skeleton lines={3} />
         ) : isError ? (
-          <div className="rounded-lg border border-dashed border-gray-300 p-4 text-center text-sm text-gray-400 dark:border-gray-700">
+          <div className="rounded-lg border border-dashed border-line p-4 text-center text-sm text-mute">
             列表加载失败
             <button
               type="button"
               onClick={() => refetch()}
-              className="mt-2 block w-full text-xs text-indigo-600 hover:underline"
+              className="mt-2 block w-full text-xs text-accent hover:underline"
             >
               重试
             </button>
           </div>
         ) : !datasets || datasets.length === 0 ? (
-          <p className="px-1 pt-2 text-center text-xs text-gray-400 dark:text-gray-500">
+          <p className="px-1 pt-2 text-center text-xs text-mute">
             暂无数据集，上传开始
           </p>
         ) : (

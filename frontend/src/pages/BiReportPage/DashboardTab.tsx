@@ -108,7 +108,7 @@ export default function DashboardTab() {
         <DrillBreadcrumb stack={drillStack} currentField={currentField} onJump={drillTo} />
         <div className="flex flex-wrap items-center gap-2">
           {currentField && (
-            <div className="inline-flex h-8 items-center gap-1 rounded-md border border-gray-200 px-1.5 dark:border-gray-700">
+            <div className="inline-flex h-8 items-center gap-1 rounded-md border border-line px-1.5">
               <select
                 value={sort?.field ?? ''}
                 onChange={(e) => {
@@ -116,7 +116,7 @@ export default function DashboardTab() {
                   if (!f) setSort(null)
                   else setSort({ field: f, order: sort?.order ?? 'desc' })
                 }}
-                className="h-7 max-w-[9rem] bg-transparent text-sm text-gray-600 outline-none dark:text-gray-300"
+                className="h-7 max-w-[9rem] bg-transparent text-sm text-ink-2 outline-none"
               >
                 <option value="">排序：无</option>
                 {sortOptions.map((o) => (
@@ -129,7 +129,7 @@ export default function DashboardTab() {
                 <button
                   type="button"
                   onClick={() => setSort({ ...sort, order: sort.order === 'asc' ? 'desc' : 'asc' })}
-                  className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="inline-flex h-6 w-6 items-center justify-center rounded text-mute hover:bg-surface-2"
                   aria-label="切换排序方向"
                 >
                   {sort.order === 'asc' ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
@@ -140,7 +140,7 @@ export default function DashboardTab() {
           <button
             type="button"
             onClick={() => setDetailOpen(true)}
-            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-200 px-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-line px-2.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2"
           >
             <Table2 className="h-4 w-4" />
             查看明细
@@ -159,7 +159,7 @@ export default function DashboardTab() {
 
       {/* drillPath 为空且无任何维度 → 无法分组出图，引导建模 */}
       {!currentField ? (
-        <div className="flex min-h-[280px] items-center justify-center rounded-xl border border-dashed border-gray-300 text-sm text-gray-400 dark:border-gray-700">
+        <div className="flex min-h-[280px] items-center justify-center rounded-xl border border-dashed border-line text-sm text-mute">
           请在「建模配置」设置下钻层级，或将某列设为维度以生成图表
         </div>
       ) : (

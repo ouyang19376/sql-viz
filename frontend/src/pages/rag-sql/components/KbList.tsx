@@ -46,9 +46,9 @@ export default function KbList({ docs, onPreview, onDelete, deletingId }: Props)
     <div className="space-y-4">
       {grouped.map(({ cat, items }) => (
         <section key={cat}>
-          <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <h3 className="mb-2 text-sm font-semibold text-ink-2">
             {KB_CATEGORY_LABELS[cat]}
-            <span className="ml-1.5 text-xs font-normal text-gray-400">({items.length})</span>
+            <span className="ml-1.5 text-xs font-normal text-mute">({items.length})</span>
           </h3>
           <ul className="space-y-2">
             {items.map((doc) => {
@@ -56,13 +56,13 @@ export default function KbList({ docs, onPreview, onDelete, deletingId }: Props)
               return (
                 <li
                   key={doc.id}
-                  className="flex items-center justify-between rounded-md border border-gray-200 px-3 py-2 dark:border-gray-700"
+                  className="flex items-center justify-between rounded-md border border-line px-3 py-2"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <p className="truncate text-sm font-medium text-ink">
                       {doc.title}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-mute">
                       {doc.chunkCount} 分片 · {fmtTime(doc.createdAt)}
                       {doc.sourceName ? ` · ${doc.sourceName}` : ''}
                     </p>
@@ -71,7 +71,7 @@ export default function KbList({ docs, onPreview, onDelete, deletingId }: Props)
                     <button
                       type="button"
                       onClick={() => onPreview(doc.id)}
-                      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-ink-2 transition-colors hover:bg-surface-2"
                     >
                       <Eye className="h-3.5 w-3.5" />
                       预览

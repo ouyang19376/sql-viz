@@ -102,7 +102,7 @@ export default function ChunkPanel() {
         )}
         {chunkMut.isPending && <Skeleton lines={4} />}
         {chunkDrafts.length > 0 && (
-          <p className="text-xs text-gray-400">已存 {chunkDrafts.length} 个草稿（可批量上传）</p>
+          <p className="text-xs text-mute">已存 {chunkDrafts.length} 个草稿（可批量上传）</p>
         )}
       </div>
 
@@ -126,8 +126,8 @@ export default function ChunkPanel() {
                     className={
                       'rounded-md px-2.5 py-1 text-xs font-medium transition-colors ' +
                       (i === activeChunkIdx
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700')
+                        ? 'bg-accent text-white'
+                        : 'bg-surface-2 text-ink-2 hover:bg-surface-2')
                     }
                   >
                     {c.tableName}

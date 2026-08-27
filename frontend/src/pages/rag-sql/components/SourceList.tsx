@@ -22,8 +22,8 @@ export default function SourceList({ sources }: Props) {
 
   return (
     <div className="space-y-3">
-      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-        命中来源 <span className="ml-1 text-xs font-normal text-gray-400">({top.length})</span>
+      <h4 className="text-sm font-semibold text-ink-2">
+        命中来源 <span className="ml-1 text-xs font-normal text-mute">({top.length})</span>
       </h4>
       <ul className="space-y-2">
         {top.map((s, i) => {
@@ -31,7 +31,7 @@ export default function SourceList({ sources }: Props) {
           return (
             <li
               key={`${s.collection}-${i}`}
-              className="flex items-center justify-between rounded-md border border-gray-200 px-3 py-2 dark:border-gray-700"
+              className="flex items-center justify-between rounded-md border border-line px-3 py-2"
             >
               <div className="flex min-w-0 items-center gap-2">
                 {isTable ? (
@@ -40,8 +40,8 @@ export default function SourceList({ sources }: Props) {
                   <FileText className="h-4 w-4 shrink-0 text-sky-500" />
                 )}
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{s.title}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className="truncate text-sm font-medium text-ink">{s.title}</p>
+                  <p className="text-xs text-mute">
                     {isTable ? '表元数据' : '规范文档'} · {s.collection} · score {s.score.toFixed(3)}
                   </p>
                 </div>
@@ -49,7 +49,7 @@ export default function SourceList({ sources }: Props) {
               <button
                 type="button"
                 onClick={() => setPreview(s)}
-                className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs text-ink-2 transition-colors hover:bg-surface-2"
               >
                 <Eye className="h-3.5 w-3.5" />
                 预览

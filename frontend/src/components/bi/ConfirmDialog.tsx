@@ -40,15 +40,15 @@ export default function ConfirmDialog({
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-5 shadow-xl dark:border-gray-800 dark:bg-gray-900"
+        className="relative w-full max-w-sm rounded-2xl border border-line bg-surface p-5 shadow-xl"
       >
         <div className="flex items-start gap-3">
           <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500 dark:bg-red-500/10">
             <AlertTriangle className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{message}</p>
+            <h3 className="text-base font-semibold text-ink">{title}</h3>
+            <p className="mt-1 text-sm text-mute">{message}</p>
           </div>
         </div>
         <div className="mt-5 flex justify-end gap-2">
@@ -56,7 +56,7 @@ export default function ConfirmDialog({
             type="button"
             onClick={onCancel}
             disabled={confirmBusy}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+            className="rounded-md border border-line px-3 py-1.5 text-sm text-ink-2 transition-colors hover:bg-surface-2 disabled:opacity-50"
           >
             取消
           </button>

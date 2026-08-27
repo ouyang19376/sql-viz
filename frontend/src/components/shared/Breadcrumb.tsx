@@ -25,7 +25,7 @@ export default function Breadcrumb({
   return (
     <nav
       aria-label="breadcrumb"
-      className={`mb-4 flex flex-wrap items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 ${className}`}
+      className={`mb-4 flex flex-wrap items-center gap-1.5 text-sm text-mute ${className}`}
     >
       {items.map((item, idx) => {
         const isLast = idx === items.length - 1
@@ -34,13 +34,13 @@ export default function Breadcrumb({
             {idx > 0 && (
               <ChevronRight
                 aria-hidden
-                className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500"
+                className="h-3.5 w-3.5 text-mute/70"
               />
             )}
             {!isLast && item.to ? (
               <Link
                 to={item.to}
-                className="hover:text-gray-700 hover:underline dark:hover:text-gray-200"
+                className="hover:text-ink hover:underline"
               >
                 {item.label}
               </Link>
@@ -50,7 +50,7 @@ export default function Breadcrumb({
                 className={
                   isLast && highlightLast
                     ? 'dialect-text font-medium'
-                    : 'font-medium text-gray-700 dark:text-gray-200'
+                    : 'font-medium text-ink-2'
                 }
               >
                 {item.label}

@@ -27,29 +27,29 @@ export default function FunctionItem({ fn, dialectId }: Props) {
   }
 
   return (
-    <div className="group flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:border-[var(--dialect-color)] hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800">
+    <div className="group flex items-center gap-3 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-[var(--dialect-color)] hover:bg-surface-2">
       <Link
         to={`/dialect/${dialectId}/function/${fn.id}`}
         className="min-w-0 flex-1"
       >
         <div className="flex items-baseline gap-2">
-          <h3 className="shrink-0 font-mono font-semibold text-gray-900 group-hover:dialect-text dark:text-gray-100">
+          <h3 className="shrink-0 font-mono font-semibold text-ink group-hover:dialect-text">
             {fn.name}
           </h3>
           {fn.return_type && (
-            <span className="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+            <span className="shrink-0 rounded bg-surface-2 px-1.5 py-0.5 font-mono text-xs text-mute">
               {fn.return_type}
             </span>
           )}
         </div>
         {/* 签名：等宽，超长省略并 tooltip 全文（F-FC-03） */}
         <p
-          className="mt-1 truncate font-mono text-sm text-gray-600 dark:text-gray-300"
+          className="mt-1 truncate font-mono text-sm text-ink-2"
           title={fn.signature}
         >
           {fn.signature}
         </p>
-        <p className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-1 line-clamp-2 text-sm text-mute">
           {fn.description}
         </p>
       </Link>
@@ -59,8 +59,8 @@ export default function FunctionItem({ fn, dialectId }: Props) {
         onClick={handleToggle}
         aria-label={fav ? '取消收藏' : '收藏'}
         aria-pressed={fav}
-        className={`shrink-0 rounded-lg p-2 transition-colors hover:bg-gray-100 ${
-          fav ? 'dialect-text' : 'text-gray-300 hover:text-gray-400'
+        className={`shrink-0 rounded-lg p-2 transition-colors hover:bg-surface-2 ${
+          fav ? 'dialect-text' : 'text-mute hover:text-ink-2'
         }`}
       >
         <Heart className="h-5 w-5" fill={fav ? 'currentColor' : 'none'} />

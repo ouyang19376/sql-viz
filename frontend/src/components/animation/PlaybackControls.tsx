@@ -44,7 +44,7 @@ export default function PlaybackControls({
           type="button"
           onClick={onPrevStep}
           aria-label="上一步"
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-2 transition-colors hover:bg-surface-2"
         >
           <SkipBack className="h-4 w-4" />
         </button>
@@ -53,7 +53,7 @@ export default function PlaybackControls({
           type="button"
           onClick={onNextStep}
           aria-label="下一步"
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-2 transition-colors hover:bg-surface-2"
         >
           <SkipForward className="h-4 w-4" />
         </button>
@@ -61,14 +61,14 @@ export default function PlaybackControls({
           type="button"
           onClick={onReset}
           aria-label="重置"
-          className="ml-1 flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="ml-1 flex h-8 w-8 items-center justify-center rounded-lg text-ink-2 transition-colors hover:bg-surface-2"
         >
           <RotateCcw className="h-4 w-4" />
         </button>
       </div>
 
       <div className="flex items-center gap-1">
-        <span className="mr-1 text-xs text-gray-400">速度</span>
+        <span className="mr-1 text-xs text-mute">速度</span>
         {SPEEDS.map((s) => (
           <button
             key={s}
@@ -77,7 +77,7 @@ export default function PlaybackControls({
             className={`rounded-md px-2 py-1 text-xs font-medium transition-colors ${
               speed === s
                 ? 'dialect-bg-soft dialect-text'
-                : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
+                : 'text-mute hover:bg-surface-2'
             }`}
           >
             {s}x

@@ -13,13 +13,13 @@ interface Props {
 /** 空状态 / 错误占位 */
 export default function EmptyState({ title, description, actionLabel, actionTo, onAction, className }: Props) {
   return (
-    <div className={`flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 py-16 text-center dark:border-gray-700${className ? ' ' + className : ''}`}>
-      <p className="text-lg font-medium text-gray-700 dark:text-gray-200">{title}</p>
-      {description && <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{description}</p>}
+    <div className={`flex flex-col items-center justify-center rounded-xl border border-dashed border-line py-16 text-center${className ? ' ' + className : ''}`}>
+      <p className="text-lg font-medium text-ink-2">{title}</p>
+      {description && <p className="mt-2 text-sm text-mute">{description}</p>}
       {actionLabel && actionTo && (
         <Link
           to={actionTo}
-          className="mt-4 rounded-lg dialect-bg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
         >
           {actionLabel}
         </Link>
@@ -27,7 +27,7 @@ export default function EmptyState({ title, description, actionLabel, actionTo, 
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="mt-4 rounded-lg dialect-bg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
         >
           {actionLabel}
         </button>

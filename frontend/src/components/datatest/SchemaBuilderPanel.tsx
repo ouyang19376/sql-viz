@@ -63,13 +63,13 @@ export default function SchemaBuilderPanel({ loading, onSubmit, onReset }: Props
       </div>
 
       <div className="flex items-center justify-between gap-3 pt-2">
-        <span className="text-xs text-gray-500 dark:text-gray-400">{hint}</span>
+        <span className="text-xs text-mute">{hint}</span>
         <div className="flex gap-3">
           <button
             type="button"
             onClick={onReset}
             disabled={loading}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+            className="rounded-md border border-line bg-surface px-4 py-2 text-sm text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             重置
           </button>
@@ -77,7 +77,7 @@ export default function SchemaBuilderPanel({ loading, onSubmit, onReset }: Props
             type="button"
             onClick={onSubmit}
             disabled={!canSubmit}
-            className="inline-flex items-center gap-1.5 rounded-md bg-indigo-500 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Sparkles className="h-4 w-4" />
             {loading ? '生成中…' : '生成'}

@@ -53,14 +53,14 @@ export default function DatasetUploader() {
       className={
         'rounded-lg border border-dashed p-4 text-center transition-colors ' +
         (upload.isPending
-          ? 'border-gray-200 dark:border-gray-800'
+          ? 'border-line'
           : dragOver
-            ? 'border-indigo-400 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-500/5'
-            : 'border-gray-300 hover:border-indigo-400 dark:border-gray-700')
+            ? 'border-accent bg-accent-soft'
+            : 'border-line hover:border-accent')
       }
     >
-      <UploadCloud className="mx-auto h-6 w-6 text-gray-400" />
-      <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+      <UploadCloud className="mx-auto h-6 w-6 text-mute" />
+      <p className="mt-2 text-xs text-mute">
         {upload.isPending ? '解析中，请稍候…' : '拖拽或选择 .xlsx / .csv'}
       </p>
       <input
@@ -79,7 +79,7 @@ export default function DatasetUploader() {
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={upload.isPending}
-        className="mt-3 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+        className="mt-3 rounded-md border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {upload.isPending ? '解析中…' : '选择文件'}
       </button>

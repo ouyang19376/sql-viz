@@ -27,7 +27,7 @@ export default function DialectDropdown() {
       value={currentDialectId}
       onChange={(e) => handleChange(e.target.value)}
       aria-label="切换方言"
-      className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-[var(--dialect-color)] focus:outline-none focus:ring-1 focus:ring-[var(--dialect-color)]"
+      className="rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
     >
       {data?.dialects.map((d) => (
         <option key={d.id} value={d.id}>

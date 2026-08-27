@@ -68,7 +68,7 @@ export default function AskResult({
       <div className="space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">生成 SQL</span>
+            <span className="text-sm font-semibold text-ink-2">生成 SQL</span>
             {streaming && (
               <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -93,7 +93,7 @@ export default function AskResult({
               type="button"
               onClick={handleCopy}
               disabled={!sql}
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-100 disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-ink-2 transition-colors hover:bg-surface-2 disabled:opacity-40"
             >
               <Copy className="h-3.5 w-3.5" />
               {copied ? '已复制' : '复制'}
@@ -102,7 +102,7 @@ export default function AskResult({
               type="button"
               onClick={handleDownload}
               disabled={!sql}
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-100 disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-ink-2 transition-colors hover:bg-surface-2 disabled:opacity-40"
             >
               <Download className="h-3.5 w-3.5" />
               下载 .sql
@@ -113,7 +113,7 @@ export default function AskResult({
                 onClick={handleImportWorkbench}
                 disabled={!sql}
                 title="导入 dataprofile 查询工作台执行"
-                className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-40"
+                className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-xs font-medium text-white transition-colors hover:bg-accent-strong disabled:opacity-40"
               >
                 <ExternalLink className="h-3.5 w-3.5" />
                 导入工作台执行

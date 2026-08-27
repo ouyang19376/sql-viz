@@ -31,7 +31,7 @@ export default function EditableField({ label, value, placeholder, multiline, on
     }
     return (
       <div className="space-y-1">
-        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">{label}</label>
+        <label className="text-xs font-medium text-mute">{label}</label>
         <div className="flex items-start gap-2">
           {multiline ? (
             <textarea
@@ -40,7 +40,7 @@ export default function EditableField({ label, value, placeholder, multiline, on
               placeholder={placeholder}
               rows={3}
               autoFocus
-              className="min-w-0 flex-1 resize-y rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-800 outline-none focus:border-emerald-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+              className="min-w-0 flex-1 resize-y rounded-md border border-line px-2 py-1 text-sm text-ink outline-none focus:border-accent bg-surface"
             />
           ) : (
             <input
@@ -48,14 +48,14 @@ export default function EditableField({ label, value, placeholder, multiline, on
               onChange={(e) => setDraft(e.target.value)}
               placeholder={placeholder}
               autoFocus
-              className="min-w-0 flex-1 rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-800 outline-none focus:border-emerald-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+              className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-sm text-ink outline-none focus:border-accent bg-surface"
             />
           )}
           <button
             type="button"
             onClick={save}
             title="保存"
-            className="shrink-0 rounded-md bg-emerald-600 p-1.5 text-white hover:bg-emerald-700"
+            className="shrink-0 rounded-md bg-accent p-1.5 text-white hover:bg-accent-strong"
           >
             <Check className="h-4 w-4" />
           </button>
@@ -63,7 +63,7 @@ export default function EditableField({ label, value, placeholder, multiline, on
             type="button"
             onClick={cancel}
             title="取消"
-            className="shrink-0 rounded-md border border-gray-300 p-1.5 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="shrink-0 rounded-md border border-line p-1.5 text-ink-2 hover:bg-surface-2"
           >
             <X className="h-4 w-4" />
           </button>
@@ -75,14 +75,14 @@ export default function EditableField({ label, value, placeholder, multiline, on
   return (
     <div className="flex items-center justify-between gap-2 py-1">
       <div className="min-w-0">
-        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{label}</div>
-        <div className="truncate text-sm text-gray-800 dark:text-gray-100">{value || '—'}</div>
+        <div className="text-xs font-medium text-mute">{label}</div>
+        <div className="truncate text-sm text-ink">{value || '—'}</div>
       </div>
       <button
         type="button"
         onClick={() => setEditing(true)}
         title="编辑"
-        className="shrink-0 rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+        className="shrink-0 rounded-md p-1 text-mute transition-colors hover:bg-surface-2 hover:text-ink-2"
       >
         <Pencil className="h-3.5 w-3.5" />
       </button>

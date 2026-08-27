@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { PanelLeft, X } from 'lucide-react'
 import { useBiStore } from '@/stores/useBiStore'
 import type { BiTab } from '@/types/bi'
+import PageHeader from '@/components/shared/PageHeader'
 import DataSourcePanel from './DataSourcePanel'
 import BiTabs from './BiTabs'
 import DetailPreviewTab from './DetailPreviewTab'
@@ -24,33 +25,30 @@ export default function BiReportPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      {/* PageHeader */}
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">BI 报表工具</h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            上传 Excel / CSV，建模出图，支持上下钻与卡片联动
-          </p>
-        </div>
-        {/* 移动端打开数据源抽屉（<768px） */}
-        <button
-          type="button"
-          onClick={() => setDrawerOpen(true)}
-          className="inline-flex h-9 items-center gap-1.5 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 md:hidden dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-        >
-          <PanelLeft className="h-4 w-4" />
-          数据源
-        </button>
-      </div>
+      <PageHeader
+        title="BI 报表工具"
+        subtitle="上传 Excel / CSV，建模出图，支持上下钻与卡片联动"
+        actions={
+          /* 移动端打开数据源抽屉（<768px） */
+          <button
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-line bg-surface px-3 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 md:hidden"
+          >
+            <PanelLeft className="h-4 w-4" />
+            数据源
+          </button>
+        }
+      />
 
       <div className="flex gap-6">
         {/* 左侧数据源栏（>=768px 常驻） */}
-        <aside className="hidden w-64 shrink-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm md:block dark:border-gray-800 dark:bg-gray-900">
+        <aside className="hidden w-64 shrink-0 rounded-2xl border border-line bg-surface p-4 md:block">
           <DataSourcePanel />
         </aside>
 
         {/* 右侧三 Tab 区 */}
-        <section className="min-w-0 flex-1 rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <section className="min-w-0 flex-1 rounded-2xl border border-line bg-surface">
           <div className="px-4">
             <BiTabs value={activeTab} onChange={setActiveTab} disabled={disabledTabs} />
           </div>
@@ -75,13 +73,13 @@ export default function BiReportPage() {
             onClick={() => setDrawerOpen(false)}
             aria-hidden
           />
-          <aside className="absolute inset-y-0 left-0 w-72 max-w-[80%] bg-white p-4 shadow-xl dark:bg-gray-900">
+          <aside className="absolute inset-y-0 left-0 w-72 max-w-[80%] bg-surface p-4 shadow-xl">
             <div className="mb-2 flex justify-end">
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
                 aria-label="关闭"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-mute hover:bg-surface-2"
               >
                 <X className="h-5 w-5" />
               </button>

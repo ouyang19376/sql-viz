@@ -18,7 +18,7 @@ export default function ChunkActions({ ingestStatus, uploading, saved, onSaveDra
         type="button"
         onClick={onSaveDraft}
         disabled={uploading}
-        className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+        className="inline-flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-sm text-ink-2 transition-colors hover:bg-surface-2 disabled:opacity-50"
       >
         <Save className="h-4 w-4" />
         保存草稿
@@ -27,13 +27,13 @@ export default function ChunkActions({ ingestStatus, uploading, saved, onSaveDra
         type="button"
         onClick={onUpload}
         disabled={uploading}
-        className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
+        className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-strong disabled:opacity-50"
       >
         {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
         上传至 RAG
       </button>
       {saved && !ingestedAt && (
-        <span className="text-xs text-gray-400">已存草稿</span>
+        <span className="text-xs text-mute">已存草稿</span>
       )}
       {ingestedAt && (
         <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-1 text-xs text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">

@@ -25,7 +25,7 @@ export default function ResultPreview({ result, page, pageSize, onPageChange }: 
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-mute">
         <span>耗时 {elapsedMs} ms</span>
         <span>·</span>
         <span>
@@ -38,17 +38,17 @@ export default function ResultPreview({ result, page, pageSize, onPageChange }: 
         )}
       </div>
 
-      <div className="max-h-[28rem] overflow-auto rounded-lg border border-gray-200 dark:border-gray-700">
+      <div className="max-h-[28rem] overflow-auto rounded-lg border border-line">
         <table className="min-w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-800">
+          <thead className="sticky top-0 z-10 bg-surface-2">
             <tr>
-              <th className="border-b border-gray-200 px-2 py-1.5 text-left text-xs font-medium text-gray-400 dark:border-gray-700">
+              <th className="border-b border-line px-2 py-1.5 text-left text-xs font-medium text-mute">
                 #
               </th>
               {columns.map((c, i) => (
                 <th
                   key={i}
-                  className="whitespace-nowrap border-b border-gray-200 px-3 py-1.5 text-left font-medium text-gray-700 dark:border-gray-700 dark:text-gray-200"
+                  className="whitespace-nowrap border-b border-line px-3 py-1.5 text-left font-medium text-ink-2"
                 >
                   {c}
                 </th>
@@ -60,7 +60,7 @@ export default function ResultPreview({ result, page, pageSize, onPageChange }: 
               <tr>
                 <td
                   colSpan={columns.length + 1}
-                  className="px-3 py-6 text-center text-gray-400"
+                  className="px-3 py-6 text-center text-mute"
                 >
                   无数据
                 </td>
@@ -69,9 +69,9 @@ export default function ResultPreview({ result, page, pageSize, onPageChange }: 
               rows.map((row, ri) => (
                 <tr
                   key={ri}
-                  className={ri % 2 ? 'bg-gray-50 dark:bg-gray-800/40' : ''}
+                  className={ri % 2 ? 'bg-surface-2' : ''}
                 >
-                  <td className="border-b border-gray-100 px-2 py-1 text-xs text-gray-400 dark:border-gray-800">
+                  <td className="border-b border-line px-2 py-1 text-xs text-mute">
                     {(page - 1) * pageSize + ri + 1}
                   </td>
                   {row.map((cell, ci) => {
@@ -79,10 +79,10 @@ export default function ResultPreview({ result, page, pageSize, onPageChange }: 
                     return (
                       <td
                         key={ci}
-                        className="border-b border-gray-100 px-3 py-1 dark:border-gray-800"
+                        className="border-b border-line px-3 py-1"
                       >
                         <span
-                          className="block max-w-xs truncate font-mono text-gray-800 dark:text-gray-200"
+                          className="block max-w-xs truncate font-mono text-ink-2"
                           title={text}
                         >
                           {text}

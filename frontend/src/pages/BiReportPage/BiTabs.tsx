@@ -16,7 +16,7 @@ const TABS: { value: BiTab; label: string }[] = [
 /** F-CM-02：右侧三 Tab 切换。视觉沿用 datatest/ModeTabs。 */
 export default function BiTabs({ value, onChange, disabled = [] }: Props) {
   return (
-    <div className="flex overflow-x-auto border-b border-gray-200 dark:border-gray-800" role="tablist">
+    <div className="flex overflow-x-auto border-b border-line" role="tablist">
       {TABS.map((t) => {
         const active = t.value === value
         const isDisabled = disabled.includes(t.value)
@@ -32,10 +32,10 @@ export default function BiTabs({ value, onChange, disabled = [] }: Props) {
             className={
               'shrink-0 whitespace-nowrap px-5 py-3 text-sm font-medium transition-colors -mb-px border-b-2 ' +
               (isDisabled
-                ? 'cursor-not-allowed border-transparent text-gray-300 dark:text-gray-600'
+                ? 'cursor-not-allowed border-transparent text-mute'
                 : active
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200')
+                  ? 'border-accent text-accent'
+                  : 'border-transparent text-mute hover:text-ink')
             }
           >
             {t.label}

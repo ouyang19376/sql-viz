@@ -18,6 +18,9 @@ from app.core.config import (
 
 logger = logging.getLogger(__name__)
 
+# doubao embeddings 单次 input 条数上限（超出返回 400 input limit；批量接口按此分批）
+_EMBED_BATCH_MAX = 10
+
 
 class EmbedError(RuntimeError):
     """embedding 调用层错误：配置缺失 / 上游异常 / 超时。"""
@@ -49,18 +52,23 @@ def reset_client_for_test() -> None:
 def embed(texts: list[str]) -> list[list[float]]:
     """批量文本 embedding。空入参返回空列表。
 
-    doubao 兼容 OpenAI embeddings 接口；input 支持批量。
+    doubao 兼容 OpenAI embeddings 接口；input 支持批量但单次 ≤ _EMBED_BATCH_MAX 条，
+    超出时内部分批调用并按序拼接（调用方无感知）。
     """
     if not texts:
         return []
     client = _get_client()
-    try:
-        resp = client.embeddings.create(model=EMBEDDING_MODEL, input=texts)
-    except Exception as exc:  # noqa: BLE001 - SDK 各类异常统一包装
-        raise EmbedError(f"embedding 调用失败：{type(exc).__name__}: {exc}") from exc
-    # 按 index 对齐（API 保证返回顺序与输入一致，仍以 index 兜底）
-    data = sorted(resp.data, key=lambda d: d.index)
-    return [d.embedding for d in data]
+    vectors: list[list[float]] = []
+    for start in range(0, len(texts), _EMBED_BATCH_MAX):
+        batch = texts[start : start + _EMBED_BATCH_MAX]
+        try:
+            resp = client.embeddings.create(model=EMBEDDING_MODEL, input=batch)
+        except Exception as exc:  # noqa: BLE001 - SDK 各类异常统一包装
+            raise EmbedError(f"embedding 调用失败：{type(exc).__name__}: {exc}") from exc
+        # 按 index 对齐（API 保证返回顺序与输入一致，仍以 index 兜底）
+        data = sorted(resp.data, key=lambda d: d.index)
+        vectors.extend(d.embedding for d in data)
+    return vectors
 
 
 def embed_one(text: str) -> list[float]:

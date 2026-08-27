@@ -263,15 +263,15 @@ export default function ChartCard({
   )
 
   const shell =
-    'rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900'
+    'rounded-xl border border-line bg-surface p-4'
 
   if (error) {
     return (
       <div className={shell}>
-        <div className="flex min-h-[320px] flex-col items-center justify-center text-sm text-gray-400">
+        <div className="flex min-h-[320px] flex-col items-center justify-center text-sm text-mute">
           聚合失败
           {onRetry && (
-            <button type="button" onClick={onRetry} className="mt-2 text-xs text-indigo-600 hover:underline">
+            <button type="button" onClick={onRetry} className="mt-2 text-xs text-accent hover:underline">
               重试
             </button>
           )}
@@ -292,7 +292,7 @@ export default function ChartCard({
   if (cityLoading) {
     return (
       <div className={shell}>
-        <div className="flex min-h-[320px] items-center justify-center text-sm text-gray-400">
+        <div className="flex min-h-[320px] items-center justify-center text-sm text-mute">
           正在加载城市地图…
         </div>
       </div>
@@ -303,7 +303,7 @@ export default function ChartCard({
   if (isCityMap && cityError) {
     return (
       <div className={shell}>
-        <div className="flex min-h-[320px] flex-col items-center justify-center text-sm text-gray-400">
+        <div className="flex min-h-[320px] flex-col items-center justify-center text-sm text-mute">
           城市地图加载失败，请检查网络
           <button
             type="button"
@@ -312,7 +312,7 @@ export default function ChartCard({
               setCityError(false)
               setRetryToken((t) => t + 1)
             }}
-            className="mt-2 text-xs text-indigo-600 hover:underline"
+            className="mt-2 text-xs text-accent hover:underline"
           >
             重试
           </button>
@@ -327,7 +327,7 @@ export default function ChartCard({
       chartType === 'map' ? (isCityMap ? '未匹配到城市，请检查城市列' : '未匹配到中国省份，请检查地区列') : '无匹配数据'
     return (
       <div className={shell}>
-        <div className="flex min-h-[320px] items-center justify-center text-sm text-gray-400">
+        <div className="flex min-h-[320px] items-center justify-center text-sm text-mute">
           {emptyText}
         </div>
       </div>

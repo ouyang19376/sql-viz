@@ -13,7 +13,7 @@ export default function PromptTextarea({ value, onChange, disabled }: Props) {
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
+      <label className="text-sm font-medium text-ink-2">
         请描述你想要的数据
       </label>
       <div className="relative">
@@ -24,16 +24,16 @@ export default function PromptTextarea({ value, onChange, disabled }: Props) {
           rows={6}
           placeholder="例如：生成 10 条电商订单数据，包含订单号、用户名、商品、金额、下单时间…"
           className={
-            'w-full resize-y rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-gray-800 ' +
+            'w-full resize-y rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:bg-surface-2 bg-surface text-ink ' +
             (overLimit
               ? 'border-red-400 focus:border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700')
+              : 'border-line focus:border-accent focus:ring-accent')
           }
         />
         <span
           className={
             'pointer-events-none absolute bottom-2 right-3 text-xs ' +
-            (overLimit ? 'text-red-500' : 'text-gray-400')
+            (overLimit ? 'text-red-500' : 'text-mute')
           }
         >
           {len}/{DT_LIMITS.PROMPT_MAX}

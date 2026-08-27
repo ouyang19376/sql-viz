@@ -15,6 +15,7 @@ from app.routers.lineage import router as lineage_router
 from app.routers.bi import router as bi_router
 from app.routers.dataprofile import router as dataprofile_router
 from app.routers.rag_sql import router as rag_sql_router
+from app.routers.kbqa import router as kbqa_router
 
 
 # F-LM-05：避免第三方 SDK 在调试日志中输出包含 SQL 的请求体。
@@ -50,6 +51,7 @@ app.include_router(lineage_router)
 app.include_router(bi_router)
 app.include_router(dataprofile_router)
 app.include_router(rag_sql_router)
+app.include_router(kbqa_router)
 
 
 if __name__ == "__main__":

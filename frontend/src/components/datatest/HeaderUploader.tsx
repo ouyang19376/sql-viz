@@ -61,10 +61,10 @@ export default function HeaderUploader({ onParsed, disabled }: Props) {
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDrop}
       className={
-        'flex items-center justify-between gap-3 rounded-lg border border-dashed bg-white px-4 py-3 dark:bg-gray-900 ' +
+        'flex items-center justify-between gap-3 rounded-lg border border-dashed bg-surface px-4 py-3 ' +
         (disabled || busy
-          ? 'border-gray-200 text-gray-400 dark:border-gray-800'
-          : 'border-gray-300 text-gray-600 hover:border-indigo-400 dark:border-gray-700 dark:text-gray-300')
+          ? 'border-line text-mute'
+          : 'border-line text-ink-2 hover:border-accent')
       }
     >
       <div className="flex items-center gap-2 text-sm">
@@ -89,7 +89,7 @@ export default function HeaderUploader({ onParsed, disabled }: Props) {
         type="button"
         onClick={handlePick}
         disabled={disabled || busy}
-        className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+        className="rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {busy ? '解析中…' : '选择文件'}
       </button>

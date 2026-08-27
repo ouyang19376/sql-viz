@@ -11,7 +11,7 @@ export default function ColorPaletteSelector({ value, onChange }: Props) {
   const keys = Object.keys(COLOR_PALETTES) as ColorPalette[]
   return (
     <section>
-      <h3 className="mb-3 text-sm font-semibold text-gray-800 dark:text-gray-100">图表配色</h3>
+      <h3 className="mb-3 text-sm font-semibold text-ink">图表配色</h3>
       <div className="grid grid-cols-2 gap-2">
         {keys.map((key) => {
           const { label, gradient, colors } = COLOR_PALETTES[key]
@@ -25,8 +25,8 @@ export default function ColorPaletteSelector({ value, onChange }: Props) {
               className={
                 'inline-flex flex-col items-start gap-1.5 rounded-lg border px-3 py-2.5 text-xs font-medium transition-colors ' +
                 (active
-                  ? 'border-indigo-400 bg-indigo-50/60 text-indigo-700 dark:border-indigo-500/50 dark:bg-indigo-500/10 dark:text-indigo-300'
-                  : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800/50')
+                  ? 'border-accent bg-accent-soft text-accent'
+                  : 'border-line text-ink-2 hover:bg-surface-2')
               }
             >
               <span>{label}</span>

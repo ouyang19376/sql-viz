@@ -28,8 +28,8 @@ export default function ChunkPreview({
   return (
     <div className="space-y-5">
       <section>
-        <h3 className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-200">表概要</h3>
-        <div className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+        <h3 className="mb-2 text-sm font-semibold text-ink-2">表概要</h3>
+        <div className="rounded-lg border border-line p-3">
           <SummaryFields
             summary={chunk.summary}
             onChange={(s) => onChange({ ...chunk, summary: s })}
@@ -37,8 +37,8 @@ export default function ChunkPreview({
         </div>
       </section>
       <section>
-        <h3 className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-200">表结构详情</h3>
-        <div className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+        <h3 className="mb-2 text-sm font-semibold text-ink-2">表结构详情</h3>
+        <div className="rounded-lg border border-line p-3">
           <FieldDetailTable
             fields={chunk.fields}
             onChange={(f) => onChange({ ...chunk, fields: f })}

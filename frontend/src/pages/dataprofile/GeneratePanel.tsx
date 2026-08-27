@@ -93,7 +93,7 @@ export default function GeneratePanel() {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-mute">
         配置数据源与指标，一键生成数据质量探查脚本。内置指标走模板（零 LLM），自定义规则走 LLM 仿写；
         所有段经静态分析与 EXPLAIN 校验后可导入工作台或下载。
       </p>
@@ -145,25 +145,25 @@ export default function GeneratePanel() {
       )}
 
       {/* 生成历史（F-PG-14） */}
-      <details className="rounded-lg border border-gray-200 dark:border-gray-700">
-        <summary className="flex cursor-pointer items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+      <details className="rounded-lg border border-line">
+        <summary className="flex cursor-pointer items-center gap-1.5 px-3 py-2 text-sm font-medium text-ink-2">
           <History className="h-4 w-4" />
           生成历史（{generateHistory.length}）
         </summary>
         <div className="max-h-64 overflow-auto px-3 pb-2">
           {generateHistory.length === 0 ? (
-            <p className="py-3 text-xs text-gray-400">暂无历史</p>
+            <p className="py-3 text-xs text-mute">暂无历史</p>
           ) : (
             generateHistory.map((h) => (
               <button
                 key={h.id}
                 type="button"
                 onClick={() => handleRefill(h)}
-                className="block w-full truncate px-2 py-1.5 text-left text-xs hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="block w-full truncate px-2 py-1.5 text-left text-xs hover:bg-surface-2"
                 title={`${h.metricIds.join(',')} ${h.customRuleIds.join(',')}`}
               >
-                <span className="text-gray-400">{new Date(h.createdAt).toLocaleString()}</span>
-                <span className="ml-2 text-gray-700 dark:text-gray-200">
+                <span className="text-mute">{new Date(h.createdAt).toLocaleString()}</span>
+                <span className="ml-2 text-ink-2">
                   {h.sourceType === 'tables' ? (h.tables?.join(', ') || '-') : h.database} · {h.metricIds.length + h.customRuleIds.length} 项 · {h.outputMode === 'split' ? '拆分' : '合并'} · {h.segmentCount} 段
                 </span>
               </button>

@@ -110,24 +110,24 @@ export default function SearchModal({ open, onClose }: Props) {
       aria-label="函数搜索"
     >
       <div
-        className="flex w-full max-w-2xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+        className="flex w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 输入条 */}
-        <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-3">
-          <Search className="h-5 w-5 flex-shrink-0 text-gray-400" />
+        <div className="flex items-center gap-3 border-b border-line px-4 py-3">
+          <Search className="h-5 w-5 flex-shrink-0 text-mute" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="输入函数名或关键词…"
-            className="flex-1 bg-transparent text-base text-gray-900 placeholder-gray-400 focus:outline-none"
+            className="flex-1 bg-transparent text-base text-ink placeholder:text-mute focus:outline-none"
           />
           <button
             type="button"
             onClick={onClose}
             aria-label="关闭"
-            className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-md p-1 text-mute hover:bg-surface-2 hover:text-ink-2"
           >
             <X className="h-4 w-4" />
           </button>
@@ -136,7 +136,7 @@ export default function SearchModal({ open, onClose }: Props) {
         {/* 结果区 */}
         <div className="max-h-[60vh] overflow-y-auto px-4 py-4">
           {showHint && (
-            <p className="py-8 text-center text-sm text-gray-500">
+            <p className="py-8 text-center text-sm text-mute">
               输入函数名或关键词搜索（支持函数名 / 签名 / 描述）
             </p>
           )}
@@ -160,9 +160,9 @@ export default function SearchModal({ open, onClose }: Props) {
                   <div className="space-y-4">
                     {Array.from(g.byCategory.entries()).map(([catId, items]) => (
                       <div key={catId}>
-                        <h3 className="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500">
+                        <h3 className="mb-1 text-xs font-medium uppercase tracking-wider text-mute">
                           {CATEGORY_LABELS[catId] ?? catId}
-                          <span className="ml-2 text-gray-400">{items.length}</span>
+                          <span className="ml-2 text-mute/70">{items.length}</span>
                         </h3>
                         <ul className="space-y-1">
                           {items.map((r) => (
@@ -170,18 +170,18 @@ export default function SearchModal({ open, onClose }: Props) {
                               <button
                                 type="button"
                                 onClick={() => handlePick(r.dialect.id, r.function.id)}
-                                className="flex w-full flex-col gap-0.5 rounded-md px-3 py-2 text-left transition-colors hover:bg-gray-50"
+                                className="flex w-full flex-col gap-0.5 rounded-md px-3 py-2 text-left transition-colors hover:bg-surface-2"
                               >
                                 <span className="flex items-baseline gap-2">
-                                  <span className="font-medium text-gray-900">
+                                  <span className="font-medium text-ink">
                                     {r.function.name}
                                   </span>
-                                  <span className="truncate text-xs text-gray-500">
+                                  <span className="truncate text-xs text-mute">
                                     {r.function.signature}
                                   </span>
                                 </span>
                                 {r.function.description && (
-                                  <span className="line-clamp-1 text-xs text-gray-500">
+                                  <span className="line-clamp-1 text-xs text-mute">
                                     {r.function.description}
                                   </span>
                                 )}

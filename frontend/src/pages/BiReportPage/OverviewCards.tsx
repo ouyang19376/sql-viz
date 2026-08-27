@@ -23,15 +23,15 @@ export default function OverviewCards({ metrics, row, loading }: Props) {
       {metrics.map((m, i) => (
         <div
           key={m.id}
-          className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+          className="rounded-xl border border-line bg-surface p-4"
         >
-          <p className="truncate text-xs font-medium text-gray-500 dark:text-gray-400" title={m.alias}>
+          <p className="truncate text-xs font-medium text-mute" title={m.alias}>
             {m.alias}
           </p>
           {loading ? (
-            <div className="mt-2 h-7 w-20 animate-pulse rounded bg-gray-100 dark:bg-gray-800" />
+            <div className="mt-2 h-7 w-20 animate-pulse rounded bg-surface-2" />
           ) : (
-            <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+            <p className="mt-1 text-2xl font-bold text-ink">
               {formatValue(row?.[i])}
             </p>
           )}

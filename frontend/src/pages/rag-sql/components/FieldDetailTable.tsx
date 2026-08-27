@@ -15,14 +15,14 @@ export default function FieldDetailTable({ fields, onChange }: Props) {
   }
 
   if (fields.length === 0) {
-    return <p className="text-sm text-gray-400">未解析到字段</p>
+    return <p className="text-sm text-mute">未解析到字段</p>
   }
 
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-200 text-left text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
+          <tr className="border-b border-line text-left text-xs text-mute">
             <th className="py-1.5 pr-2 font-medium">字段</th>
             <th className="py-1.5 pr-2 font-medium">类型</th>
             <th className="py-1.5 pr-2 font-medium">可空</th>
@@ -32,13 +32,13 @@ export default function FieldDetailTable({ fields, onChange }: Props) {
         </thead>
         <tbody>
           {fields.map((f, i) => (
-            <tr key={f.name + i} className="border-b border-gray-100 dark:border-gray-800">
-              <td className="py-1 pr-2 align-top font-mono text-gray-800 dark:text-gray-100">{f.name}</td>
+            <tr key={f.name + i} className="border-b border-line">
+              <td className="py-1 pr-2 align-top font-mono text-ink">{f.name}</td>
               <td className="py-1 pr-2 align-top">
                 <input
                   value={f.type}
                   onChange={(e) => update(i, { type: e.target.value })}
-                  className="w-28 rounded border border-transparent bg-transparent px-1 py-0.5 font-mono text-xs text-gray-700 hover:border-gray-300 focus:border-emerald-500 focus:bg-white dark:text-gray-300 dark:focus:bg-gray-900"
+                  className="w-28 rounded border border-transparent bg-transparent px-1 py-0.5 font-mono text-xs text-ink-2 hover:border-line focus:border-accent focus:bg-surface"
                 />
               </td>
               <td className="py-1 pr-2 align-top">
@@ -55,7 +55,7 @@ export default function FieldDetailTable({ fields, onChange }: Props) {
                   value={f.comment ?? ''}
                   onChange={(e) => update(i, { comment: e.target.value })}
                   placeholder="-"
-                  className="w-32 rounded border border-transparent bg-transparent px-1 py-0.5 text-xs text-gray-700 hover:border-gray-300 focus:border-emerald-500 focus:bg-white dark:text-gray-300 dark:focus:bg-gray-900"
+                  className="w-32 rounded border border-transparent bg-transparent px-1 py-0.5 text-xs text-ink-2 hover:border-line focus:border-accent focus:bg-surface"
                 />
               </td>
               <td className="py-1 align-top">
@@ -63,7 +63,7 @@ export default function FieldDetailTable({ fields, onChange }: Props) {
                   value={f.extra ?? ''}
                   onChange={(e) => update(i, { extra: e.target.value })}
                   placeholder="如 可关联用户维度表"
-                  className="w-40 rounded border border-transparent bg-transparent px-1 py-0.5 text-xs text-gray-700 hover:border-gray-300 focus:border-emerald-500 focus:bg-white dark:text-gray-300 dark:focus:bg-gray-900"
+                  className="w-40 rounded border border-transparent bg-transparent px-1 py-0.5 text-xs text-ink-2 hover:border-line focus:border-accent focus:bg-surface"
                 />
               </td>
             </tr>

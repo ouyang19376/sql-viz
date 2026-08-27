@@ -17,14 +17,14 @@ export default function SourcesPanel() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-mute">
           配置并连接 MySQL / Hive / PostgreSQL 数据源。连接信息仅存于当前会话内存，不落盘（刷新后需重连）。
         </p>
         {!form && (
           <button
             type="button"
             onClick={() => setForm({ mode: 'create' })}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
           >
             <Plus className="h-4 w-4" />
             新建数据源

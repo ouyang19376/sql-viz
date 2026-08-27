@@ -67,10 +67,10 @@ export default function KbUploader({ onUpload, pending }: Props) {
   }
 
   return (
-    <div className="space-y-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+    <div className="space-y-3 rounded-lg border border-line p-4">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">上传规范文档</label>
-        <span className={`text-xs ${over ? 'font-medium text-red-600' : 'text-gray-400'}`}>
+        <label className="text-sm font-medium text-ink-2">上传规范文档</label>
+        <span className={`text-xs ${over ? 'font-medium text-red-600' : 'text-mute'}`}>
           {kbDraft.content.length} / {MAX_CHARS}
         </span>
       </div>
@@ -80,7 +80,7 @@ export default function KbUploader({ onUpload, pending }: Props) {
         rows={5}
         disabled={pending}
         placeholder="粘贴 SQL 编码规范 / 建模规范 / 质量 SLA 文本，或点「.txt 上传」选择文件"
-        className="w-full resize-y rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+        className="w-full resize-y rounded-md border border-line px-3 py-2 text-sm text-ink placeholder:text-mute focus:border-accent focus:outline-none disabled:opacity-50 bg-surface"
       />
       <div className="flex flex-wrap items-center gap-2">
         <input
@@ -98,7 +98,7 @@ export default function KbUploader({ onUpload, pending }: Props) {
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={pending}
-          className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+          className="inline-flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-sm text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <FileUp className="h-4 w-4" />
           .txt 上传
@@ -107,7 +107,7 @@ export default function KbUploader({ onUpload, pending }: Props) {
           value={kbDraft.category}
           onChange={(e) => updateKbDraft({ category: e.target.value as KbCategory })}
           disabled={pending}
-          className="rounded-md border border-gray-300 px-2 py-1.5 text-sm text-gray-700 focus:border-emerald-500 focus:outline-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+          className="rounded-md border border-line px-2 py-1.5 text-sm text-ink focus:border-accent focus:outline-none disabled:opacity-50 bg-surface"
         >
           {Object.entries(KB_CATEGORY_LABELS).map(([k, v]) => (
             <option key={k} value={k}>
@@ -120,13 +120,13 @@ export default function KbUploader({ onUpload, pending }: Props) {
           onChange={(e) => updateKbDraft({ title: e.target.value })}
           disabled={pending}
           placeholder="标题（可选，默认取文件名/首行）"
-          className="min-w-[12rem] flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 placeholder-gray-400 focus:border-emerald-500 focus:outline-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+          className="min-w-[12rem] flex-1 rounded-md border border-line px-3 py-1.5 text-sm text-ink placeholder:text-mute focus:border-accent focus:outline-none disabled:opacity-50 bg-surface"
         />
         <button
           type="button"
           onClick={handleSubmit}
           disabled={blocked}
-          className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
           上传入库

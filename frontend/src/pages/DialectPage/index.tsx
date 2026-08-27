@@ -112,7 +112,7 @@ export default function DialectPage() {
         <div className="flex items-center gap-3">
           <Icon className="h-8 w-8" />
           <div>
-            <h1 className="text-2xl font-bold">{dialect.name}</h1>
+            <h1 className="font-display text-2xl font-semibold">{dialect.name}</h1>
             {dialect.version && (
               <span className="text-sm opacity-90">v{dialect.version}</span>
             )}
@@ -123,10 +123,10 @@ export default function DialectPage() {
 
       {/* 我的收藏（F-FC-04） */}
       {favoriteFns.length > 0 && (
-        <section className="mt-6 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
+        <section className="mt-6 rounded-lg border border-line bg-surface p-4">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-mute">
             我的收藏
-            <span className="text-gray-400">{favoriteFns.length}</span>
+            <span className="text-mute/70">{favoriteFns.length}</span>
           </h2>
           <div className="space-y-2">
             {favoriteFns.map((fn) => (
@@ -138,10 +138,10 @@ export default function DialectPage() {
 
       {/* 最近查看（F-FC-05）：横向排列，最多 3 条（store MAX_RECENTS=3） */}
       {recentFns.length > 0 && (
-        <section className="mt-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
+        <section className="mt-4 rounded-lg border border-line bg-surface p-4">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-mute">
             最近查看
-            <span className="text-gray-400">{recentFns.length}</span>
+            <span className="text-mute/70">{recentFns.length}</span>
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {recentFns.map((fn) => (

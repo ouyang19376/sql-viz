@@ -67,7 +67,7 @@ export default function DependencyTable({ result }: Props) {
 
   if (allRows.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400">
+      <div className="rounded-xl border border-line bg-surface-2 p-6 text-center text-sm text-mute">
         暂无明确依赖关系。
       </div>
     )
@@ -75,13 +75,13 @@ export default function DependencyTable({ result }: Props) {
 
   return (
     <div className="space-y-3">
-      <div className="grid gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-950 sm:grid-cols-2 xl:grid-cols-4">
-        <label className="flex flex-col gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+      <div className="grid gap-3 rounded-xl border border-line bg-surface-2 p-3 sm:grid-cols-2 xl:grid-cols-4">
+        <label className="flex flex-col gap-1 text-xs font-medium text-mute">
           表类型过滤
           <select
             value={tableTypeFilter}
             onChange={(event) => setTableTypeFilter(event.target.value as TableTypeFilter)}
-            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+            className="rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           >
             {tableTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
@@ -89,12 +89,12 @@ export default function DependencyTable({ result }: Props) {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+        <label className="flex flex-col gap-1 text-xs font-medium text-mute">
           依赖类型过滤
           <select
             value={dependencyKindFilter}
             onChange={(event) => setDependencyKindFilter(event.target.value as DependencyKindFilter)}
-            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+            className="rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           >
             {dependencyKindOptions.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
@@ -102,12 +102,12 @@ export default function DependencyTable({ result }: Props) {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+        <label className="flex flex-col gap-1 text-xs font-medium text-mute">
           排序字段
           <select
             value={sortKey}
             onChange={(event) => setSortKey(event.target.value as SortKey)}
-            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+            className="rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
@@ -115,30 +115,30 @@ export default function DependencyTable({ result }: Props) {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+        <label className="flex flex-col gap-1 text-xs font-medium text-mute">
           排序方向
           <button
             type="button"
             onClick={() => setSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'))}
-            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-left text-sm text-gray-900 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+            className="rounded-md border border-line bg-surface px-3 py-2 text-left text-sm text-ink transition-colors hover:bg-surface-2"
           >
             {sortDirection === 'asc' ? '升序 ↑' : '降序 ↓'}
           </button>
         </label>
       </div>
 
-      <div className="text-xs text-gray-500 dark:text-gray-400">
+      <div className="text-xs text-mute">
         当前显示 {rows.length} / {allRows.length} 条依赖。
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400">
+        <div className="rounded-xl border border-line bg-surface-2 p-6 text-center text-sm text-mute">
           当前过滤条件下暂无依赖关系。
         </div>
       ) : (
-        <div className="max-h-[520px] overflow-auto rounded-xl border border-gray-200 dark:border-gray-800">
+        <div className="max-h-[520px] overflow-auto rounded-xl border border-line">
           <table className="w-full text-left text-sm md:min-w-[980px]">
-            <thead className="sticky top-0 z-10 bg-gray-50 text-xs font-medium text-gray-500 dark:bg-gray-900 dark:text-gray-400">
+            <thead className="sticky top-0 z-10 bg-surface-2 text-xs font-medium text-mute">
               <tr>
                 <th className="px-3 py-2">序号</th>
                 <th className="px-3 py-2">目标表</th>
@@ -154,11 +154,11 @@ export default function DependencyTable({ result }: Props) {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {rows.map((row) => (
-                <tr key={row.index} className="text-gray-700 dark:text-gray-200">
-                  <td className="px-3 py-2 text-gray-400">{row.index}</td>
-                  <td className="px-3 py-2 font-medium text-gray-900 dark:text-gray-100">{row.targetTable}</td>
+                <tr key={row.index} className="text-ink-2">
+                  <td className="px-3 py-2 text-mute">{row.index}</td>
+                  <td className="px-3 py-2 font-medium text-ink">{row.targetTable}</td>
                   <td className="hidden px-3 py-2 md:table-cell">{row.targetType}</td>
-                  <td className="px-3 py-2 font-medium text-gray-900 dark:text-gray-100">{row.sourceTable}</td>
+                  <td className="px-3 py-2 font-medium text-ink">{row.sourceTable}</td>
                   <td className="hidden px-3 py-2 md:table-cell">{row.sourceType}</td>
                   <td className="px-3 py-2">{row.dependencyKind}</td>
                   <td className="px-3 py-2">{row.statementIndex ?? '--'}</td>

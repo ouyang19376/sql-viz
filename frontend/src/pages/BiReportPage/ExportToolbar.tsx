@@ -21,7 +21,7 @@ interface Props {
 }
 
 const btn =
-  'inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-200 px-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800'
+  'inline-flex h-8 items-center gap-1.5 rounded-md border border-line px-2.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-40'
 
 /** 校验导入配置：结构合法且引用字段均存在于当前数据集。返回错误文案或 null。 */
 function validateImported(raw: unknown, dataset: DatasetMeta): string | null {
@@ -124,11 +124,11 @@ export default function ExportToolbar({
         {menuOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} aria-hidden />
-            <div className="absolute right-0 z-20 mt-1 w-32 overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-900">
+            <div className="absolute right-0 z-20 mt-1 w-32 overflow-hidden rounded-md border border-line bg-surface py-1 shadow-lg">
               <button
                 type="button"
                 onClick={() => exportData('xlsx')}
-                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-ink-2 hover:bg-surface-2"
               >
                 <Sheet className="h-4 w-4" />
                 Excel (.xlsx)
@@ -136,7 +136,7 @@ export default function ExportToolbar({
               <button
                 type="button"
                 onClick={() => exportData('csv')}
-                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-ink-2 hover:bg-surface-2"
               >
                 <Sheet className="h-4 w-4" />
                 CSV (.csv)

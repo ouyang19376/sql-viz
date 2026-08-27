@@ -27,33 +27,33 @@ export default function ChunkPreviewDrawer({ open, title, chunks, loading, onClo
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <div className="relative flex h-full w-full max-w-xl flex-col border-l border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
-        <header className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
-          <h3 className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+      <div className="relative flex h-full w-full max-w-xl flex-col border-l border-line bg-surface shadow-xl">
+        <header className="flex items-center justify-between border-b border-line px-4 py-3">
+          <h3 className="truncate text-sm font-semibold text-ink">{title}</h3>
           <button
             type="button"
             onClick={onClose}
             aria-label="关闭"
-            className="text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-200"
+            className="text-mute transition-colors hover:text-ink-2"
           >
             <X className="h-5 w-5" />
           </button>
         </header>
         <div className="flex-1 space-y-3 overflow-y-auto p-4">
           {loading ? (
-            <p className="text-sm text-gray-400">加载中…</p>
+            <p className="text-sm text-mute">加载中…</p>
           ) : chunks.length === 0 ? (
-            <p className="text-sm text-gray-400">无分片</p>
+            <p className="text-sm text-mute">无分片</p>
           ) : (
             chunks.map((c) => (
               <div
                 key={c.index}
-                className="rounded-md border border-gray-200 p-3 dark:border-gray-700"
+                className="rounded-md border border-line p-3"
               >
                 <div className="mb-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   分片 #{c.index + 1}
                 </div>
-                <pre className="whitespace-pre-wrap break-words font-mono text-sm text-gray-700 dark:text-gray-300">
+                <pre className="whitespace-pre-wrap break-words font-mono text-sm text-ink-2">
                   {c.text}
                 </pre>
               </div>

@@ -165,22 +165,22 @@ export default function FunctionDetailPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {/* 左：函数元信息 */}
-        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+        <div className="rounded-xl border border-line bg-surface p-5">
           <FunctionMeta fn={fn} dialectId={dialectId} />
         </div>
 
         {/* 右：SQL 代码块 + 动画播放器（AN 模块） */}
         <div className="space-y-4">
-          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-xl border border-line bg-surface p-5">
             <div className="mb-2 flex items-center justify-between">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-mute">
                 示例 SQL
               </h2>
               <button
                 type="button"
                 onClick={handleCopy}
                 aria-label="复制 SQL"
-                className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-mute transition-colors hover:bg-surface-2 hover:text-ink-2"
               >
                 <Copy className="h-3.5 w-3.5" />
                 复制
@@ -193,14 +193,14 @@ export default function FunctionDetailPage() {
               onLineClick={handleLineClick}
             />
             {fn.example_description && (
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-3 text-sm text-mute">
                 {fn.example_description}
               </p>
             )}
           </div>
 
-          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+          <div className="rounded-xl border border-line bg-surface p-5">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-mute">
               动画演示
             </h2>
             <AnimationPlayer

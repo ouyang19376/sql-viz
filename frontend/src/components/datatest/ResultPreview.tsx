@@ -45,14 +45,14 @@ export default function ResultPreview({ result, mode, format }: Props) {
   return (
     <section className="mt-6">
       <div className="mb-3 flex items-center justify-between">
-        <div className="text-sm text-gray-600 dark:text-gray-300">
-          共 <strong className="text-gray-900 dark:text-gray-100">{totalRows}</strong> 行
-          <span className="ml-2 text-gray-400">· 预览前 {previewN} 行</span>
+        <div className="text-sm text-ink-2">
+          共 <strong className="text-ink">{totalRows}</strong> 行
+          <span className="ml-2 text-mute">· 预览前 {previewN} 行</span>
         </div>
         <button
           type="button"
           onClick={handleDownload}
-          className="inline-flex items-center gap-1.5 rounded-md bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
+          className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
         >
           <Download className="h-4 w-4" />
           下载 {format}

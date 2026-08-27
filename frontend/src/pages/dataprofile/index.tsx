@@ -43,14 +43,14 @@ export default function DataProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">数据探查</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <h1 className="text-xl font-bold text-ink">数据探查</h1>
+        <p className="mt-1 text-sm text-mute">
           连接数据源 · 只读查询预览 · 生成数据质量探查脚本
-          <span className="ml-2 text-gray-400">· 已连接 {connectedCount} 个数据源</span>
+          <span className="ml-2 text-mute">· 已连接 {connectedCount} 个数据源</span>
         </p>
       </div>
 
-      <nav className="flex flex-wrap gap-1 border-b border-gray-200 dark:border-gray-700" aria-label="数据探查模块">
+      <nav className="flex flex-wrap gap-1 border-b border-line" aria-label="数据探查模块">
         {TABS.map((t) => {
           const active = t.key === activeTab
           return (
@@ -62,8 +62,8 @@ export default function DataProfilePage() {
               className={
                 '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ' +
                 (active
-                  ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200')
+                  ? 'border-accent text-accent'
+                  : 'border-transparent text-mute hover:text-ink')
               }
             >
               {t.label}

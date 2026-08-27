@@ -16,6 +16,8 @@ const BiReportPage = lazy(() => import('@/pages/BiReportPage'))
 const DataProfilePage = lazy(() => import('@/pages/dataprofile'))
 // RAG for NL2SQL（PRD-rag-sql）：3 Tab 单页，lazy 懒加载（含 CodeEditor）
 const RagSqlPage = lazy(() => import('@/pages/rag-sql'))
+// 知识库问答（kbqa）：多会话聊天单页，lazy 懒加载（含 react-markdown）
+const KbqaPage = lazy(() => import('@/pages/kbqa'))
 
 const router = createBrowserRouter([
   {
@@ -66,6 +68,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Skeleton lines={6} />}>
             <RagSqlPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'kbqa',
+        element: (
+          <Suspense fallback={<Skeleton lines={6} />}>
+            <KbqaPage />
           </Suspense>
         ),
       },

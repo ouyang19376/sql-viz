@@ -14,7 +14,7 @@ export default function CategorySidebar({ categories, counts }: Props) {
   return (
     <>
       <aside className="hidden w-48 shrink-0 md:block">
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-mute">
           分类
         </h3>
         <nav className="space-y-1">
@@ -22,10 +22,10 @@ export default function CategorySidebar({ categories, counts }: Props) {
             <a
               key={cat.id}
               href={`#category-${cat.id}`}
-              className="block rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:dialect-text dark:text-gray-200 dark:hover:bg-gray-800"
+              className="block rounded-lg px-3 py-2 text-sm text-ink-2 transition-colors hover:bg-surface-2 hover:dialect-text"
             >
               <span className="truncate">{cat.name}</span>
-              <span className="ml-2 text-xs text-gray-400">
+              <span className="ml-2 text-xs text-mute">
                 {counts[cat.id] ?? 0}
               </span>
             </a>
@@ -40,10 +40,10 @@ export default function CategorySidebar({ categories, counts }: Props) {
             <a
               key={cat.id}
               href={`#category-${cat.id}`}
-              className="shrink-0 whitespace-nowrap rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="shrink-0 whitespace-nowrap rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-surface-2"
             >
               {cat.name}
-              <span className="ml-1.5 text-gray-400">{counts[cat.id] ?? 0}</span>
+              <span className="ml-1.5 text-mute">{counts[cat.id] ?? 0}</span>
             </a>
           ))}
         </div>

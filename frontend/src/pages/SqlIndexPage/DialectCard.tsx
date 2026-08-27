@@ -17,19 +17,19 @@ export default function DialectCard({ dialect }: Props) {
     <Link
       to={`/dialect/${dialect.id}`}
       style={style}
-      className="group block rounded-xl border-2 border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-[var(--card-color)] hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+      className="group block rounded-xl border border-line bg-surface p-5 transition-all hover:border-[var(--card-color)] hover:-translate-y-0.5"
     >
       <div
         className="flex h-10 w-10 items-center justify-center rounded-lg"
-        style={{ backgroundColor: `color-mix(in srgb, ${dialect.color} 15%, white)` }}
+        style={{ backgroundColor: `color-mix(in srgb, ${dialect.color} 15%, transparent)` }}
       >
         <Icon className="h-5 w-5" style={{ color: dialect.color }} />
       </div>
-      <h2 className="mt-3 text-lg font-semibold" style={{ color: dialect.color }}>
+      <h2 className="mt-3 font-display text-lg font-semibold" style={{ color: dialect.color }}>
         {dialect.name}
       </h2>
-      <p className="mt-1 text-sm text-gray-500 line-clamp-2 dark:text-gray-400">{dialect.description}</p>
-      <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+      <p className="mt-1 text-sm text-mute line-clamp-2">{dialect.description}</p>
+      <p className="mt-3 text-xs text-mute/80">
         {dialect.function_count} 个函数
         {dialect.version && <span className="ml-2">· v{dialect.version}</span>}
       </p>

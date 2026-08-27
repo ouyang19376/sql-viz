@@ -37,7 +37,7 @@ CORS_ORIGINS = (
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.deepseek.com/v1")
 LLM_MODEL = os.environ.get("LLM_MODEL", "deepseek-chat")
-LLM_TIMEOUT_SECONDS = int(os.environ.get("LLM_TIMEOUT_SECONDS", "60"))
+LLM_TIMEOUT_SECONDS = int(os.environ.get("LLM_TIMEOUT_SECONDS", "120"))
 LLM_MAX_TOKENS = int(os.environ.get("LLM_MAX_TOKENS", "8192"))
 
 # ─── 测试数据集输入侧限制（F-LM-03） ─────────────────────

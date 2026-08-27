@@ -40,19 +40,19 @@ export default function RagSqlPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">RAG 自然语言转 SQL</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <h1 className="text-xl font-bold text-ink">RAG 自然语言转 SQL</h1>
+        <p className="mt-1 text-sm text-mute">
           解析建表语句构建知识库 · 自然语言生成对齐业务模型的 SQL
         </p>
-        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
-          <span>表 <b className="text-gray-700 dark:text-gray-200">{stats?.tableCount ?? '-'}</b></span>
-          <span>文档 <b className="text-gray-700 dark:text-gray-200">{stats?.docCount ?? '-'}</b></span>
-          <span>分片 <b className="text-gray-700 dark:text-gray-200">{stats?.chunkCount ?? '-'}</b></span>
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-mute">
+          <span>表 <b className="text-ink-2">{stats?.tableCount ?? '-'}</b></span>
+          <span>文档 <b className="text-ink-2">{stats?.docCount ?? '-'}</b></span>
+          <span>分片 <b className="text-ink-2">{stats?.chunkCount ?? '-'}</b></span>
         </div>
       </div>
 
       <nav
-        className="flex flex-wrap gap-1 border-b border-gray-200 dark:border-gray-700"
+        className="flex flex-wrap gap-1 border-b border-line"
         aria-label="RAG for NL2SQL 模块"
       >
         {TABS.map((t) => {
@@ -66,8 +66,8 @@ export default function RagSqlPage() {
               className={
                 '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ' +
                 (active
-                  ? 'border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200')
+                  ? 'border-accent text-accent'
+                  : 'border-transparent text-mute hover:text-ink')
               }
             >
               {t.label}

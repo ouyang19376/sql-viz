@@ -60,15 +60,15 @@ export default function DataSourceItem({ ds, onEdit }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+    <div className="rounded-xl border border-line bg-surface p-4">
       <div className="flex flex-wrap items-center gap-3">
         <span className={`h-2.5 w-2.5 rounded-full ${STATUS_DOT[ds.status]}`} title={STATUS_LABEL[ds.status]} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="truncate font-medium text-gray-800 dark:text-gray-100">{ds.name}</span>
+            <span className="truncate font-medium text-ink">{ds.name}</span>
             <DialectBadge name={dialectInfo.name} color={dialectInfo.color} />
           </div>
-          <div className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-0.5 truncate text-xs text-mute">
             {ds.host}:{ds.port}{ds.database ? ` / ${ds.database}` : ''} · {ds.username}
             {ds.lastError && <span className="ml-2 text-red-500">{ds.lastError}</span>}
           </div>
@@ -81,7 +81,7 @@ export default function DataSourceItem({ ds, onEdit }: Props) {
               onClick={handleReconnect}
               disabled={reconnectMut.isPending}
               title="重连"
-              className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="inline-flex items-center gap-1 rounded-md border border-line px-2.5 py-1.5 text-xs font-medium text-ink-2 hover:bg-surface-2 disabled:opacity-40"
             >
               {reconnectMut.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
               重连
@@ -91,7 +91,7 @@ export default function DataSourceItem({ ds, onEdit }: Props) {
             type="button"
             onClick={() => onEdit(ds)}
             title="编辑"
-            className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="inline-flex items-center gap-1 rounded-md border border-line px-2.5 py-1.5 text-xs font-medium text-ink-2 hover:bg-surface-2"
           >
             <Pencil className="h-3.5 w-3.5" />
             编辑
@@ -165,11 +165,11 @@ function SchemaBrowser({
   if (schemasQ.isError) return <EmptyState title="反射失败" description="无法读取库结构，请检查权限" />
 
   return (
-    <div className="mt-2 space-y-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-800/50">
+    <div className="mt-2 space-y-3 rounded-lg bg-surface-2 p-3">
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500 dark:text-gray-400">库</span>
+        <span className="text-xs text-mute">库</span>
         <select
-          className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+          className="rounded-md border border-line bg-surface px-2 py-1 text-xs text-ink"
           value={resolvedSchema ?? ''}
           onChange={(e) => setSchema(e.target.value || undefined)}
         >
@@ -181,15 +181,15 @@ function SchemaBrowser({
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <div>
-          <div className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">表</div>
+          <div className="mb-1 text-xs font-medium text-mute">表</div>
           {tablesQ.isLoading ? (
             <Skeleton lines={3} />
           ) : tablesQ.isError ? (
             <EmptyState title="读取表失败" />
           ) : (tablesQ.data ?? []).length === 0 ? (
-            <p className="text-xs text-gray-400">无表</p>
+            <p className="text-xs text-mute">无表</p>
           ) : (
-            <div className="max-h-48 overflow-auto rounded-md border border-gray-200 dark:border-gray-700">
+            <div className="max-h-48 overflow-auto rounded-md border border-line">
               {(tablesQ.data ?? []).map((t) => (
                 <button
                   key={t.name}
@@ -197,7 +197,7 @@ function SchemaBrowser({
                   onClick={() => setTable(t.name)}
                   className={
                     'block w-full truncate px-2 py-1 text-left text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 ' +
-                    (table === t.name ? 'bg-blue-50 font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300')
+                    (table === t.name ? 'bg-blue-50 font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'text-ink-2')
                   }
                 >
                   {t.name}
@@ -208,22 +208,22 @@ function SchemaBrowser({
         </div>
 
         <div>
-          <div className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">列{table ? ` · ${table}` : ''}</div>
+          <div className="mb-1 text-xs font-medium text-mute">列{table ? ` · ${table}` : ''}</div>
           {!table ? (
-            <p className="text-xs text-gray-400">选择左侧表查看列</p>
+            <p className="text-xs text-mute">选择左侧表查看列</p>
           ) : columnsQ.isLoading ? (
             <Skeleton lines={3} />
           ) : columnsQ.isError ? (
             <EmptyState title="读取列失败" />
           ) : (
-            <div className="max-h-48 overflow-auto rounded-md border border-gray-200 dark:border-gray-700">
+            <div className="max-h-48 overflow-auto rounded-md border border-line">
               <table className="w-full text-xs">
                 <tbody>
                   {(columnsQ.data ?? []).map((c) => (
-                    <tr key={c.name} className="border-b border-gray-100 last:border-0 dark:border-gray-700">
-                      <td className="px-2 py-1 font-mono text-gray-800 dark:text-gray-200">{c.name}</td>
-                      <td className="px-2 py-1 text-gray-500 dark:text-gray-400">{c.type}</td>
-                      <td className="px-2 py-1 text-gray-400">{c.nullable ? 'NULL' : 'NOT NULL'}</td>
+                    <tr key={c.name} className="border-b border-line last:border-0">
+                      <td className="px-2 py-1 font-mono text-ink-2">{c.name}</td>
+                      <td className="px-2 py-1 text-mute">{c.type}</td>
+                      <td className="px-2 py-1 text-mute">{c.nullable ? 'NULL' : 'NOT NULL'}</td>
                     </tr>
                   ))}
                 </tbody>

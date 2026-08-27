@@ -34,13 +34,13 @@ export default function StepIndicator({ steps, current, finished, onStepClick }:
               ) : isPlayed ? (
                 <span className="dialect-bg block h-2.5 w-2.5 rounded-full transition-opacity group-hover:opacity-80" />
               ) : (
-                <span className="block h-2.5 w-2.5 rounded-full border border-gray-300 bg-white transition-colors group-hover:border-gray-400 dark:border-gray-600 dark:bg-gray-800" />
+                <span className="block h-2.5 w-2.5 rounded-full border border-line bg-surface transition-colors group-hover:border-gray-400" />
               )}
             </button>
           )
         })}
       </div>
-      <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+      <span className="ml-1 text-xs text-mute">
         {current + 1} / {steps.length}
         {steps[current]?.title ? ` · ${steps[current].title}` : ''}
       </span>

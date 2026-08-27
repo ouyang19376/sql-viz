@@ -3,6 +3,7 @@ import { AlertTriangle, Database, Download, GitBranch, ListTree, Play, RotateCcw
 import { toast } from 'sonner'
 import EmptyState from '@/components/shared/EmptyState'
 import Skeleton from '@/components/shared/Skeleton'
+import PageHeader from '@/components/shared/PageHeader'
 import ScriptUploader from '@/components/lineage/ScriptUploader'
 import SqlTextarea from '@/components/lineage/SqlTextarea'
 import DialectSelector from '@/components/lineage/DialectSelector'
@@ -251,24 +252,19 @@ export default function LineagePage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <div className="mb-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
-          <GitBranch className="h-3.5 w-3.5" />
-          SQL Lineage
-        </div>
-        <h1 className="mt-3 text-2xl font-bold text-gray-900 dark:text-gray-100">SQL 血缘分析</h1>
-        <p className="mt-1 max-w-3xl text-sm text-gray-500 dark:text-gray-400">
-          粘贴 SQL / HQL 脚本或上传脚本文件，解析表级依赖并生成图谱、清单与治理导出。
-        </p>
-      </div>
+      <PageHeader
+        eyebrow={<><GitBranch className="h-3.5 w-3.5" />SQL Lineage</>}
+        title="SQL 血缘分析"
+        subtitle="粘贴 SQL / HQL 脚本或上传脚本文件，解析表级依赖并生成图谱、清单与治理导出。"
+      />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]">
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <div className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <section className="rounded-2xl border border-line bg-surface p-6">
+          <div className="flex items-center gap-2 font-display text-lg font-semibold text-ink">
             <Database className="h-5 w-5 text-teal-600" />
             输入区
           </div>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-mute">
             支持粘贴脚本或上传 .sql / .hql / .txt 文件，当前最多 {LINEAGE_LIMITS.SQL_MAX_CHARS.toLocaleString()} 字符。
           </p>
 
@@ -300,7 +296,7 @@ export default function LineagePage() {
                 type="button"
                 onClick={handleReset}
                 disabled={isAnalyzing}
-                className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+                className="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <RotateCcw className="h-4 w-4" />
                 重置
@@ -309,7 +305,7 @@ export default function LineagePage() {
                 type="button"
                 onClick={handleAnalyze}
                 disabled={!canAnalyze}
-                className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-md bg-accent px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Play className="h-4 w-4" />
                 {isAnalyzing ? '分析中…' : '分析血缘'}
@@ -318,18 +314,18 @@ export default function LineagePage() {
           </div>
         </section>
 
-        <section id="lineage-result" className="min-w-0 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <section id="lineage-result" className="min-w-0 rounded-2xl border border-line bg-surface p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <div className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <div className="flex items-center gap-2 font-display text-lg font-semibold text-ink">
                 <ListTree className="h-5 w-5 text-teal-600" />
                 结果区
               </div>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-mute">
                 {result ? result.summary : '分析完成后展示摘要、图谱、依赖清单与导出按钮。'}
               </p>
             </div>
-            <div className="flex rounded-lg bg-gray-100 p-1 text-sm dark:bg-gray-800">
+            <div className="flex rounded-lg bg-surface-2 p-1 text-sm">
               {(['graph', 'table'] as const).map((mode) => (
                 <button
                   key={mode}
@@ -337,10 +333,10 @@ export default function LineagePage() {
                   onClick={() => setViewMode(mode)}
                   disabled={!result}
                   className={
-                    'rounded-md px-3 py-1.5 font-medium disabled:cursor-not-allowed disabled:opacity-50 ' +
+                    'rounded-md px-3 py-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ' +
                     (viewMode === mode
-                      ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-gray-100'
-                      : 'text-gray-500 dark:text-gray-400')
+                      ? 'bg-surface text-ink'
+                      : 'text-mute hover:text-ink-2')
                   }
                 >
                   {mode === 'graph' ? '图谱' : '表格'}
@@ -351,10 +347,10 @@ export default function LineagePage() {
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {summaryCards.map((card) => (
-              <div key={card.label} className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-950">
-                <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{card.label}</div>
-                <div className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">{card.value}</div>
-                <div className="mt-1 text-xs text-gray-400">{card.description}</div>
+              <div key={card.label} className="rounded-xl border border-line bg-surface-2 p-4">
+                <div className="text-xs font-medium text-mute">{card.label}</div>
+                <div className="mt-2 font-display text-2xl font-bold text-ink">{card.value}</div>
+                <div className="mt-1 text-xs text-mute/80">{card.description}</div>
               </div>
             ))}
           </div>
@@ -374,44 +370,44 @@ export default function LineagePage() {
             {result && <WarningList warnings={result.warnings} />}
             {result && (
               <div className="flex flex-wrap justify-end gap-2">
-                <button type="button" onClick={handleDownloadCypher} className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+                <button type="button" onClick={handleDownloadCypher} className="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink-2 hover:bg-surface-2">
                   <Download className="h-4 w-4" />
                   下载 Cypher
                 </button>
-                <button type="button" onClick={handleDownloadExcel} className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-700">
+                <button type="button" onClick={handleDownloadExcel} className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-strong">
                   <Download className="h-4 w-4" />
                   下载 Excel
                 </button>
-                <button type="button" onClick={handleDownloadJson} className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+                <button type="button" onClick={handleDownloadJson} className="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink-2 hover:bg-surface-2">
                   <Download className="h-4 w-4" />
                   下载 JSON
                 </button>
-                <button type="button" onClick={handlePushNeo4j} disabled={neo4jMutation.isPending} className="inline-flex items-center gap-1.5 rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700">
+                <button type="button" onClick={handlePushNeo4j} disabled={neo4jMutation.isPending} className="inline-flex items-center gap-1.5 rounded-md bg-ink px-3 py-1.5 text-sm font-medium text-white hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-50">
                   <Database className="h-4 w-4" />
                   {neo4jMutation.isPending ? '推送中…' : '推送 Neo4j'}
                 </button>
               </div>
             )}
             {result && (
-              <div className="grid gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-950 sm:grid-cols-2">
-                <label className="flex flex-col gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+              <div className="grid gap-3 rounded-xl border border-line bg-surface-2 p-3 sm:grid-cols-2">
+                <label className="flex flex-col gap-1 text-xs font-medium text-mute">
                   节点搜索（P1）
                   <span className="relative">
-                    <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                    <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-mute" />
                     <input
                       value={searchText}
                       onChange={(event) => setSearchText(event.target.value)}
                       placeholder="按源表或目标表搜索"
-                      className="w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                      className="w-full rounded-md border border-line bg-surface py-2 pl-9 pr-3 text-sm text-ink outline-none placeholder:text-mute focus:border-accent focus:ring-1 focus:ring-accent"
                     />
                   </span>
                 </label>
-                <label className="flex flex-col gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                <label className="flex flex-col gap-1 text-xs font-medium text-mute">
                   按目标表过滤（P1）
                   <select
                     value={targetFilter}
                     onChange={(event) => setTargetFilter(event.target.value)}
-                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    className="rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   >
                     <option value="all">全部目标表</option>
                     {targetOptions.map((item) => (

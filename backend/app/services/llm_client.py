@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import Generator, Optional
 from time import perf_counter
 
-from openai import OpenAI
+from openai import APITimeoutError, OpenAI
 
 from app.core.config import (
     LLM_MAX_TOKENS,
@@ -22,6 +22,11 @@ from app.services.llm_usage import estimate_tokens, record_llm_usage
 
 class LLMClientError(RuntimeError):
     """LLM 客户端层错误：配置缺失 / 上游异常 / 超时。"""
+
+
+class LLMTimeoutError(LLMClientError):
+    """LLM 调用超时（APITimeoutError）。路由层可单独捕获以返回「分析超时」
+    而非笼统的「服务暂不可用」。"""
 
 
 _client: Optional[OpenAI] = None
@@ -39,8 +44,10 @@ def _get_client() -> OpenAI:
     _client = OpenAI(
         api_key=OPENAI_API_KEY,
         base_url=OPENAI_BASE_URL,
-        # 60s 硬超时（PRD §6.1，requirements.txt 已锁 openai>=1.30）
+        # 硬超时由 LLM_TIMEOUT_SECONDS 控制（默认 120s，给推理模型留余量）；
+        # max_retries=0：SDK 默认重试 2 次会把单次超时拖成 3 倍时长，血缘长脚本下 UI 长时间挂死
         timeout=LLM_TIMEOUT_SECONDS,
+        max_retries=0,
     )
     return _client
 
@@ -65,7 +72,15 @@ def chat_json(system_prompt: str, user_message: str) -> str:
             max_tokens=LLM_MAX_TOKENS,
             temperature=0.7,
         )
-    except Exception as exc:  # openai 各类 SDK 异常统一包装
+    except APITimeoutError as exc:
+        record_llm_usage(
+            success=False,
+            prompt_tokens=estimated_prompt_tokens,
+            latency_ms=(perf_counter() - started_at) * 1000,
+            failure_type=type(exc).__name__,
+        )
+        raise LLMTimeoutError(f"LLM 调用超时：{exc}") from exc
+    except Exception as exc:  # openai 其余 SDK 异常统一包装
         record_llm_usage(
             success=False,
             prompt_tokens=estimated_prompt_tokens,
@@ -121,6 +136,14 @@ def stream_chat(system_prompt: str, user_message: str) -> Generator[str, None, N
             max_tokens=LLM_MAX_TOKENS,
             temperature=0.7,
         )
+    except APITimeoutError as exc:
+        record_llm_usage(
+            success=False,
+            prompt_tokens=estimated_prompt_tokens,
+            latency_ms=(perf_counter() - started_at) * 1000,
+            failure_type=type(exc).__name__,
+        )
+        raise LLMTimeoutError(f"LLM 流式调用超时：{exc}") from exc
     except Exception as exc:
         record_llm_usage(
             success=False,
@@ -141,6 +164,15 @@ def stream_chat(system_prompt: str, user_message: str) -> Generator[str, None, N
                 if delta:
                     completion_chars += len(delta)
                     yield delta
+    except APITimeoutError as exc:
+        record_llm_usage(
+            success=False,
+            prompt_tokens=estimated_prompt_tokens,
+            completion_tokens=estimate_tokens("x" * completion_chars),
+            latency_ms=(perf_counter() - started_at) * 1000,
+            failure_type=type(exc).__name__,
+        )
+        raise LLMTimeoutError(f"LLM 流式调用超时：{exc}") from exc
     except Exception as exc:
         record_llm_usage(
             success=False,

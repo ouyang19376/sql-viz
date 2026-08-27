@@ -90,12 +90,12 @@ export default function DataSourceForm({ editingId, initial, onDone }: Props) {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100'
-  const labelCls = 'mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400'
+    'w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent'
+  const labelCls = 'mb-1 block text-xs font-medium text-ink-2'
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
-      <h3 className="mb-4 text-sm font-semibold text-gray-800 dark:text-gray-100">
+    <div className="rounded-xl border border-line bg-surface p-5">
+      <h3 className="mb-4 text-sm font-semibold text-ink">
         {isEdit ? '编辑数据源' : '新建数据源'}
       </h3>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -138,7 +138,7 @@ export default function DataSourceForm({ editingId, initial, onDone }: Props) {
           type="button"
           onClick={handleTest}
           disabled={!canTest || testMut.isPending}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-line px-4 py-2 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {testMut.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           测试连接
@@ -147,12 +147,12 @@ export default function DataSourceForm({ editingId, initial, onDone }: Props) {
           type="button"
           onClick={handleSave}
           disabled={!canSave || saving}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
         >
           {saving && <Loader2 className="h-4 w-4 animate-spin" />}
           {isEdit ? '保存' : '连接并保存'}
         </button>
-        <button type="button" onClick={onDone} className="rounded-lg px-3 py-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">
+        <button type="button" onClick={onDone} className="rounded-lg px-3 py-2 text-sm text-mute hover:text-ink-2">
           取消
         </button>
       </div>

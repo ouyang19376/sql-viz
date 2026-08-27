@@ -78,7 +78,7 @@ export default function FilterBar({ columns, filters, onAdd, onRemove }: Props) 
         <select
           value={field}
           onChange={(e) => handleFieldChange(e.target.value)}
-          className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+          className="h-8 rounded-md border border-line bg-surface px-2 text-sm text-ink-2"
         >
           {columns.map((c) => (
             <option key={c.name} value={c.name}>
@@ -89,7 +89,7 @@ export default function FilterBar({ columns, filters, onAdd, onRemove }: Props) 
         <select
           value={op}
           onChange={(e) => setOp(e.target.value as FilterOp)}
-          className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+          className="h-8 rounded-md border border-line bg-surface px-2 text-sm text-ink-2"
         >
           {ops.map((o) => (
             <option key={o} value={o}>
@@ -103,12 +103,12 @@ export default function FilterBar({ columns, filters, onAdd, onRemove }: Props) 
           onChange={(e) => setRaw(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           placeholder={op === 'in' ? '多个值用逗号分隔' : '筛选值'}
-          className="h-8 w-44 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+          className="h-8 w-44 rounded-md border border-line bg-surface px-2 text-sm text-ink-2"
         />
         <button
           type="button"
           onClick={handleAdd}
-          className="inline-flex h-8 items-center gap-1 rounded-md bg-indigo-600 px-3 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+          className="inline-flex h-8 items-center gap-1 rounded-md bg-accent px-3 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
         >
           <Plus className="h-3.5 w-3.5" />
           添加筛选
@@ -120,7 +120,7 @@ export default function FilterBar({ columns, filters, onAdd, onRemove }: Props) 
           {filters.map((f, i) => (
             <span
               key={`${f.field}-${f.op}-${i}`}
-              className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 py-1 pr-1 pl-2.5 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+              className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 py-1 pr-1 pl-2.5 text-xs text-ink-2"
             >
               <span>
                 {f.field} {OP_LABEL[f.op]} {valueLabel(f.value)}
@@ -129,7 +129,7 @@ export default function FilterBar({ columns, filters, onAdd, onRemove }: Props) 
                 type="button"
                 onClick={() => onRemove(i)}
                 aria-label="移除筛选"
-                className="inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-700"
+                className="inline-flex h-4 w-4 items-center justify-center rounded-full text-mute hover:bg-surface-2 hover:text-ink-2"
               >
                 <X className="h-3 w-3" />
               </button>

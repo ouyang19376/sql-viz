@@ -16,11 +16,11 @@ export default function SearchBox({ onOpen }: Props) {
       type="button"
       onClick={onOpen}
       aria-label="打开搜索"
-      className="group flex flex-1 items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-left text-sm text-gray-400 transition-colors hover:border-gray-400 focus:border-[var(--dialect-color)] focus:outline-none focus:ring-1 focus:ring-[var(--dialect-color)] sm:max-w-sm"
+      className="group flex flex-1 items-center gap-2 rounded-md border border-line bg-surface px-3 py-1.5 text-left text-sm text-mute transition-colors hover:border-ink-2 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent sm:max-w-sm"
     >
       <Search className="h-4 w-4 flex-shrink-0" />
       <span className="flex-1 truncate">搜索函数…</span>
-      <kbd className="hidden flex-shrink-0 rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 sm:inline">
+      <kbd className="hidden flex-shrink-0 rounded border border-line bg-surface-2 px-1.5 py-0.5 text-[10px] font-medium text-mute sm:inline">
         Ctrl K
       </kbd>
     </button>

@@ -58,8 +58,8 @@ export default function DetailPreviewTab() {
   return (
     <div className="space-y-4">
       {/* F-PV-01：左上角「共 N 行」 */}
-      <div className="text-sm text-gray-600 dark:text-gray-300">
-        共 <span className="font-semibold text-gray-900 dark:text-gray-100">{total}</span> 行
+      <div className="text-sm text-ink-2">
+        共 <span className="font-semibold text-ink">{total}</span> 行
       </div>
 
       <FilterBar
@@ -70,12 +70,12 @@ export default function DetailPreviewTab() {
       />
 
       {isError ? (
-        <div className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-400 dark:border-gray-700">
+        <div className="rounded-lg border border-dashed border-line p-8 text-center text-sm text-mute">
           明细加载失败
           <button
             type="button"
             onClick={() => refetch()}
-            className="mt-2 block w-full text-xs text-indigo-600 hover:underline"
+            className="mt-2 block w-full text-xs text-accent hover:underline"
           >
             重试
           </button>

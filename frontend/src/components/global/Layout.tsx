@@ -28,7 +28,7 @@ export default function Layout() {
   }, [theme])
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] dark:bg-gray-950">
+    <div className="min-h-screen bg-paper">
       <Navbar />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Outlet />

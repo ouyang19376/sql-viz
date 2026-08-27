@@ -191,7 +191,7 @@ export default function WorkbenchPanel() {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-mute">
         选择数据源后输入只读 SELECT 查询。所有 SQL 经静态分析拦截 DML/DDL 后执行，结果分页预览，可下载。
       </p>
 
@@ -204,11 +204,11 @@ export default function WorkbenchPanel() {
             <button
               type="button"
               onClick={() => run()}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
             >
               <Play className="h-4 w-4" />
               运行
-              <kbd className="ml-1 rounded bg-blue-500/40 px-1 text-xs">Ctrl+↵</kbd>
+              <kbd className="ml-1 rounded bg-accent/40 px-1 text-xs">Ctrl+↵</kbd>
             </button>
           ) : (
             <button
@@ -225,7 +225,7 @@ export default function WorkbenchPanel() {
             type="button"
             onClick={format}
             disabled={fmtMut.isPending}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 disabled:opacity-40"
           >
             {fmtMut.isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -240,19 +240,19 @@ export default function WorkbenchPanel() {
               type="button"
               onClick={() => setDownloadOpen((o) => !o)}
               disabled={!lastResult}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 disabled:opacity-40"
             >
               <Download className="h-4 w-4" />
               下载
             </button>
             {downloadOpen && (
-              <div className="absolute right-0 z-20 mt-1 w-28 rounded-md border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-900">
+              <div className="absolute right-0 z-20 mt-1 w-28 rounded-md border border-line bg-surface py-1 shadow-lg">
                 {(['csv', 'json', 'xlsx'] as const).map((f) => (
                   <button
                     key={f}
                     type="button"
                     onClick={() => download(f)}
-                    className="block w-full px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800"
+                    className="block w-full px-3 py-1.5 text-left text-sm text-ink-2 hover:bg-surface-2"
                   >
                     {f.toUpperCase()}
                   </button>
@@ -262,12 +262,12 @@ export default function WorkbenchPanel() {
           </div>
         </div>
 
-        <div className="ml-auto flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+        <div className="ml-auto flex items-center gap-1.5 text-xs text-mute">
           <span>每页</span>
           <select
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}
-            className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            className="rounded-md border border-line bg-surface px-2 py-1 text-xs text-ink"
           >
             {PAGE_SIZES.map((n) => (
               <option key={n} value={n}>
@@ -300,7 +300,7 @@ export default function WorkbenchPanel() {
 
       {/* 执行中 / 结果 */}
       {running && (
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center gap-2 text-sm text-mute">
           <Loader2 className="h-4 w-4 animate-spin" />
           执行中…
         </div>
@@ -315,21 +315,21 @@ export default function WorkbenchPanel() {
       )}
 
       {/* 执行历史（F-QB-10） */}
-      <details className="rounded-lg border border-gray-200 dark:border-gray-700">
-        <summary className="flex cursor-pointer items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+      <details className="rounded-lg border border-line">
+        <summary className="flex cursor-pointer items-center gap-1.5 px-3 py-2 text-sm font-medium text-ink-2">
           <History className="h-4 w-4" />
           执行历史（{history.length}）
         </summary>
         <div className="max-h-64 overflow-auto px-3 pb-2">
           {history.length === 0 ? (
-            <p className="py-3 text-xs text-gray-400">暂无历史</p>
+            <p className="py-3 text-xs text-mute">暂无历史</p>
           ) : (
             history.map((h) => (
               <button
                 key={h.id}
                 type="button"
                 onClick={() => refill(h)}
-                className="block w-full truncate px-2 py-1 text-left text-xs hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="block w-full truncate px-2 py-1 text-left text-xs hover:bg-surface-2"
                 title={h.sql}
               >
                 <span
@@ -343,7 +343,7 @@ export default function WorkbenchPanel() {
                 >
                   ●
                 </span>
-                <span className="ml-2 font-mono text-gray-700 dark:text-gray-200">
+                <span className="ml-2 font-mono text-ink-2">
                   {h.sql.split('\n')[0].slice(0, 80) || '(空)'}
                 </span>
               </button>

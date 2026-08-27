@@ -17,10 +17,10 @@ export default function TableView({ table, highlightColumns, highlightRows }: Pr
   const hiRow = new Set(highlightRows ?? [])
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
+    <div className="overflow-x-auto rounded-lg border border-line">
       <table className="w-full border-collapse text-sm">
         {table.caption && (
-          <caption className="caption-top px-3 py-1.5 text-left text-xs text-gray-500 dark:text-gray-400">
+          <caption className="caption-top px-3 py-1.5 text-left text-xs text-mute">
             {table.caption}
           </caption>
         )}
@@ -29,8 +29,8 @@ export default function TableView({ table, highlightColumns, highlightRows }: Pr
             {table.columns.map((col, c) => (
               <th
                 key={c}
-                className={`border-b border-gray-200 px-3 py-2 text-left font-mono font-semibold text-gray-700 dark:border-gray-800 dark:text-gray-200 ${
-                  hiCol.has(c) ? 'dialect-bg-soft' : 'bg-gray-50 dark:bg-gray-800/50'
+                className={`border-b border-line px-3 py-2 text-left font-mono font-semibold text-ink-2 ${
+                  hiCol.has(c) ? 'dialect-bg-soft' : 'bg-surface-2'
                 }`}
               >
                 {col}
@@ -44,8 +44,8 @@ export default function TableView({ table, highlightColumns, highlightRows }: Pr
               {row.map((cell, c) => (
                 <td
                   key={c}
-                  className={`border-b border-gray-100 px-3 py-2 font-mono dark:border-gray-800 ${
-                    cell == null ? 'text-gray-300 dark:text-gray-600' : 'text-gray-800 dark:text-gray-200'
+                  className={`border-b border-line px-3 py-2 font-mono ${
+                    cell == null ? 'text-gray-300 dark:text-gray-600' : 'text-ink-2'
                   } ${hiCol.has(c) ? 'dialect-bg-soft' : ''}`}
                 >
                   {cell == null ? '—' : cell}

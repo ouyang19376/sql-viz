@@ -15,10 +15,10 @@ export default function Pagination({ page, pageSize, total, onChange }: Props) {
   const canNext = page < totalPages
 
   const btn =
-    'inline-flex h-8 items-center gap-1 rounded-md border border-gray-200 px-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800'
+    'inline-flex h-8 items-center gap-1 rounded-md border border-line px-2.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-40'
 
   return (
-    <div className="flex items-center justify-end gap-3 text-sm text-gray-600 dark:text-gray-300">
+    <div className="flex items-center justify-end gap-3 text-sm text-ink-2">
       <button type="button" className={btn} disabled={!canPrev} onClick={() => onChange(page - 1)}>
         <ChevronLeft className="h-4 w-4" />
         上一页

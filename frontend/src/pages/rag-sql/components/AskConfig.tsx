@@ -24,13 +24,13 @@ export default function AskConfig() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line p-3">
       <div className="flex items-center gap-2">
-        <label className="text-xs text-gray-500 dark:text-gray-400">方言</label>
+        <label className="text-xs text-mute">方言</label>
         <select
           value={dialect}
           onChange={(e) => setDialect(e.target.value as RagDialect)}
-          className="rounded-md border border-gray-300 px-2 py-1.5 text-sm text-gray-700 focus:border-emerald-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+          className="rounded-md border border-line px-2 py-1.5 text-sm text-ink focus:border-accent focus:outline-none bg-surface"
         >
           {Object.entries(RAG_DIALECT_LABELS).map(([k, v]) => (
             <option key={k} value={k}>
@@ -48,7 +48,7 @@ export default function AskConfig() {
           onClick={() => handleToggle(!multiTurn)}
           className={
             'relative inline-flex h-5 w-9 items-center rounded-full transition-colors ' +
-            (multiTurn ? 'bg-emerald-600' : 'bg-gray-300 dark:bg-gray-600')
+            (multiTurn ? 'bg-accent' : 'bg-surface-2')
           }
         >
           <span
@@ -58,8 +58,8 @@ export default function AskConfig() {
             }
           />
         </button>
-        <span className="inline-flex items-center gap-1 text-sm text-gray-700 dark:text-gray-300">
-          <MessagesSquare className="h-4 w-4 text-gray-400" />
+        <span className="inline-flex items-center gap-1 text-sm text-ink-2">
+          <MessagesSquare className="h-4 w-4 text-mute" />
           多轮会话
         </span>
       </div>
@@ -68,7 +68,7 @@ export default function AskConfig() {
         <button
           type="button"
           onClick={newConversation}
-          className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 px-2.5 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+          className="inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-sm text-ink-2 transition-colors hover:bg-surface-2"
         >
           <MessageSquarePlus className="h-4 w-4" />
           新建会话

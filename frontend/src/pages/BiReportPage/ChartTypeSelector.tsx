@@ -22,7 +22,7 @@ const OPTIONS: { value: ChartType; icon: LucideIcon }[] = [
 export default function ChartTypeSelector({ value, onChange }: Props) {
   return (
     <section>
-      <h3 className="mb-3 text-sm font-semibold text-gray-800 dark:text-gray-100">图表类型</h3>
+      <h3 className="mb-3 text-sm font-semibold text-ink">图表类型</h3>
       <div className="flex flex-wrap gap-2">
         {OPTIONS.map(({ value: v, icon: Icon }) => {
           const active = v === value
@@ -35,8 +35,8 @@ export default function ChartTypeSelector({ value, onChange }: Props) {
               className={
                 'inline-flex w-20 flex-col items-center gap-1.5 rounded-lg border px-2 py-3 text-xs font-medium transition-colors ' +
                 (active
-                  ? 'border-indigo-400 bg-indigo-50/60 text-indigo-700 dark:border-indigo-500/50 dark:bg-indigo-500/10 dark:text-indigo-300'
-                  : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800/50')
+                  ? 'border-accent bg-accent-soft text-accent'
+                  : 'border-line text-ink-2 hover:bg-surface-2')
               }
             >
               <Icon className="h-5 w-5" />

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router'
+import { ArrowRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 interface Props {
@@ -12,10 +13,11 @@ interface Props {
   className?: string
 }
 
-/** 功能入口大卡片（F-HM-01 / F-HM-02 / F-HM-03）：
- *  - 白底 + 圆角 16px + 浅阴影
- *  - hover：阴影抬升 + 主色描边
- *  - 整卡可点击跳转 */
+/** 功能入口卡片（扁平化）：
+ *  - surface 底 + 1px line 描边 + 无阴影（扁平）
+ *  - 图标块用模块 identity 色（身份层）
+ *  - hover：琥珀描边（交互层）+ 轻位移
+ *  - 标题 font-display，右下「进入」指示 */
 export default function FeatureCard({ icon: Icon, title, description, to, accent, className }: Props) {
   const style = { '--accent': accent } as CSSProperties
 
@@ -23,16 +25,20 @@ export default function FeatureCard({ icon: Icon, title, description, to, accent
     <Link
       to={to}
       style={style}
-      className={`group block h-full rounded-2xl border-2 border-transparent bg-white p-8 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-lg ${className ?? ''}`}
+      className={`group relative flex h-full flex-col rounded-xl border border-line bg-surface p-7 transition-all hover:-translate-y-0.5 hover:border-accent ${className ?? ''}`}
     >
       <div
-        className="flex h-14 w-14 items-center justify-center rounded-xl"
-        style={{ backgroundColor: `color-mix(in srgb, ${accent} 12%, white)` }}
+        className="flex h-12 w-12 items-center justify-center rounded-lg"
+        style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, transparent)` }}
       >
-        <Icon className="h-7 w-7" style={{ color: accent }} />
+        <Icon className="h-6 w-6" style={{ color: accent }} />
       </div>
-      <h2 className="mt-5 text-xl font-semibold text-gray-900">{title}</h2>
-      <p className="mt-2 text-sm leading-relaxed text-gray-500">{description}</p>
+      <h3 className="mt-5 font-display text-lg font-semibold text-ink">{title}</h3>
+      <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-2">{description}</p>
+      <div className="mt-5 flex items-center gap-1.5 text-sm font-medium text-mute transition-colors group-hover:text-accent">
+        进入
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      </div>
     </Link>
   )
 }

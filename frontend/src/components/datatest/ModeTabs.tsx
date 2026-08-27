@@ -15,7 +15,7 @@ const TABS: { value: DataTestMode; label: string }[] = [
  *  视觉：选中态浅色描边 + 下划线；未选中：灰色 hover 浅蓝。 */
 export default function ModeTabs({ value, onChange, disabled }: Props) {
   return (
-    <div className="flex border-b border-gray-200 dark:border-gray-800" role="tablist">
+    <div className="flex border-b border-line" role="tablist">
       {TABS.map((t) => {
         const active = t.value === value
         return (
@@ -29,8 +29,8 @@ export default function ModeTabs({ value, onChange, disabled }: Props) {
             className={
               'px-5 py-3 text-sm font-medium transition-colors -mb-px border-b-2 ' +
               (active
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200') +
+                ? 'border-accent text-accent'
+                : 'border-transparent text-mute hover:text-ink') +
               (disabled ? ' cursor-not-allowed opacity-60' : '')
             }
           >

@@ -21,13 +21,13 @@ export default function NavActions() {
         onClick={() => navigate(`/dialect/${currentDialectId}`)}
         aria-label="我的收藏"
         title="我的收藏"
-        className="relative rounded-md p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+        className="relative rounded-md p-2 text-mute transition-colors hover:bg-surface-2 hover:text-ink"
       >
         <Heart className="h-4 w-4" />
         {favoriteCount > 0 && (
           <span
             aria-label={`${favoriteCount} 个收藏`}
-            className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--dialect-color)] px-1 text-[10px] font-medium leading-none text-white"
+            className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-medium leading-none text-white"
           >
             {favoriteCount > 99 ? '99+' : favoriteCount}
           </span>
@@ -38,7 +38,7 @@ export default function NavActions() {
         onClick={toggleTheme}
         aria-label={theme === 'light' ? '切换到暗色模式' : '切换到亮色模式'}
         title={theme === 'light' ? '暗色模式' : '亮色模式'}
-        className="rounded-md p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+        className="rounded-md p-2 text-mute transition-colors hover:bg-surface-2 hover:text-ink"
       >
         {theme === 'light' ? (
           <Moon className="h-4 w-4" />

@@ -13,7 +13,7 @@ interface Props {
 const AGGS: AggFunc[] = ['sum', 'avg', 'count', 'count_distinct', 'max', 'min']
 
 const selectCls =
-  'h-8 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'
+  'h-8 rounded-md border border-line bg-surface px-2 text-sm text-ink-2'
 
 /** F-MD-02：指标定义 —— 字段 + 聚合 + 别名。字段可选任意列（count_distinct 等可作用于维度）。 */
 export default function MetricEditor({ columns, metrics, onAdd, onUpdate, onRemove }: Props) {
@@ -24,8 +24,8 @@ export default function MetricEditor({ columns, metrics, onAdd, onUpdate, onRemo
     <section>
       <div className="mb-3 flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100">指标</h3>
-          <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+          <h3 className="text-sm font-semibold text-ink">指标</h3>
+          <p className="mt-0.5 text-xs text-mute">
             每个指标 = 字段 + 聚合方式 + 展示别名
           </p>
         </div>
@@ -33,7 +33,7 @@ export default function MetricEditor({ columns, metrics, onAdd, onUpdate, onRemo
           type="button"
           onClick={() => onAdd(defaultField)}
           disabled={!defaultField}
-          className="inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-indigo-600 px-3 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-accent px-3 text-sm font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
           添加指标
@@ -41,7 +41,7 @@ export default function MetricEditor({ columns, metrics, onAdd, onUpdate, onRemo
       </div>
 
       {metrics.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-gray-300 p-4 text-center text-xs text-gray-400 dark:border-gray-700 dark:text-gray-500">
+        <p className="rounded-lg border border-dashed border-line p-4 text-center text-xs text-mute">
           尚未定义指标，至少定义一个指标后才能进入大屏可视化
         </p>
       ) : (
@@ -75,13 +75,13 @@ export default function MetricEditor({ columns, metrics, onAdd, onUpdate, onRemo
                 onChange={(e) => onUpdate(m.id, { alias: e.target.value })}
                 placeholder="展示别名"
                 maxLength={64}
-                className="h-8 w-40 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+                className="h-8 w-40 rounded-md border border-line bg-surface px-2 text-sm text-ink-2"
               />
               <button
                 type="button"
                 onClick={() => onRemove(m.id)}
                 aria-label="删除指标"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-mute transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
               >
                 <Trash2 className="h-4 w-4" />
               </button>

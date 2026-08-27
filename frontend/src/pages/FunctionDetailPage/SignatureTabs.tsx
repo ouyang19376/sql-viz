@@ -13,7 +13,7 @@ export default function SignatureTabs({ signature }: Props) {
 
   if (signatures.length <= 1) {
     return (
-      <code className="block rounded-lg bg-gray-50 px-3 py-2 font-mono text-sm text-gray-800 dark:bg-gray-800/50 dark:text-gray-200">
+      <code className="block rounded-lg bg-surface-2 px-3 py-2 font-mono text-sm text-ink-2">
         {signature}
       </code>
     )
@@ -33,14 +33,14 @@ export default function SignatureTabs({ signature }: Props) {
             className={`rounded-md px-2.5 py-1 font-mono text-xs transition-colors ${
               i === safeActive
                 ? 'dialect-bg text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                : 'bg-surface-2 text-ink-2 hover:bg-line'
             }`}
           >
             {sig}
           </button>
         ))}
       </div>
-      <code className="mt-2 block rounded-lg bg-gray-50 px-3 py-2 font-mono text-sm text-gray-800 dark:bg-gray-800/50 dark:text-gray-200">
+      <code className="mt-2 block rounded-lg bg-surface-2 px-3 py-2 font-mono text-sm text-ink-2">
         {signatures[safeActive]}
       </code>
     </div>

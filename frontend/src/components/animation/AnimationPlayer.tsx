@@ -131,7 +131,7 @@ export default forwardRef<AnimationPlayerHandle, Props>(function AnimationPlayer
 
       {/* Canvas：移动端同样显示，使其尺寸非零 → engine 初始化 → 可播放 */}
       <div ref={containerRef} className="h-[320px]">
-        <CanvasStage ref={canvasRef} className="h-full border border-gray-200 bg-white dark:border-gray-800" />
+        <CanvasStage ref={canvasRef} className="h-full border border-line bg-surface" />
       </div>
 
       <PlaybackControls

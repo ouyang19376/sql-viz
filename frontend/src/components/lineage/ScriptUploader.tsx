@@ -114,8 +114,8 @@ export default function ScriptUploader({ onFileLoaded, onBatchLoaded, hasExistin
       className={
         'flex flex-col gap-3 rounded-xl border border-dashed px-4 py-3 ' +
         (inactive
-          ? 'border-gray-200 bg-gray-50 text-gray-400 dark:border-gray-800 dark:bg-gray-950'
-          : 'border-gray-300 bg-white text-gray-600 hover:border-teal-400 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300')
+          ? 'border-line bg-surface-2 text-mute'
+          : 'border-line bg-surface text-ink-2 hover:border-accent')
       }
     >
       <div className="flex items-start gap-2 text-sm">
@@ -153,7 +153,7 @@ export default function ScriptUploader({ onFileLoaded, onBatchLoaded, hasExistin
           type="button"
           onClick={handlePick}
           disabled={inactive}
-          className="inline-flex items-center justify-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+          className="inline-flex items-center justify-center gap-1.5 rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink-2 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Upload className="h-4 w-4" />
           {busy ? '读取中…' : '选择文件'}
@@ -162,7 +162,7 @@ export default function ScriptUploader({ onFileLoaded, onBatchLoaded, hasExistin
           type="button"
           onClick={handleBatchPick}
           disabled={inactive}
-          className="inline-flex items-center justify-center gap-1.5 rounded-md border border-teal-300 bg-teal-50 px-3 py-1.5 text-sm text-teal-700 transition-colors hover:bg-teal-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-teal-800 dark:bg-teal-950/30 dark:text-teal-200"
+          className="inline-flex items-center justify-center gap-1.5 rounded-md border border-accent bg-accent-soft px-3 py-1.5 text-sm text-accent transition-colors hover:bg-accent-strong hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Files className="h-4 w-4" />
           批量选择

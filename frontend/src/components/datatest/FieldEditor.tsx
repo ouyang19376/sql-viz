@@ -31,10 +31,10 @@ export default function FieldEditor({ fields, onChange, disabled }: Props) {
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-lg border border-line bg-surface">
       <div className="overflow-x-auto">
         <table className="block w-full md:table md:min-w-[640px]">
-          <thead className="hidden bg-gray-50 text-xs font-medium uppercase text-gray-500 dark:bg-gray-800/50 dark:text-gray-400 md:table-header-group">
+          <thead className="hidden bg-surface-2 text-xs font-medium uppercase text-mute md:table-header-group">
             <tr>
               <th className="p-2 text-left">字段名 *</th>
               <th className="p-2 text-left">类型</th>
@@ -46,7 +46,7 @@ export default function FieldEditor({ fields, onChange, disabled }: Props) {
           <tbody className="block md:table-row-group">
             {fields.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-6 text-center text-sm text-gray-400">
+                <td colSpan={5} className="p-6 text-center text-sm text-mute">
                   尚未添加字段，请点击下方「+ 添加字段」或上传 xlsx/csv 解析表头
                 </td>
               </tr>
@@ -65,15 +65,15 @@ export default function FieldEditor({ fields, onChange, disabled }: Props) {
         </table>
       </div>
 
-      <div className="flex items-center justify-between border-t border-gray-100 px-3 py-2 dark:border-gray-800">
-        <span className="text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex items-center justify-between border-t border-line px-3 py-2">
+        <span className="text-xs text-mute">
           {fields.length} / {DT_LIMITS.FIELDS_MAX} 字段
         </span>
         <button
           type="button"
           onClick={addField}
           disabled={disabled || atMax}
-          className="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-600 transition-colors hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500/15 dark:text-indigo-300 dark:hover:bg-indigo-500/25"
+          className="inline-flex items-center gap-1 rounded-md bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Plus className="h-4 w-4" />
           添加字段

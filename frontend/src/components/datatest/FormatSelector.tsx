@@ -16,8 +16,8 @@ const FORMATS: { value: ExportFormat; label: string }[] = [
 export default function FormatSelector({ value, onChange, disabled }: Props) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">格式</span>
-      <div className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white p-1 dark:border-gray-700 dark:bg-gray-900">
+      <span className="text-sm font-medium text-ink-2">格式</span>
+      <div className="flex items-center gap-1 rounded-lg border border-line bg-surface p-1">
         {FORMATS.map((f) => {
           const active = f.value === value
           return (
@@ -29,8 +29,8 @@ export default function FormatSelector({ value, onChange, disabled }: Props) {
               className={
                 'rounded-md px-3 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-60 ' +
                 (active
-                  ? 'bg-indigo-500 text-white'
-                  : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800')
+                  ? 'bg-accent text-white'
+                  : 'text-ink-2 hover:bg-surface-2')
               }
             >
               {f.label}

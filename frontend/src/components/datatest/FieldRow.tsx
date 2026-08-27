@@ -34,7 +34,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
   }
 
   return (
-    <tr className="block border-b border-gray-100 last:border-b-0 dark:border-gray-800 md:table-row">
+    <tr className="block border-b border-line last:border-b-0 md:table-row">
       {/* 字段名 */}
       <td className="block p-2 md:table-cell">
         <input
@@ -46,10 +46,10 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
           disabled={disabled}
           placeholder="例如 user_id"
           className={
-            'w-full rounded border px-2 py-1.5 text-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-gray-800 ' +
+            'w-full rounded border px-2 py-1.5 text-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:bg-surface-2 bg-surface text-ink ' +
             (nameEmpty || nameTooLong
               ? 'border-red-400 focus:border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700')
+              : 'border-line focus:border-accent focus:ring-accent')
           }
         />
       </td>
@@ -68,7 +68,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
             onChange(next)
           }}
           disabled={disabled}
-          className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-gray-800"
+          className="w-full rounded border border-line bg-surface px-2 py-1.5 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent disabled:cursor-not-allowed disabled:bg-surface-2 text-ink"
         >
           {FIELD_TYPES.map((t) => (
             <option key={t} value={t}>
@@ -91,7 +91,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
           }
           disabled={disabled}
           placeholder="可选，中文语义描述"
-          className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-gray-800"
+          className="w-full rounded border border-line px-2 py-1.5 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent disabled:cursor-not-allowed disabled:bg-surface-2 bg-surface text-ink"
         />
       </td>
 
@@ -106,10 +106,10 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
             field.type === 'enum' ? 'A, B, C（逗号分隔）' : '仅 enum 类型可填'
           }
           className={
-            'w-full rounded border px-2 py-1.5 text-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:disabled:bg-gray-800 ' +
+            'w-full rounded border px-2 py-1.5 text-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:bg-surface-2 bg-surface text-ink ' +
             (enumMissing
               ? 'border-red-400 focus:border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700')
+              : 'border-line focus:border-accent focus:ring-accent')
           }
         />
       </td>
@@ -122,7 +122,7 @@ export default function FieldRow({ field, onChange, onRemove, disabled }: Props)
           disabled={disabled}
           aria-label="删除字段"
           title="删除字段"
-          className="rounded p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded p-1.5 text-mute transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Trash2 className="h-4 w-4" />
         </button>

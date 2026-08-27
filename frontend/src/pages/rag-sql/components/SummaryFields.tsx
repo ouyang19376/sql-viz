@@ -15,8 +15,8 @@ export default function SummaryFields({ summary, onChange }: Props) {
     <div className="space-y-1">
       <div className="flex items-center justify-between gap-2 py-1">
         <div className="min-w-0">
-          <div className="text-xs font-medium text-gray-500 dark:text-gray-400">表名（结构层）</div>
-          <div className="truncate font-mono text-sm text-gray-800 dark:text-gray-100">
+          <div className="text-xs font-medium text-mute">表名（结构层）</div>
+          <div className="truncate font-mono text-sm text-ink">
             {summary.tableName}
           </div>
         </div>

@@ -119,8 +119,8 @@ function LineageTableNodeView({ data, selected }: NodeProps<Node<LineageNodeData
     <div
       title={title}
       className={
-        `w-[190px] rounded-xl border px-3 py-2 shadow-sm transition-shadow ${typeClass[data.tableType]} ` +
-        (selected ? 'ring-2 ring-teal-400 ring-offset-2 dark:ring-offset-gray-950' : '')
+        `w-[190px] rounded-xl border px-3 py-2 transition-shadow ${typeClass[data.tableType]} ` +
+        (selected ? 'ring-2 ring-accent ring-offset-2 ring-offset-paper' : '')
       }
     >
       <Handle type="target" position={Position.Left} className="!h-2 !w-2 !border-gray-400 !bg-white" />
@@ -136,7 +136,7 @@ function LineageTableNodeView({ data, selected }: NodeProps<Node<LineageNodeData
 
 function GraphLegend() {
   return (
-    <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
+    <div className="flex flex-wrap gap-2 text-xs text-mute">
       <span>箭头表示数据流向：源表 → 目标表</span>
       {(['entity', 'temporary', 'unknown'] as const).map((type) => (
         <span key={type} className={`rounded-full border px-2 py-0.5 ${typeClass[type]}`}>
@@ -194,7 +194,7 @@ export default function LineageGraph({ result }: Props) {
 
   if (result.tables.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400">
+      <div className="rounded-xl border border-line bg-surface-2 p-6 text-center text-sm text-mute">
         暂无可展示的表节点。
       </div>
     )
@@ -212,7 +212,7 @@ export default function LineageGraph({ result }: Props) {
           已高亮选中节点的直接上游和下游；再次点击节点或画布可取消。
         </div>
       )}
-      <div className="h-[520px] overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950">
+      <div className="h-[520px] overflow-hidden rounded-xl border border-line bg-surface-2">
         <ReactFlow
           nodes={graphNodes}
           edges={graphEdges}
