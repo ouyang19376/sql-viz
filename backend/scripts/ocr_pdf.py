@@ -3,6 +3,9 @@
 用法（backend/ 下执行）：
   python -m scripts.ocr_pdf --in path/to/扫描件.pdf --out path/to/输出.txt
 
+依赖为本地工具级，不在 requirements.txt（rapidocr 不支持 Python 3.13，Render 部署会失败）：
+  pip install rapidocr-onnxruntime pypdfium2
+
 逐页渲染（scale=2）-> RapidOCR 识别 -> 按页拼接（页间空行分隔，
 便于 rag_sql_kb.chunk_doc 的段落优先切片以页为语义单元）。
 """
