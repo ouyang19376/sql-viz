@@ -47,3 +47,5 @@ backend/app/data/bi_datasets/
 backend/app/data/geo_cache/
 # 数据探查自定义规则持久化（PRD-dataprofile F-RL-06，运行时创建）
 backend/app/data/profile_rules/
+# 数据建模平台（/modeling 子应用）的 SQLite 库与数据目录，运行时按 DATA_DIR 创建
+backend/data/

@@ -1,11 +1,20 @@
-import { BarChart3, BookOpen, Database, GitBranch, MessageSquareCode, ScanSearch, Sparkles } from 'lucide-react'
+import {
+  BarChart3,
+  BookOpen,
+  Boxes,
+  Database,
+  GitBranch,
+  MessageSquareCode,
+  ScanSearch,
+  Sparkles,
+} from 'lucide-react'
 import FeatureCard from './FeatureCard'
 import Highlight from '@/components/shared/Highlight'
 
 /** 每张卡片在 flex 布局下的宽度：
  *  - 移动端单列满宽
  *  - md：两列（50% 减去 gap-6 的一半 0.75rem）
- *  - lg：三列（33.33% 减去 gap-6 一份 1rem），6 卡 = 3+3，两行均满 */
+ *  - lg：三列（33.33% 减去 gap-6 一份 1rem），8 卡 = 3+3+2，末行两张居中 */
 const cardWidth = 'w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333333%_-_1rem)]'
 
 /** 工具入口清单：identity 色仅作图标标签层，界面交互层统一归琥珀 */
@@ -59,9 +68,16 @@ const TOOLS = [
     to: '/kbqa',
     accent: '#DC2626',
   },
+  {
+    icon: Boxes,
+    title: '数据建模平台',
+    description: '业务调研 → 模型设计 → 规范校验 → 评审发布 → DDL 预览全链路，含关系图谱与外部血缘导入。',
+    to: '/modeling',
+    accent: '#4F46E5',
+  },
 ] as const
 
-/** 首页（旗舰）：数据工作台定位，琥珀荧光标记关键词，7 工具扁平入口（lg 三列 3+3+1）。 */
+/** 首页（旗舰）：数据工作台定位，琥珀荧光标记关键词，8 工具扁平入口（lg 三列 3+3+2）。 */
 export default function HomePage() {
   return (
     <div>
@@ -75,7 +91,7 @@ export default function HomePage() {
           为数据人打造的 <Highlight>SQL</Highlight> 工具箱
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink-2 sm:text-base">
-          学函数、做数据、查血缘、出报表、探质量、问自然语言、对话知识库——七个工具，一站衔接。
+          学函数、造数据、查血缘、出报表、探质量、问 SQL、聊知识库、建模型——八个工具，一站衔接。
         </p>
       </section>
 

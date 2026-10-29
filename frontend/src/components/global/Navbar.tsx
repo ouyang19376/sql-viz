@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router'
-import { BarChart3, BookOpen, Database, GitBranch, Menu, MessageSquareCode, ScanSearch, Sparkles, X } from 'lucide-react'
+import {
+  BarChart3,
+  BookOpen,
+  Boxes,
+  Database,
+  GitBranch,
+  Menu,
+  MessageSquareCode,
+  ScanSearch,
+  Sparkles,
+  X,
+} from 'lucide-react'
 import DialectDropdown from './DialectDropdown'
 import SearchBox from './SearchBox'
 import SearchModal from './SearchModal'
@@ -57,6 +68,15 @@ const MODULES = [
     to: '/kbqa',
     icon: BookOpen,
     match: (p: string) => p === '/kbqa',
+  },
+  // 数据建模平台是全屏 iframe 路由（不走 Layout），Navbar 不会在其页面内渲染，
+  // 故此处仅作为其余页面的入口，match 不会命中。
+  {
+    key: 'modeling',
+    label: '数据建模平台',
+    to: '/modeling',
+    icon: Boxes,
+    match: (p: string) => p === '/modeling',
   },
 ] as const
 

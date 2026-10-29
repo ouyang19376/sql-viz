@@ -17,6 +17,11 @@ from app.routers.dataprofile import router as dataprofile_router
 from app.routers.rag_sql import router as rag_sql_router
 from app.routers.kbqa import router as kbqa_router
 
+# 数据建模平台（原独立项目，整体并入）：自带 SQLAlchemy/Alembic、静态前端与
+# 独立迁移链，路由与主应用零重叠，故作为子应用挂在 /modeling 子路径下。
+from app.modeling.main import app as modeling_app
+from app.modeling.main import startup as modeling_startup
+
 
 # F-LM-05：避免第三方 SDK 在调试日志中输出包含 SQL 的请求体。
 logging.getLogger("openai").setLevel(logging.WARNING)
@@ -27,6 +32,10 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 async def lifespan(app: FastAPI):
     # 启动时加载方言数据到内存
     load_all_data()
+    # Starlette 挂载子应用不会自动运行它的 lifespan，这里显式驱动其启动流程
+    # （Alembic 迁移 + 演示数据播种 + 图谱基线补建）。调用 startup() 而非子应用
+    # 的 lifespan：日志格式由本应用掌管。
+    await modeling_startup()
     yield
 
 
@@ -52,6 +61,10 @@ app.include_router(bi_router)
 app.include_router(dataprofile_router)
 app.include_router(rag_sql_router)
 app.include_router(kbqa_router)
+
+# 数据建模平台：/modeling 前缀下的完整子系统（/modeling/ 为其工作台页面，
+# /modeling/api/* 为其 REST 接口）。前端经 iframe 嵌入首页「数据建模平台」入口。
+app.mount("/modeling", modeling_app)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,11 @@ export default defineConfig({
         target: 'http://127.0.0.1:8001',
         changeOrigin: true,
       },
+      // 数据建模平台子应用：后端 /modeling 下的静态工作台 + REST 接口（ ModelingPage iframe）
+      '/modeling': {
+        target: 'http://127.0.0.1:8001',
+        changeOrigin: true,
+      },
     },
   },
 })

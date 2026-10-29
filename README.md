@@ -1,4 +1,4 @@
-# SQL Viz — SQL 可视化学习 · 测试数据生成 · 血缘分析 · BI 报表 · 数据探查 · RAG 转 SQL 平台
+# SQL Viz — SQL 可视化学习 · 测试数据生成 · 血缘分析 · BI 报表 · 数据探查 · RAG 转 SQL · 数据建模平台
 
 > 一个面向 SQL 学习者与数据开发者的多功能工具平台：用 Canvas 动画「看见」SQL 函数的执行过程，用 LLM 一键生成测试数据集，对 SQL/HQL 脚本做表级血缘分析，上传 Excel/CSV 自助生成可视化大屏报表，连接真实库做只读探查并一键生成数据质量脚本，以及基于 RAG 知识库用自然语言生成对齐业务模型的 SQL。
 
@@ -16,6 +16,7 @@
 | **BI 报表工具** | 上传 xlsx/csv（支持 Excel 多级表头）由后端 pandas 解析落盘；前端维度/指标建模后生成 ECharts 大屏：柱状/折线/饼图/散点图/组合图/**中国地图**（省级↔城市级下钻联动）七种图表 + 四套配色；支持点击下钻、面包屑上钻、总览卡片与明细联动、表头与大屏排序；可导出 PNG / 数据 / 仪表盘配置。城市级地图经后端代理拉取 DataV 边界并磁盘缓存，规避浏览器跨域 403。 |
 | **数据探查工具** | 配置连接 MySQL / Hive / PostgreSQL 数据源（会话级连接池、凭证内存驻留不落盘），在工作台做只读 SQL 查询与分页预览（sqlglot 静态拦截 DML/DDL/多语句、超时与行数护栏、结果下载）；内置 10 项常见质量指标模板（零 LLM）+ 自定义规则（few-shot 仿写 LLM 生成），为指定表或库一键生成数据质量探查脚本，经静态分析与 EXPLAIN 试运行校验后可导入工作台执行或下载 .sql。 |
 | **RAG 转 SQL 工具** | 粘贴建表 DDL 由 sqlglot 结构化解析 + LLM 语义改写为可入 RAG 的表元数据文本块，上传 SQL/建模/质量规范文档切片入库（外部托管 Milvus/Zilliz）；自然语言提问时混合检索（向量 + BM25，RRF 融合）召回相关表与文档、Rerank 重排后作为上下文增强 LLM 生成符合业务模型的 SQL，sqlglot 静态校验、来源可追溯，支持多轮会话与流式输出。 |
+| **数据建模平台** | 并入的完整建模子系统（原独立项目）：业务调研（主题域/业务需求）→ 模型设计（字段/表级约束/索引/关系）→ 22 条规范校验 → 评审发布 → 版本差异 → DDL 预览（PG/MySQL/Hive 三引擎，只生成不执行）全链路；附模型关系图画布、图谱快照四视图、最短路径、外部血缘导入（dbt manifest 连接器）、业务总线矩阵，以及平台 admin + 项目 owner/editor/viewer 两级 RBAC 与账号密码登录。前端经首页「数据建模平台」卡片以全屏 iframe 进入。 |
 
 支持亮色 / 暗色主题切换、响应式布局、键盘快捷键（`Ctrl/Cmd+K` 搜索等）。
 
@@ -24,7 +25,7 @@
 ## 🧰 技术栈
 
 **前端**：React 19 · Vite 7 · TypeScript 5 · React Router 7 · Zustand 5 · TanStack Query 5 · Tailwind CSS 4 · 原生 Canvas 2D · ECharts 6（+ echarts-for-react）· Shiki · @xyflow/react · Lucide · Sonner · xlsx
-**后端**：FastAPI · Uvicorn · Pydantic 2 · OpenAI SDK（兼容 DeepSeek / 火山 doubao 等）· sqlglot · neo4j · pandas / openpyxl / pyarrow（BI 报表数据处理）· pymilvus / rank-bm25（RAG 向量检索 + BM25）· pymysql / psycopg[binary] / pyhive+thrift（数据探查数据源连接）· httpx · pytest
+**后端**：FastAPI · Uvicorn · Pydantic 2 · OpenAI SDK（兼容 DeepSeek / 火山 doubao 等）· sqlglot · neo4j · SQLAlchemy 2.x + Alembic（数据建模平台 ORM 与迁移）· pandas / openpyxl / pyarrow（BI 报表数据处理）· pymilvus / rank-bm25（RAG 向量检索 + BM25）· pymysql / psycopg[binary] / pyhive+thrift（数据探查数据源连接）· httpx · pytest
 **包管理**：前端 pnpm，后端 pip + requirements.txt
 
 ---
@@ -51,8 +52,11 @@ LLM_PROJ_BD/
 │   │   ├── routers/      # dialects / functions / search / datatest / lineage / bi / dataprofile / rag_sql
 │   │   ├── services/     # 业务逻辑（bi_* / dataprofile_* / rag_sql_* / lineage_* 等）
 │   │   ├── core/         # 配置 / 加载器 / 响应封装 / 缓存
+│   │   ├── modeling/     # 数据建模平台（并入的独立子系统，挂载于 /modeling）
+│   │   │                 #   main/config/db/models/auth/ddl/validation + alembic.ini
+│   │   │                 #   + migrations/ + frontend/static/（其自带的工作台页面）
 │   │   └── data/         # sql（7 方言 JSON）/ bi_datasets（落盘）/ profile_rules（探查自定义规则落盘）/ geo_cache（城市地图缓存，gitignore）
-│   ├── tests/            # pytest 测试
+│   ├── tests/            # pytest 测试（conftest.py 把建模平台的库指到临时目录）
 │   ├── requirements.txt
 │   └── .env.example      # 环境变量模板（复制为 .env 后填写）
 │
@@ -113,6 +117,8 @@ pnpm dev
 > ⚠️ **切勿把真实的 `.env` 提交到仓库**。根目录 `.gitignore` 已忽略 `.env`，仅 `.env.example` 入库。
 
 > ℹ️ **新增模块依赖说明**：数据探查的 MySQL / PostgreSQL 开箱即用（`pymysql` / `psycopg`）；Hive 依赖 `pyhive` + `thrift`，Windows 下安装易失败，代码会自动降级禁用该方言而不阻断启动。RAG 转 SQL 需外部 Milvus/Zilliz 向量库 + doubao embedding API + bge rerank API；未配置时该模块入库/问答返回明确错误，但不影响其余模块运行。
+
+> ℹ️ **数据建模平台配置**：该子系统自带一套配置（`DATABASE_URL` / `AUTH_MODE` / `APP_ENV` / `AUTO_MIGRATE` / `SEED_DEMO_DATA` 等），优先级为「环境变量 > 仓库根目录 `config.yaml` > 内置默认值」。模板见 `backend/app/modeling/config.example.yaml`，需要自定义时复制到**仓库根目录**并命名为 `config.yaml`。不配置也能直接跑：默认在 `backend/data/platform.db` 自动建库迁移，并在空库时注入最小演示数据。
 
 ---
 

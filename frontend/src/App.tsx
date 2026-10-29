@@ -18,8 +18,11 @@ const DataProfilePage = lazy(() => import('@/pages/dataprofile'))
 const RagSqlPage = lazy(() => import('@/pages/rag-sql'))
 // 知识库问答（kbqa）：多会话聊天单页，lazy 懒加载（含 react-markdown）
 const KbqaPage = lazy(() => import('@/pages/kbqa'))
+import ModelingPage from '@/pages/ModelingPage'
 
 const router = createBrowserRouter([
+  // 数据建模平台：全屏 iframe，不套 Layout（其内部是自带侧栏的深色控制台布局）
+  { path: 'modeling', element: <ModelingPage /> },
   {
     element: <Layout />,
     children: [
