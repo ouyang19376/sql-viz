@@ -103,7 +103,9 @@
 
 并入的完整建模子系统（原为独立项目，现由首页「数据建模平台」卡片以全屏 iframe 进入）：**业务调研**（主题域 / 业务需求）→ **模型设计**（字段 / 表级约束 / 索引 / 关系）→ **22 条规范校验** → **评审发布** → **版本差异** → **DDL 预览**（PG / MySQL / Hive 三引擎，只生成不执行）全链路。附模型关系图画布（力导向 / 分层布局、缩放拖拽、四视图切换）、图谱快照与 diff、最短路径、外部血缘导入（dbt manifest 连接器）、Kimball 业务总线矩阵，以及平台 admin + 项目 owner/editor/viewer 两级 RBAC 与账号密码登录。
 
-演示数据分两档：**空库首次启动**会自动建库迁移并注入最小演示集（`PRJ_RETAIL`：1 个项目 / 2 个模型，可立即体验完整闭环）；本地开发库另有一套**电商数仓分层**数据（`PRJ_ECOM`：114 个模型，ODS 28 / DWD 32 / DIM 14 / DWS 22 / ADS 18，801 个字段、159 条关系、82 个发布快照、26 条业务需求），用于图谱 / 血缘 / 快照等大规模场景的全功能演示——即上方截图所见。该库文件位于 `backend/data/platform.db`，已在 `.gitignore` 中，克隆仓库不会带入。
+演示数据分两档：**空库首次启动**会自动建库迁移并注入最小演示集（`PRJ_RETAIL`：1 个项目 / 2 个模型，可立即体验完整闭环）；正式演示用的是**电商数仓分层**数据（`PRJ_ECOM`：114 个模型，ODS 28 / DWD 32 / DIM 14 / DWS 22 / ADS 18，801 个字段、159 条关系、82 个发布快照、26 条业务需求），用于图谱 / 血缘 / 快照等大规模场景的全功能演示——即上方截图所见。
+
+该演示库文件 `backend/data/platform.db`（约 2.7MB）**随仓库分发**，克隆即可用，无需重新生成。`seed_demo_data()` 检测到已有项目时会直接跳过，不会覆盖它。需要从零重建时见[可用脚本](#-可用脚本)里的 `seed_modeling_ecom.py`。
 
 <table>
   <tr>
@@ -278,15 +280,17 @@ pytest tests/modeling/ -v # 数据建模平台：207 个
 
 ### 关于 SQLite 与 Render 的临时文件系统
 
-Render 的磁盘是**临时的**：每次部署 / 重启 / 休眠唤醒都会丢失。默认的 SQLite 库在 `backend/data/platform.db`，意味着生产环境每次重启都会被打回空库，然后按 `SEED_DEMO_DATA` 重新注入演示数据——**建模成果留不住**。
+`backend/data/platform.db`（电商数仓演示库，约 2.7MB）**已随仓库分发**，Render 每次部署重新 clone 时会把它恢复出来，所以开箱就是 114 个模型的完整演示，不需要任何额外配置。
 
-生产请改用 Render PostgreSQL（Internal Database URL）：
+但 Render 的磁盘终究是**临时的**：在线上新建 / 修改的模型只活到下一次部署，之后被仓库里的版本覆盖回去。对演示站点这通常正是想要的行为（每次部署都是干净的演示态）；若希望线上改动持久保留，请改用 Render PostgreSQL：
 
 ```bash
 DATABASE_URL=postgresql+psycopg://dmc:<密码>@<host>:5432/dmc
 ```
 
-驱动 `psycopg[binary]` 已在 `requirements.txt` 中（数据探查模块共用），无需额外安装。启动时会自动执行 Alembic 迁移建表。
+驱动 `psycopg[binary]` 已在 `requirements.txt` 中（数据探查模块共用），无需额外安装；启动时会自动执行 Alembic 迁移建表。切到 PostgreSQL 后仓库里那个 SQLite 演示库即被弃用，需要演示数据时按[可用脚本](#-可用脚本)一节的 `seed_modeling_ecom.py` 重新生成。
+
+> ⚠️ **如果线上只有 2 个模型**：说明部署环境里没有 `backend/data/platform.db`，启动时走了「空库 + `SEED_DEMO_DATA=true`」的路径，注入的是最小演示集 `PRJ_RETAIL`。检查该文件是否真的提交进了仓库（`git ls-files backend/data/` 应有输出），以及 `.gitignore` 里 `backend/data/*` 后面的 `!backend/data/platform.db` 放行是否还在。
 
 ### `api_key` 模式的首次引导
 
